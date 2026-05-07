@@ -1,0 +1,60 @@
+---
+title: StatBlock
+description: 단일 강조 통계 블록. StatList(여러 행)와 다름 — 한 영역을 큰 숫자로.
+group: components
+order: 30
+published: true
+updated: 2026-05-08
+---
+
+`<StatBlock>`은 페이지의 핵심 숫자 1개를 강조합니다. `<StatList>`(여러 행 카운터)와 다른 용도.
+
+```tsx
+import { StatBlock } from "@freeive/anti-card";
+
+<StatBlock
+  value="150+"
+  label="Projects"
+  description="2016~2022, Preive 시절 누적 프로젝트 수."
+/>
+
+// 추세 표시
+<StatBlock
+  value="+38%"
+  label="완강율"
+  trend={{ direction: "up", value: "vs. 전년" }}
+/>
+
+// 페이지 hero급 (size xl)
+<StatBlock size="xl" align="center" value="10+" label="Years" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `ReactNode` | — | 큰 숫자 |
+| `label` | `ReactNode` | — | smallcaps 라벨 |
+| `description` | `ReactNode` | — | 보조 본문 (Lead 톤) |
+| `trend` | `{direction, value}` | — | 추세 (up/down/flat × value) |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 |
+| `size` | `"default" \| "xl"` | `"default"` | 40~72px / 48~112px |
+
+## trend 색상
+
+- `up` → emerald-600 / 400 (↑)
+- `down` → rose-600 / 400 (↓)
+- `flat` → zinc-500 / 400 (→)
+
+## StatList vs StatBlock
+
+| | StatList | StatBlock |
+|---|---|---|
+| 개수 | 2~3개 묶음 | 단일 |
+| 용도 | Heritage 카운터 (10+/30+/150+) | "이 페이지의 핵심 숫자" |
+| 시각 | grid 가로 분할 | 단일 큰 숫자 + 본문 |
+
+## 관련
+
+- [StatList](/anti-card/stat-list) — 여러 통계 묶음
+- [Eyebrow](/anti-card/eyebrow) — label 톤

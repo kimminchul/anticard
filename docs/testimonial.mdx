@@ -1,0 +1,61 @@
+---
+title: Testimonial
+description: 사용자 후기. 박스 거부, 좌측 헤어라인 + 인용 + 작성자 묶음.
+group: components
+order: 29
+published: true
+updated: 2026-05-08
+---
+
+`<Testimonial>`은 클라이언트·사용자 후기를 표시합니다. `<Quote>`의 확장 — author 정보가 figcaption보다 풍부.
+
+```tsx
+import { Testimonial } from "@freeive/anti-card";
+
+<Testimonial author={{ name: "김OO", title: "PM", company: "EBS" }}>
+  1인 랩이 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
+</Testimonial>
+
+// 강조 (랜딩 핵심 후기)
+<Testimonial size="large" author={{ name: "박OO", title: "디자인 리드" }}>
+  안티 카드 톤이 우리 브랜드의 톤을 대체했습니다.
+</Testimonial>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `author` | `TestimonialAuthor` | — | 작성자 (필수) |
+| `size` | `"default" \| "large"` | `"default"` | lead 15px / 22~32px 강조 |
+| `children` | `ReactNode` | — | 인용 본문 |
+
+```ts
+type TestimonialAuthor = {
+  name: string;
+  title?: string;       // 직책
+  company?: string;     // 회사
+  avatar?: string;      // 프로필 이미지 (없으면 이니셜)
+};
+```
+
+## 디자인
+
+- figure: my-10
+- blockquote: border-l-2 + pl-6, lead 토큰
+- avatar: 9x9 rounded-full, 없으면 이니셜 (이름 첫 글자 2개)
+- name: 13.5px medium zinc-900
+- title·company: 12.5px zinc-500 (가운데 점으로 결합: "PM · EBS")
+
+## Quote와의 차이
+
+| | Quote | Testimonial |
+|---|---|---|
+| 작성자 | cite (간단) | author 객체 (avatar/title/company) |
+| 사용처 | 책·기사·일반 인용 | 클라이언트·사용자 후기 |
+| 시각 | 단순 figcaption | avatar 이미지 + 위계 |
+
+## 관련
+
+- [Quote](/anti-card/quote) — 일반 인용
+- [CaseStudy](/anti-card/case-study) — 후기와 함께 활용

@@ -5,6 +5,23 @@
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-05-08
+
+### Added
+- **P3 마일스톤** — 신뢰·증거 컴포넌트 4개:
+  - `ClientLogos` — 클라이언트 로고 띠 (grid/row × eyebrow, 로고 없으면 텍스트)
+  - `Testimonial` — 사용자 후기 (Quote 확장, author avatar/title/company)
+  - `StatBlock` — 단일 강조 통계 (default/xl × trend up/down/flat)
+  - `CaseStudy` — Problem/Solution/Outcome 3단 구조 + 메타 (Solution emerald 강조)
+- 각 컴포넌트 docs/*.mdx 4개
+- playground 4 ComponentDef + NAV status ready
+
+### Notes
+- 0.4.0 = Heritage 페이지를 안티 카드 톤으로 완성하는 데 필요한 부품 set
+- Solution emerald 강조 — Problem(zinc) vs Solution(emerald) 시각 위계로 1인 랩 차별점 표시
+- 누적: 31개 컴포넌트 (3 + P0 8 + P1 8 + P2 8 + P3 4)
+- 다음 마일스톤(0.5.0) = P4 인터랙션 (Wave Card / Fade-in / Hover Accent / Scroll Progress / Marquee)
+
 ## [0.3.0] — 2026-05-08
 
 ### Added

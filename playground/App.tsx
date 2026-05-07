@@ -30,6 +30,10 @@ import {
   Banner,
   Button,
   FeatureRow,
+  ClientLogos,
+  Testimonial,
+  StatBlock,
+  CaseStudy,
 } from "@freeive/anti-card";
 
 /**
@@ -116,10 +120,10 @@ const NAV: NavGroup[] = [
     group: "신뢰·증거",
     desc: "이 사이트가 왜 믿을만한가",
     items: [
-      { id: "client-logos", ko: "클라이언트 로고 띠", en: "Client Logos", status: "soon" },
-      { id: "testimonial", ko: "사용자 후기", en: "Testimonial", status: "soon" },
-      { id: "stat-block", ko: "큰 통계 블록", en: "Stat Block", status: "soon" },
-      { id: "case-study", ko: "케이스 스터디", en: "Case Study", status: "soon" },
+      { id: "client-logos", ko: "클라이언트 로고 띠", en: "Client Logos", status: "ready" },
+      { id: "testimonial", ko: "사용자 후기", en: "Testimonial", status: "ready" },
+      { id: "stat-block", ko: "큰 통계 블록", en: "Stat Block", status: "ready" },
+      { id: "case-study", ko: "케이스 스터디", en: "Case Study", status: "ready" },
     ],
   },
   {
@@ -233,6 +237,10 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "button-primary": () => <ComponentPage def={BUTTON_PRIMARY_DEF} />,
   "button-secondary": () => <ComponentPage def={BUTTON_SECONDARY_DEF} />,
   "feature-row": () => <ComponentPage def={FEATURE_ROW_DEF} />,
+  "client-logos": () => <ComponentPage def={CLIENT_LOGOS_DEF} />,
+  testimonial: () => <ComponentPage def={TESTIMONIAL_DEF} />,
+  "stat-block": () => <ComponentPage def={STAT_BLOCK_DEF} />,
+  "case-study": () => <ComponentPage def={CASE_STUDY_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -3470,5 +3478,309 @@ font-mono 번호로 시각 분리.`,
   props: [
     { name: "items", type: "FeatureRowItem[]", desc: "{label?, title, description?}[]" },
     { name: "layout", type: '"row" | "numbered"', default: '"row"', desc: "label 사용 / 자동 번호" },
+  ],
+};
+
+const CLIENT_LOGOS_DEF: ComponentDef = {
+  id: "client-logos",
+  ko: "클라이언트 로고 띠",
+  en: "ClientLogos",
+  desc: "박스 거부, grayscale 로고. hover 시 컬러. 로고 없으면 텍스트로 대체.",
+  examples: [
+    {
+      index: "01",
+      badge: "grid · text-only",
+      title: "기본 — 텍스트만 (로고 이미지 없음)",
+      description: "이미지 자산 준비 전 단계. 텍스트로 임시 표시.",
+      preview: (
+        <ClientLogos
+          eyebrow="Clients"
+          items={[
+            { name: "EBS" },
+            { name: "라이나생명" },
+            { name: "롯데카드" },
+            { name: "아이스크림미디어" },
+            { name: "통신3사" },
+          ]}
+        />
+      ),
+      prompt: `클라이언트/파트너 로고 띠가 필요한데 아직 로고 이미지가 없을 때. 텍스트로 임시 표시.
+
+스타일:
+- border-y (헤어라인 위/아래) + py-10 md:py-12
+- grid 2열 (모바일) / 4~5열 (데스크톱)
+- 텍스트: 12.5px uppercase tracking-[0.08em] zinc-500 (smallcaps 톤)
+- hover시 zinc-900 dark:zinc-100 (살아있는 표시)
+
+shadcn 카드 그리드 거부. 로고는 정보가 아니라 시그널 — 살짝 회색 톤으로 본문 흐름 거의 안 막음.`,
+      react: `<ClientLogos eyebrow="Clients" items={[
+  { name: "EBS" },
+  { name: "라이나생명" },
+  { name: "롯데카드" },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "row",
+      title: "row layout — 가로 한 줄",
+      description: "클라이언트가 적을 때 (3~5개). 가로 정렬 + flex-wrap.",
+      preview: (
+        <ClientLogos
+          layout="row"
+          items={[
+            { name: "EBS" },
+            { name: "라이나" },
+            { name: "롯데카드" },
+          ]}
+        />
+      ),
+      prompt: `클라이언트가 3~5개 정도로 적을 때 grid보다 가로 한 줄이 자연스러움. layout="row".`,
+      react: `<ClientLogos layout="row" items={[
+  { name: "EBS" }, { name: "라이나" }, { name: "롯데카드" },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "ClientLogoItem[]", desc: "{name, logo?, href?, external?}[]" },
+    { name: "layout", type: '"grid" | "row"', default: '"grid"', desc: "균등 그리드 / 가로 wrap" },
+    { name: "eyebrow", type: "ReactNode", desc: "좌측 라벨 (예: Clients)" },
+  ],
+};
+
+const TESTIMONIAL_DEF: ComponentDef = {
+  id: "testimonial",
+  ko: "사용자 후기",
+  en: "Testimonial",
+  desc: "박스 거부, 좌측 헤어라인 + 인용 + 작성자 묶음. Quote의 확장.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — lead 톤 + 작성자",
+      description: "본문 인용 + 작성자 정보 (avatar / name / title·company).",
+      preview: (
+        <Testimonial author={{ name: "김OO", title: "PM", company: "EBS" }}>
+          1인 랩이 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
+          그리고 결과물의 깊이가 다릅니다.
+        </Testimonial>
+      ),
+      prompt: `사이트에 클라이언트 후기를 인용으로 표시. 박스 거부, 좌측 헤어라인 + 본문 + 작성자 묶음.
+
+스타일:
+- figure: my-10
+- blockquote: border-l-2 + pl-6, lead 토큰 (15px, zinc-600 dark:zinc-300)
+- figcaption: 9x9 avatar(없으면 이니셜) + name(zinc-900 medium) + title·company(zinc-500 12.5px)
+
+박스 안에 후기를 가두지 않는다 — 인용은 본문 안의 확장.`,
+      react: `<Testimonial author={{ name: "김OO", title: "PM", company: "EBS" }}>
+  1인 랩이 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
+</Testimonial>`,
+    },
+    {
+      index: "02",
+      badge: "large",
+      title: "large — 섹션 강조 후기",
+      description: "랜딩 페이지 핵심 후기 (22~32px). 글당 1회.",
+      preview: (
+        <Testimonial
+          size="large"
+          author={{ name: "박OO", title: "디자인 리드", company: "라이나생명" }}
+        >
+          “안티 카드 톤이 우리 브랜드의 톤을 대체했습니다.
+          이젠 다른 사이트로 못 돌아가요.”
+        </Testimonial>
+      ),
+      prompt: `랜딩 페이지 핵심 영역에 들어가는 강조 후기. size="large".
+크기는 큰데 굵기는 medium 유지 (heavy bold 거부).`,
+      react: `<Testimonial size="large" author={{ name: "박OO", title: "디자인 리드", company: "라이나" }}>
+  안티 카드 톤이 우리 브랜드의 톤을 대체했습니다.
+</Testimonial>`,
+    },
+  ],
+  props: [
+    { name: "author", type: "TestimonialAuthor", desc: "{name, title?, company?, avatar?}" },
+    { name: "size", type: '"default" | "large"', default: '"default"', desc: "lead 15px / 22~32px 강조" },
+    { name: "children", type: "ReactNode", desc: "인용 본문" },
+  ],
+};
+
+const STAT_BLOCK_DEF: ComponentDef = {
+  id: "stat-block",
+  ko: "큰 통계 블록",
+  en: "StatBlock",
+  desc: "단일 큰 통계. StatList(여러 행)과 다름 — 한 영역을 큰 숫자로 채움.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 숫자 + 라벨 + 설명",
+      description: "value + smallcaps label + Lead 설명.",
+      preview: (
+        <StatBlock
+          value="150+"
+          label="Projects"
+          description="2016~2022, Preive 시절 누적 프로젝트 수. 텔레콤·금융·교육·기업시스템·미디어 5개 섹터."
+        />
+      ),
+      prompt: `이 페이지의 핵심 숫자 1개를 강조. StatList(여러 행)과 다름 — 단일 큰 숫자로 영역을 채움.
+
+스타일:
+- value: clamp(2.5rem, 6vw, 4.5rem) (40~72px)
+- label: 12px uppercase smallcaps (eyebrow 톤)
+- description: lead 토큰 (15px, max-w-[52ch])
+- 패딩: py-12 md:py-16
+
+언제 쓰는가:
+- 페이지의 한 영역을 "이 숫자가 핵심"으로 채울 때
+- StatBlock은 1번 / StatList는 3개 묶음 — 다른 용도`,
+      react: `<StatBlock
+  value="150+"
+  label="Projects"
+  description="2016~2022, Preive 시절 누적 프로젝트 수."
+/>`,
+    },
+    {
+      index: "02",
+      badge: "trend",
+      title: "trend — 추세 표시",
+      description: "↑/↓/→ 화살표 + 추세 값. 전년 대비 등.",
+      preview: (
+        <StatBlock
+          value="+38%"
+          label="완강율"
+          trend={{ direction: "up", value: "vs. 전년 동기" }}
+          description="EBS 온라인 클래스 재구조화 후 6개월 측정값."
+        />
+      ),
+      prompt: `통계에 추세를 추가. trend.direction = "up" | "down" | "flat".
+색: up=emerald / down=rose / flat=zinc.
+
+전년 대비, 첫 출시 대비 등 변화 표현.`,
+      react: `<StatBlock
+  value="+38%"
+  label="완강율"
+  trend={{ direction: "up", value: "vs. 전년 동기" }}
+/>`,
+    },
+    {
+      index: "03",
+      badge: "size · xl · center",
+      title: "xl — 가장 큰 강조 (페이지 hero급)",
+      description: "거대한 숫자로 페이지 영역 채움. 가운데 정렬 권장.",
+      preview: (
+        <StatBlock
+          size="xl"
+          align="center"
+          value="10+"
+          label="Years of solo lab"
+          description="2016 Preive 첫 외주 → 2026 1인 랩 정체성 정리. 10년의 큰 싸움."
+        />
+      ),
+      prompt: `페이지 hero급 거대 숫자. size="xl" + align="center". clamp(3rem, 9vw, 7rem) — 48~112px.
+페이지당 1번만. 사용 빈도 낮음.`,
+      react: `<StatBlock size="xl" align="center" value="10+" label="Years" description="..." />`,
+    },
+  ],
+  props: [
+    { name: "value", type: "ReactNode", desc: "큰 숫자" },
+    { name: "label", type: "ReactNode", desc: "smallcaps 라벨" },
+    { name: "description", type: "ReactNode", desc: "보조 본문 (Lead 톤)" },
+    { name: "trend", type: '{direction: "up" | "down" | "flat", value: ReactNode}', desc: "추세 표시" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
+    { name: "size", type: '"default" | "xl"', default: '"default"', desc: "default 40~72 / xl 48~112" },
+  ],
+};
+
+const CASE_STUDY_DEF: ComponentDef = {
+  id: "case-study",
+  ko: "케이스 스터디",
+  en: "CaseStudy",
+  desc: "Problem → Solution → Outcome 3단 구조 + 메타 정보. 단일 프로젝트 사례.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — Problem/Solution/Outcome",
+      description: "메타(year/client/role) + 좌우 분할(P/S) + 하단 outcome.",
+      preview: (
+        <CaseStudy
+          eyebrow="Heritage · 2021"
+          title="EBS 온라인 클래스 재구조화"
+          meta={[
+            { label: "Year", value: "2021" },
+            { label: "Client", value: "EBS" },
+            { label: "Role", value: "PM + 개발 리드" },
+          ]}
+          problem="기존 학습 흐름이 모바일에서 단절됨. PC와 mobile에서 진척도가 동기화되지 않아 학습자가 다시 처음부터 보는 경우 발생."
+          solution="단일 SPA로 전환 + 학습 진척도 실시간 동기화. PWA 패턴으로 오프라인 일부 지원. PM으로서 30+ 의사결정자와 직접 대화."
+          outcomes={[
+            { value: "+38%", label: "완강율" },
+            { value: "-22%", label: "이탈률" },
+            { value: "60+", label: "기관 도입" },
+          ]}
+          href="#"
+          hrefLabel="자세히 보기 →"
+        />
+      ),
+      prompt: `Heritage 단일 프로젝트 페이지. 카드 박스 거부 — 헤어라인 + Problem/Solution 좌우 분할 + Outcome 하단 통계.
+
+구조:
+- eyebrow + 큰 제목 (h2 톤)
+- meta DefList (Year / Client / Role 등 가로 wrap)
+- 2열 grid: Problem(zinc smallcaps) / Solution(emerald smallcaps)
+- Outcome: StatList 패턴 (1~3개 통계)
+- href 링크 (선택)
+
+Solution 영역만 emerald smallcaps — "여기가 핵심"이라는 시그널.`,
+      react: `<CaseStudy
+  eyebrow="Heritage · 2021"
+  title="EBS 온라인 클래스 재구조화"
+  meta={[
+    { label: "Year", value: "2021" },
+    { label: "Client", value: "EBS" },
+  ]}
+  problem="..."
+  solution="..."
+  outcomes={[
+    { value: "+38%", label: "완강율" },
+    { value: "-22%", label: "이탈률" },
+  ]}
+/>`,
+    },
+    {
+      index: "02",
+      badge: "minimal",
+      title: "minimal — outcome 없이",
+      description: "결과 수치 공개 어려운 사례 (NDA 등). Problem/Solution만.",
+      preview: (
+        <CaseStudy
+          eyebrow="Heritage · 2022"
+          title="라이나생명 디지털채널 재구축"
+          meta={[
+            { label: "Year", value: "2022" },
+            { label: "Client", value: "라이나생명" },
+          ]}
+          problem="레거시 ERP 기반 채널 — 모바일 비대응, 신규 상품 등록 4주 소요."
+          solution="Headless CMS + Next.js + 디자인 시스템 자체 구축. 신규 상품 등록을 4주 → 3시간."
+        />
+      ),
+      prompt: `결과 수치를 공개하기 어려운 사례 (NDA, 진행 중 등). outcomes 생략.
+Problem / Solution만 좌우 분할로 표시.`,
+      react: `<CaseStudy
+  eyebrow="Heritage · 2022"
+  title="라이나생명 디지털채널 재구축"
+  meta={[{ label: "Client", value: "라이나" }]}
+  problem="..."
+  solution="..."
+/>`,
+    },
+  ],
+  props: [
+    { name: "eyebrow / title", type: "ReactNode", desc: "smallcaps + 큰 제목" },
+    { name: "meta", type: "CaseStudyMeta[]", desc: "{label, value}[] (year/client/role)" },
+    { name: "problem", type: "ReactNode", desc: "Problem 섹션 (필수)" },
+    { name: "solution", type: "ReactNode", desc: "Solution 섹션 (필수, emerald smallcaps)" },
+    { name: "outcomes", type: "CaseStudyOutcome[]", desc: "결과 통계 0~3개" },
+    { name: "href / hrefLabel", type: "string / ReactNode", desc: "상세 링크" },
   ],
 };

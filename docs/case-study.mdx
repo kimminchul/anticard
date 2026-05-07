@@ -1,0 +1,68 @@
+---
+title: CaseStudy
+description: 단일 프로젝트 사례. Problem/Solution/Outcome 3단 구조 + 메타 정보.
+group: components
+order: 31
+published: true
+updated: 2026-05-08
+---
+
+`<CaseStudy>`는 단일 프로젝트 사례를 표준 구조로 정리합니다. Heritage 단일 프로젝트 페이지에 사용.
+
+```tsx
+import { CaseStudy } from "@freeive/anti-card";
+
+<CaseStudy
+  eyebrow="Heritage · 2021"
+  title="EBS 온라인 클래스 재구조화"
+  meta={[
+    { label: "Year", value: "2021" },
+    { label: "Client", value: "EBS" },
+    { label: "Role", value: "PM + 개발 리드" },
+  ]}
+  problem="기존 학습 흐름이 모바일에서 단절됨..."
+  solution="단일 SPA + 학습 진척도 동기화..."
+  outcomes={[
+    { value: "+38%", label: "완강율" },
+    { value: "-22%", label: "이탈률" },
+    { value: "60+", label: "기관 도입" },
+  ]}
+  href="/heritage/ebs"
+/>
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `eyebrow` | `ReactNode` | smallcaps |
+| `title` | `ReactNode` | 큰 제목 (필수) |
+| `meta` | `CaseStudyMeta[]` | `{label, value}[]` — Year/Client/Role |
+| `problem` | `ReactNode` | Problem (필수) |
+| `solution` | `ReactNode` | Solution (필수, emerald smallcaps) |
+| `outcomes` | `CaseStudyOutcome[]` | 결과 통계 0~3개 |
+| `href` | `string` | 상세 링크 |
+| `hrefLabel` | `ReactNode` | 링크 라벨 (default "자세히 보기 →") |
+
+## 구조
+
+1. **Eyebrow + 큰 제목** (SectionHeading h2 톤)
+2. **meta** — DefList 패턴 (가로 wrap)
+3. **Problem / Solution** — 2열 grid (Solution은 emerald smallcaps로 강조)
+4. **Outcome** — StatList 패턴 (1~3개)
+5. **href** (선택) — 상세 페이지 링크
+
+## NDA·진행 중 사례
+
+`outcomes` 생략하면 Problem/Solution만 표시. 결과 수치 공개 어려운 경우 적합.
+
+## Solution emerald 강조의 이유
+
+Problem은 zinc smallcaps, Solution은 emerald smallcaps — 시각 위계로 "여기가 핵심"임을 알림.
+1인 랩의 차별점이 Solution에 있다는 메시지.
+
+## 관련
+
+- [StatList](/anti-card/stat-list) — outcomes의 내부 패턴
+- [Testimonial](/anti-card/testimonial) — case-study 옆에 함께 활용
+- [SectorsPattern](/anti-card/sectors-pattern) — 여러 case-study를 섹터별로

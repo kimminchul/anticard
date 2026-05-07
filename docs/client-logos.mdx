@@ -1,0 +1,47 @@
+---
+title: ClientLogos
+description: 클라이언트 로고 띠. 박스 거부, grayscale + hover 컬러. 로고 없으면 텍스트.
+group: components
+order: 28
+published: true
+updated: 2026-05-08
+---
+
+`<ClientLogos>`는 클라이언트·파트너 로고를 띠 형태로 표시합니다. shadcn식 큰 박스 그리드 거부 — 헤어라인 + grayscale 로고만.
+
+```tsx
+import { ClientLogos } from "@freeive/anti-card";
+
+<ClientLogos
+  eyebrow="Clients"
+  items={[
+    { name: "EBS", logo: "/logos/ebs.svg", href: "https://..." },
+    { name: "라이나생명", logo: "/logos/lina.svg" },
+    { name: "롯데카드" },  // 로고 없음 → 텍스트
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `ClientLogoItem[]` | — | `{name, logo?, href?, external?}[]` |
+| `layout` | `"grid" \| "row"` | `"grid"` | 균등 grid / 가로 wrap |
+| `eyebrow` | `ReactNode` | — | 좌측 라벨 (예: "Clients") |
+
+## 디자인
+
+- 컨테이너: border-y + py-10 md:py-12
+- 로고 이미지: h-7 md:h-8, opacity-50 grayscale (hover: opacity-100 grayscale-0)
+- 로고 없을 때: 12.5px uppercase tracking-[0.08em] zinc-500
+- grid: 2열 (모바일) / 4~5열 (데스크톱)
+- row: flex-wrap (가로, 자동 줄바꿈)
+
+## 로고 자산이 없을 때
+
+`logo` 생략하면 자동으로 텍스트 표시 — Eyebrow와 동일한 smallcaps 톤. 사이트 초기에 자산 준비 중이어도 자연스럽게 동작.
+
+## 관련
+
+- [Eyebrow](/anti-card/eyebrow) — 텍스트 fallback과 동일 톤

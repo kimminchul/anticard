@@ -88,6 +88,22 @@ export type { ButtonProps } from "./components/button";
 export { FeatureRow } from "./components/feature-row";
 export type { FeatureRowProps, FeatureRowItem } from "./components/feature-row";
 
+export { ClientLogos } from "./components/client-logos";
+export type { ClientLogosProps, ClientLogoItem } from "./components/client-logos";
+
+export { Testimonial } from "./components/testimonial";
+export type { TestimonialProps, TestimonialAuthor } from "./components/testimonial";
+
+export { StatBlock } from "./components/stat-block";
+export type { StatBlockProps } from "./components/stat-block";
+
+export { CaseStudy } from "./components/case-study";
+export type {
+  CaseStudyProps,
+  CaseStudyMeta,
+  CaseStudyOutcome,
+} from "./components/case-study";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";
