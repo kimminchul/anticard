@@ -1,0 +1,62 @@
+---
+title: DefList
+description: term ↔ definition 페어. 시맨틱 dl + dt + dd. 박스 거부.
+group: components
+order: 16
+published: true
+updated: 2026-05-08
+---
+
+`<DefList>`는 정의 리스트입니다. 시맨틱 `<dl>` + `<dt>` + `<dd>` 사용.
+
+```tsx
+import { DefList } from "@freeive/anti-card";
+
+<DefList items={[
+  { term: "출시", definition: "2026 Q2" },
+  { term: "기술", definition: "Next.js + PostgreSQL" },
+  { term: "라이선스", definition: "MIT" },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `DefListItem[]` | — | `{term, definition}[]` |
+| `layout` | `"row" \| "stack"` | `"row"` | 그리드 분리 / 수직 stack |
+
+```ts
+type DefListItem = {
+  term: ReactNode;
+  definition: ReactNode;
+};
+```
+
+## layout
+
+| layout | 데스크톱 | 모바일 |
+|---|---|---|
+| `row` | grid `[140px term / 1fr def]` | stack (term 위 / def 아래) |
+| `stack` | 항상 stack | stack |
+
+좁은 사이드바·모바일 친화 영역에서는 `stack` 권장.
+
+## 디자인
+
+- 컨테이너: `divide-y border-y zinc-200 dark:white/[0.06]`
+- term: 12px uppercase tracking-[0.08em] zinc-500 (Eyebrow와 동일 톤)
+- definition: 15px leading-relaxed zinc-700 dark:zinc-300 (body 톤)
+
+## ListRow와의 차이
+
+| | ListRow | DefList |
+|---|---|---|
+| 시맨틱 | `<ul>` + `<li>` | `<dl>` + `<dt>` + `<dd>` |
+| 데이터 | meta + 본문 + trailing (3 필드) | term + definition (2 필드) |
+| 용도 | 프로젝트 리스트, 글 목록 | 메타 페어, 정의 |
+
+## 관련
+
+- [ListRow](/anti-card/list-row) — 3 필드 행
+- [Eyebrow](/anti-card/eyebrow) — term과 동일 톤

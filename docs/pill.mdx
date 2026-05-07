@@ -1,0 +1,67 @@
+---
+title: Pill / Tag
+description: 작은 라벨·태그·필터 칩. 둥근 사각, 12.5px, 살짝 border + bg.
+group: components
+order: 19
+published: true
+updated: 2026-05-08
+---
+
+`<Pill>`은 작은 라벨·태그·필터입니다. 블로그 카테고리, 기술 스택, 상태 표시 등.
+
+```tsx
+import { Pill } from "@freeive/anti-card";
+
+<Pill>NPM</Pill>
+<Pill active>전체</Pill>
+<Pill as="a" href="/blog?tag=ai">AI 워크플로우</Pill>
+<Pill tone="accent">Live</Pill>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `"span" \| "a"` | `"span"` | 시맨틱 태그 |
+| `href` | `string` | — | as='a'일 때 링크 |
+| `external` | `boolean` | `false` | 외부 링크 |
+| `tone` | `"default" \| "accent" \| "muted"` | `"default"` | 색 톤 |
+| `active` | `boolean` | `false` | 활성 상태 (필터 선택) |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+
+## tone 가이드
+
+- **default** — 일반 태그/라벨. 살짝 회색 bg + border
+- **accent** — emerald 톤 액센트. "Live", 진행 중 등
+- **muted** — 더 흐림. 보조 라벨
+
+## active
+
+필터 UI에서 선택 상태 표시:
+
+```tsx
+{categories.map((c) => (
+  <Pill
+    key={c.slug}
+    as="a"
+    href={`/blog?tag=${c.slug}`}
+    active={current === c.slug}
+  >
+    {c.label}
+  </Pill>
+))}
+```
+
+active=true는 자동으로 emerald 배경.
+
+## 디자인
+
+- inline-flex rounded-md border px-2.5 py-1
+- 12.5px leading-tight (작고 가벼움)
+- 색 변형은 border + bg + text 3 layer 조합
+- shadow / 그라데이션 / 화려한 색 거부
+
+## 관련
+
+- [Eyebrow](/anti-card/eyebrow) — 더 가벼운 라벨 (border 없음)
+- [LinkRow](/anti-card/link-row) — Pill보다 강한 클릭 가능 텍스트

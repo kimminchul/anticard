@@ -1,0 +1,69 @@
+---
+title: Timeline
+description: 시간 순 행. ListRow와 비슷하지만 좌측 when에 특화. ol 시맨틱.
+group: components
+order: 18
+published: true
+updated: 2026-05-08
+---
+
+`<Timeline>`은 시간 순 항목 나열입니다. `<ol>` 시맨틱으로 순서가 의미 있음.
+
+```tsx
+import { Timeline } from "@freeive/anti-card";
+
+<Timeline items={[
+  { when: "2026", title: "anti-card 0.1.0 출시", description: "P0 8 컴포넌트" },
+  { when: "2024", title: "EBS 온라인 클래스", description: "재구조화" },
+  { when: "2022", title: "Preive 마지막 큰 싸움" },
+]} />
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `items` | `TimelineItem[]` | `{when, title, description?, href?}[]` |
+| `className` | `string` | Tailwind 클래스 추가 |
+
+```ts
+type TimelineItem = {
+  when: ReactNode;       // 시점 (smallcaps)
+  title: ReactNode;      // 항목 제목
+  description?: ReactNode;
+  href?: string;         // 클릭 가능
+};
+```
+
+## 디자인
+
+- 컨테이너: `<ol>` + divide-y + border-y
+- 각 행: grid `[120px when / 1fr 본문]` (모바일 stack)
+- when: 12px uppercase tracking-[0.08em] zinc-500 (Eyebrow 톤)
+- title: 15.5px font-medium zinc-900 dark:zinc-100
+- description: 14px zinc-600 dark:zinc-400
+
+## ListRow와의 차이
+
+| | ListRow | Timeline |
+|---|---|---|
+| 시맨틱 | `<ul>` (순서 없음) | `<ol>` (시간 순) |
+| 좌측 | meta (140px) | when (120px) |
+| 우측 | 본문 + trailing | title + description (수직) |
+
+시간 축이 의미 있으면 Timeline, 아니면 ListRow.
+
+## 클릭 가능
+
+```tsx
+<Timeline items={[
+  { when: "2024", title: "EBS", href: "/heritage/ebs" },
+]} />
+```
+
+href 있으면 a로 자동 감쌈, hover시 emerald.
+
+## 관련
+
+- [ListRow](/anti-card/list-row) — 시간 축 없는 일반 리스트
+- [Heritage 페이지](https://freeive.com/heritage) — 활용 사례

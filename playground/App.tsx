@@ -14,6 +14,14 @@ import {
   Footer as ACFooter,
   typography,
   type TypographyToken,
+  Quote,
+  Highlight,
+  Image as ACImage,
+  Video,
+  DefList,
+  StatList,
+  Timeline,
+  Pill,
 } from "@freeive/anti-card";
 
 /**
@@ -59,8 +67,8 @@ const NAV: NavGroup[] = [
       { id: "hero-heading", ko: "히어로 큰 제목", en: "Hero Heading", status: "ready" },
       { id: "section-heading", ko: "섹션 제목", en: "Section Heading", status: "ready" },
       { id: "lead", ko: "리드 카피", en: "Lead", status: "ready" },
-      { id: "quote", ko: "인용구", en: "Quote", status: "soon" },
-      { id: "highlight", ko: "강조 문장", en: "Highlight", status: "soon" },
+      { id: "quote", ko: "인용구", en: "Quote", status: "ready" },
+      { id: "highlight", ko: "강조 문장", en: "Highlight", status: "ready" },
     ],
   },
   {
@@ -68,9 +76,9 @@ const NAV: NavGroup[] = [
     desc: "정보 나열 (카드 그리드의 대안)",
     items: [
       { id: "list-row", ko: "리스트 행", en: "ListRow", status: "ready" },
-      { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "soon" },
-      { id: "stat-list", ko: "통계 숫자 행", en: "Stat List", status: "soon" },
-      { id: "timeline", ko: "타임라인", en: "Timeline", status: "soon" },
+      { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "ready" },
+      { id: "stat-list", ko: "통계 숫자 행", en: "Stat List", status: "ready" },
+      { id: "timeline", ko: "타임라인", en: "Timeline", status: "ready" },
       { id: "compare-table", ko: "비교 표", en: "Compare Table", status: "soon" },
     ],
   },
@@ -110,8 +118,8 @@ const NAV: NavGroup[] = [
     group: "미디어",
     desc: "이미지·영상·갤러리",
     items: [
-      { id: "image", ko: "이미지", en: "Image", status: "soon" },
-      { id: "video", ko: "비디오 플레이어", en: "Video", status: "soon" },
+      { id: "image", ko: "이미지", en: "Image", status: "ready" },
+      { id: "video", ko: "비디오 플레이어", en: "Video", status: "ready" },
       { id: "gallery", ko: "갤러리", en: "Gallery", status: "soon" },
       { id: "carousel", ko: "캐러셀·슬라이드", en: "Carousel", status: "planned" },
     ],
@@ -124,7 +132,7 @@ const NAV: NavGroup[] = [
       { id: "textarea", ko: "여러 줄 입력", en: "Textarea", status: "soon" },
       { id: "select", ko: "드롭다운", en: "Select", status: "soon" },
       { id: "checkbox-radio", ko: "체크박스·라디오", en: "Checkbox/Radio", status: "soon" },
-      { id: "pill", ko: "필 / 태그", en: "Pill / Tag", status: "soon" },
+      { id: "pill", ko: "필 / 태그", en: "Pill / Tag", status: "ready" },
     ],
   },
   {
@@ -200,6 +208,14 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "link-row": () => <ComponentPage def={LINK_ROW_DEF} />,
   header: () => <ComponentPage def={HEADER_DEF} />,
   footer: () => <ComponentPage def={FOOTER_DEF} />,
+  quote: () => <ComponentPage def={QUOTE_DEF} />,
+  highlight: () => <ComponentPage def={HIGHLIGHT_DEF} />,
+  image: () => <ComponentPage def={IMAGE_DEF} />,
+  video: () => <ComponentPage def={VIDEO_DEF} />,
+  "definition-list": () => <ComponentPage def={DEF_LIST_DEF} />,
+  "stat-list": () => <ComponentPage def={STAT_LIST_DEF} />,
+  timeline: () => <ComponentPage def={TIMELINE_DEF} />,
+  pill: () => <ComponentPage def={PILL_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -2412,5 +2428,508 @@ columns 생략하고 brand + description + copyright만. 동일한 헤어라인 
     { name: "columns", type: "FooterColumn[]", desc: "{heading, links: [{label, href, external?}]}[]" },
     { name: "copyright", type: "ReactNode", desc: "하단 카피라이트" },
     { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const QUOTE_DEF: ComponentDef = {
+  id: "quote",
+  ko: "인용구",
+  en: "Quote",
+  desc: "본문 안의 인용. 박스 거부, 좌측 헤어라인 1px + 본문 한 단계 흐림. blockquote + figcaption.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 좌측 헤어라인",
+      description: "blockquote + 좌측 border-l 2px + cite는 figcaption.",
+      preview: (
+        <Quote cite="— Bringhurst, The Elements of Typographic Style">
+          한 줄에 65~75자가 가장 읽기 좋다.
+        </Quote>
+      ),
+      prompt: `블로그 본문 안의 인용구가 필요해. 박스 안에 가두지 말고, 좌측 헤어라인 1~2px만으로 위계.
+
+스타일:
+- figure 안에 blockquote + figcaption
+- blockquote: border-l-2 border-zinc-300 dark:border-white/[0.12], pl-5
+- 본문은 lead 토큰 (15px, 색 한 단계 흐림)
+- cite는 figcaption — 12px uppercase tracking-[0.08em] zinc-500
+
+박스로 둘러싸지 않는다. 좌측 한 줄 헤어라인이 인용 시그널.`,
+      html: `<figure class="my-8">
+  <blockquote class="border-l-2 border-zinc-300 dark:border-white/[0.12] pl-5 text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300">
+    한 줄에 65~75자가 가장 읽기 좋다.
+  </blockquote>
+  <figcaption class="mt-3 pl-5 text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+    — Bringhurst, The Elements of Typographic Style
+  </figcaption>
+</figure>`,
+      react: `<Quote cite="— Bringhurst">
+  한 줄에 65~75자가 가장 읽기 좋다.
+</Quote>`,
+    },
+    {
+      index: "02",
+      badge: "large",
+      title: "large — 강조 인용",
+      description: "글의 핵심 인용을 강조할 때. leadLarge 토큰 (18~20px).",
+      preview: (
+        <Quote size="large" cite="— Freeive Manifesto">
+          AI가 만들면 다 비슷해진다고 누가 정했나.
+        </Quote>
+      ),
+      prompt: `블로그 글의 핵심 인용. 일반 quote보다 한 단계 큰 톤. leadLarge 토큰(18~20px) 사용.
+글에서 1~2번만 — 너무 많이 쓰면 위계 사라짐.`,
+      react: `<Quote size="large" cite="— Manifesto">
+  AI가 만들면 다 비슷해진다고 누가 정했나.
+</Quote>`,
+    },
+  ],
+  props: [
+    { name: "cite", type: "ReactNode", desc: "출처 — figcaption smallcaps" },
+    { name: "size", type: '"default" | "large"', default: '"default"', desc: "lead / leadLarge 토큰" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const HIGHLIGHT_DEF: ComponentDef = {
+  id: "highlight",
+  ko: "강조 문장",
+  en: "Highlight",
+  desc: "본문 안 한 줄 강조. 형광펜 거부 — 색 또는 굵기 변경만으로 강조.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 굵기만 변경",
+      description: "본문 톤(15px) + font-medium + zinc-900. mark 태그 X.",
+      preview: <Highlight>이 한 줄이 핵심이다.</Highlight>,
+      prompt: `본문 안에서 한 줄 강조가 필요해. shadcn처럼 형광펜(<mark>) 노란 배경 거부.
+
+스타일:
+- 본문 사이즈 (15px) 유지
+- font-medium (regular → medium 한 단계)
+- 색만 zinc-900 dark:zinc-50 (본문 zinc-700보다 한 단계 진하게)
+
+박스 X. 배경 X. "본문에서 살짝 진해진 한 줄"의 가벼움.`,
+      html: `<p class="text-[15px] leading-relaxed font-medium text-zinc-900 dark:text-zinc-50">
+  이 한 줄이 핵심이다.
+</p>`,
+      react: `<Highlight>이 한 줄이 핵심이다.</Highlight>`,
+    },
+    {
+      index: "02",
+      badge: "accent · large",
+      title: "accent + large — 섹션 강조",
+      description: "섹션 안 큰 한 줄 강조. emerald 색 + 18~24px.",
+      preview: (
+        <Highlight tone="accent" size="large">
+          1인 랩의 가장 강력한 자산은 살아있는 사이트다.
+        </Highlight>
+      ),
+      prompt: `섹션 안에서 가장 강한 한 줄 메시지. tone="accent" + size="large" 조합.
+
+용도: 매니페스토 인용, 핵심 원칙, 섹션 결론.
+페이지당 1~2번만.`,
+      react: `<Highlight tone="accent" size="large">
+  1인 랩의 가장 강력한 자산은 살아있는 사이트다.
+</Highlight>`,
+    },
+  ],
+  props: [
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "본문 색(굵기만) / emerald" },
+    { name: "size", type: '"default" | "large"', default: '"default"', desc: "15px / 18~24px" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const IMAGE_DEF: ComponentDef = {
+  id: "image",
+  ko: "이미지",
+  en: "Image",
+  desc: "본문 이미지 + caption. figure + figcaption. 살짝 rounded, 12.5px caption.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — caption 포함",
+      description: "img + figcaption. 모서리 살짝 rounded-md, border 없음.",
+      preview: (
+        <ACImage
+          src="https://placehold.co/800x450/0a0a0a/64748b?text=Demo+Screenshot"
+          alt="데모 스크린샷"
+          caption="첫 번째 데모 — 손가락 그림 그리기"
+          ratio="16/9"
+        />
+      ),
+      prompt: `블로그 본문 이미지가 필요해. 박스로 가두지 말고 figure + figcaption만.
+
+스타일:
+- figure: my-8
+- 컨테이너: rounded-md, bg-zinc-100 dark:bg-white/[0.04] (로딩 중 placeholder)
+- img: block w-full
+- ratio prop으로 종횡비 강제 (16/9, 4/3, 3/2, 1/1, native)
+- figcaption: 12.5px zinc-500 (본문보다 작고 흐림)
+
+shadow / border / 큰 모서리 둥글기 거부. 살짝 rounded-md만.`,
+      html: `<figure class="my-8">
+  <div class="overflow-hidden rounded-md bg-zinc-100 dark:bg-white/[0.04] aspect-[16/9]">
+    <img src="..." alt="..." class="block w-full h-full object-cover" />
+  </div>
+  <figcaption class="mt-3 text-[12.5px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+    첫 번째 데모 — 손가락 그림 그리기
+  </figcaption>
+</figure>`,
+      react: `<Image src="/screenshot.png" alt="..." caption="..." ratio="16/9" />`,
+    },
+    {
+      index: "02",
+      badge: "no-caption",
+      title: "caption 없음 — 본문 사이 이미지",
+      description: "caption 생략. 단순 이미지만.",
+      preview: (
+        <ACImage
+          src="https://placehold.co/600x400/0a0a0a/64748b?text=Image"
+          alt="이미지"
+          ratio="3/2"
+        />
+      ),
+      prompt: `caption 없이 본문 사이에 이미지만 들어갈 때. caption prop 생략.`,
+      react: `<Image src="/photo.png" alt="..." ratio="3/2" />`,
+    },
+  ],
+  props: [
+    { name: "src", type: "string", desc: "이미지 경로 (img 표준)" },
+    { name: "alt", type: "string", desc: "접근성 텍스트" },
+    { name: "caption", type: "ReactNode", desc: "figcaption — 12.5px zinc-500" },
+    { name: "ratio", type: '"native" | "16/9" | "4/3" | "3/2" | "1/1"', default: '"native"', desc: "종횡비 강제" },
+    { name: "figureClassName", type: "string", desc: "figure 외곽 클래스" },
+  ],
+};
+
+const VIDEO_DEF: ComponentDef = {
+  id: "video",
+  ko: "비디오 플레이어",
+  en: "Video",
+  desc: "본문 비디오 + caption. controls 기본. ratio 강제.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — controls + 16/9",
+      description: "video controls + figure + caption. 어두운 placeholder.",
+      preview: (
+        <Video
+          ratio="16/9"
+          poster="https://placehold.co/800x450/0a0a0a/64748b?text=Video+Poster"
+          caption="손가락 그림 그리기 데모 영상"
+        />
+      ),
+      prompt: `블로그 본문 비디오가 필요해. 기본 controls 노출, 박스 거부.
+
+스타일:
+- figure: my-8
+- 컨테이너: rounded-md bg-zinc-900 dark:bg-black + ratio 강제 (기본 16/9)
+- video: block w-full h-full object-cover
+- figcaption: 12.5px zinc-500
+
+src + poster prop. controls 기본 true. autoplay/loop/muted는 표준 video 속성 그대로.`,
+      html: `<figure class="my-8">
+  <div class="overflow-hidden rounded-md bg-zinc-900 dark:bg-black aspect-[16/9]">
+    <video controls poster="..." class="block h-full w-full object-cover">
+      <source src="/demo.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <figcaption class="mt-3 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+    손가락 그림 그리기 데모 영상
+  </figcaption>
+</figure>`,
+      react: `<Video src="/demo.mp4" poster="/demo.jpg" caption="..." />`,
+    },
+  ],
+  props: [
+    { name: "src", type: "string", desc: "비디오 경로 (video 표준)" },
+    { name: "poster", type: "string", desc: "재생 전 표시 이미지" },
+    { name: "controls", type: "boolean", default: "true", desc: "재생 컨트롤" },
+    { name: "ratio", type: '"16/9" | "4/3" | "1/1" | "21/9"', default: '"16/9"', desc: "종횡비" },
+    { name: "caption", type: "ReactNode", desc: "figcaption" },
+  ],
+};
+
+const DEF_LIST_DEF: ComponentDef = {
+  id: "definition-list",
+  ko: "정의 리스트",
+  en: "DefList",
+  desc: "term ↔ definition 페어. 시맨틱 dl + dt + dd. 박스 거부, 헤어라인 행 구분.",
+  examples: [
+    {
+      index: "01",
+      badge: "row",
+      title: "row layout — 좌우 분리",
+      description: "데스크톱 [140px term / 1fr def]. 모바일 stack. ListRow와 동일 그리드.",
+      preview: (
+        <DefList
+          items={[
+            { term: "출시", definition: "2026 Q2" },
+            { term: "기술", definition: "Next.js 16 + PostgreSQL + Tailwind" },
+            { term: "라이선스", definition: "MIT" },
+          ]}
+        />
+      ),
+      prompt: `프로젝트 메타 정보(출시일, 기술, 라이선스 등)를 페어로 나열. dt + dd 시맨틱.
+
+용도: 블로그 글의 메타, 프로젝트 페이지의 정보 박스, 제품 spec.
+스타일: ListRow와 동일한 그리드 (140px term / 1fr def). 헤어라인으로 행 구분. 박스 X.
+
+term: 12px uppercase smallcaps zinc-500 (eyebrow와 동일)
+def:  15px leading-relaxed zinc-700 dark:zinc-300`,
+      html: `<dl class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+  <div class="py-4 grid grid-cols-1 md:grid-cols-[140px_1fr] gap-1 md:gap-8">
+    <dt class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">출시</dt>
+    <dd class="text-[15px] leading-relaxed text-zinc-300">2026 Q2</dd>
+  </div>
+</dl>`,
+      react: `<DefList items={[
+  { term: "출시", definition: "2026 Q2" },
+  { term: "기술", definition: "Next.js + PostgreSQL" },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "stack",
+      title: "stack layout — 수직",
+      description: "term 위 / def 아래. 좁은 영역(사이드바) 또는 모바일 친화.",
+      preview: (
+        <DefList
+          layout="stack"
+          items={[
+            { term: "Year", definition: "2024" },
+            { term: "Client", definition: "EBS" },
+            { term: "Role", definition: "재구조화 PM + 개발 리드" },
+          ]}
+        />
+      ),
+      prompt: `좁은 영역(사이드바·모바일)에서 정의 리스트. row 대신 stack — term 위, def 아래.`,
+      react: `<DefList layout="stack" items={[...]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "DefListItem[]", desc: "{term, definition}[]" },
+    { name: "layout", type: '"row" | "stack"', default: '"row"', desc: "그리드 분리 / 수직 stack" },
+  ],
+};
+
+const STAT_LIST_DEF: ComponentDef = {
+  id: "stat-list",
+  ko: "통계 숫자 행",
+  en: "StatList",
+  desc: "큰 숫자 + smallcaps 라벨. Heritage 카운터(10+/30+/150+) 패턴. 카드 박스 거부.",
+  examples: [
+    {
+      index: "01",
+      badge: "row · 3col",
+      title: "기본 — 3열 grid + 헤어라인",
+      description: "Heritage 표준 패턴. 카드 박스 X, 헤어라인 + 큰 타입 + 라벨.",
+      preview: (
+        <StatList
+          items={[
+            { value: "10+", label: "Years" },
+            { value: "30+", label: "Clients" },
+            { value: "150+", label: "Projects" },
+          ]}
+        />
+      ),
+      prompt: `사이트 통계 카운터 (10+ Years / 30+ Clients / 150+ Projects 같은 패턴).
+shadcn식 카드 그리드 거부. 헤어라인 + 공간 + 큰 숫자만.
+
+스타일:
+- 컨테이너: border-y border-zinc-200 dark:border-white/[0.06], py-10 md:py-12
+- grid 2열 (모바일) / 3열 (데스크톱)
+- 숫자: clamp(2rem, 4vw, 3rem) font-semibold tracking-tight zinc-900 dark:zinc-50
+- 라벨: 12px uppercase tracking-[0.08em] zinc-500 (eyebrow 톤)
+
+각 항목 사이 박스 X — 충분한 여백(gap)만으로 분리.`,
+      html: `<dl class="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-10 border-y border-white/[0.06] py-10 md:py-12">
+  <div>
+    <dt class="text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-tight text-zinc-50">10+</dt>
+    <dd class="mt-3 text-[12px] uppercase tracking-[0.08em] text-zinc-400">Years</dd>
+  </div>
+</dl>`,
+      react: `<StatList items={[
+  { value: "10+", label: "Years" },
+  { value: "30+", label: "Clients" },
+  { value: "150+", label: "Projects" },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "with hint",
+      title: "hint 추가",
+      description: "각 통계에 보조 설명 (작은 글씨).",
+      preview: (
+        <StatList
+          items={[
+            { value: "30+", label: "Clients", hint: "텔레콤·금융·교육 포함" },
+            { value: "150+", label: "Projects", hint: "2016~2022" },
+          ]}
+        />
+      ),
+      prompt: `통계에 짧은 설명이 더 필요할 때. hint prop으로 작은 글씨 추가 (12.5px zinc-500).`,
+      react: `<StatList items={[
+  { value: "30+", label: "Clients", hint: "텔레콤·금융·교육 포함" },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "StatItem[]", desc: "{value, label, hint?}[]" },
+    { name: "layout", type: '"row" | "stack"', default: '"row"', desc: "grid 가로 / 수직 stack (헤어라인 행)" },
+  ],
+};
+
+const TIMELINE_DEF: ComponentDef = {
+  id: "timeline",
+  ko: "타임라인",
+  en: "Timeline",
+  desc: "시간 순 행. ListRow와 비슷하지만 좌측 when에 특화. ol 시맨틱.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — when + title + desc",
+      description: "ol 안에 헤어라인 행. 좌측 when 120px / 우측 본문.",
+      preview: (
+        <Timeline
+          items={[
+            { when: "2026", title: "anti-card 0.1.0 출시", description: "P0 8 컴포넌트 + 타이포 토큰" },
+            { when: "2024", title: "EBS 온라인 클래스", description: "재구조화 PM + 개발 리드" },
+            { when: "2022", title: "Preive 마지막 큰 싸움", description: "라이나생명 디지털채널 재구축" },
+          ]}
+        />
+      ),
+      prompt: `시간 순 항목 나열 (Heritage 연도별, 변경 이력, 학습 일지 등). ol 시맨틱.
+
+용도: Heritage의 연대표, blog의 변경 이력, 프로젝트 마일스톤.
+
+스타일:
+- ol: divide-y border-y zinc-200 dark:white/[0.06]
+- 각 li: grid-cols-1 md:grid-cols-[120px_1fr] gap-1 md:gap-8 py-6
+- when (좌, 120px): 12px uppercase tracking-[0.08em] zinc-500 (eyebrow 톤)
+- title: 15.5px font-medium zinc-900 dark:zinc-100
+- description: 14px leading-relaxed zinc-600 dark:zinc-400
+
+href 있으면 a로 감싸지고 hover시 emerald.`,
+      html: `<ol class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+  <li>
+    <div class="grid grid-cols-1 md:grid-cols-[120px_1fr] gap-1 md:gap-8 py-6">
+      <div class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2026</div>
+      <div>
+        <div class="text-[15.5px] font-medium text-zinc-100">anti-card 0.1.0 출시</div>
+        <div class="mt-1.5 text-[14px] text-zinc-400">P0 8 컴포넌트 + 타이포 토큰</div>
+      </div>
+    </div>
+  </li>
+</ol>`,
+      react: `<Timeline items={[
+  { when: "2026", title: "0.1.0 출시", description: "..." },
+  { when: "2024", title: "EBS 재구조화" },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "linkable",
+      title: "클릭 가능 (href)",
+      description: "각 항목에 href. hover시 emerald + 살짝 배경.",
+      preview: (
+        <Timeline
+          items={[
+            { when: "2024", title: "미니북 저작 퍼블리셔", href: "#" },
+            { when: "2023", title: "mydata 수집 admin", href: "#" },
+          ]}
+        />
+      ),
+      prompt: `각 행이 상세 페이지로 이동하는 경우. href prop으로 a 태그 자동.`,
+      react: `<Timeline items={[
+  { when: "2024", title: "프로젝트 A", href: "/heritage/a" },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "TimelineItem[]", desc: "{when, title, description?, href?}[]" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const PILL_DEF: ComponentDef = {
+  id: "pill",
+  ko: "필 / 태그",
+  en: "Pill / Tag",
+  desc: "작은 라벨·태그·필터 칩. 둥근 사각, 12.5px, 살짝 border + bg.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 중성 톤",
+      description: "blog 태그, 카테고리 라벨. span 시맨틱.",
+      preview: (
+        <div className="flex flex-wrap gap-2">
+          <Pill>NPM</Pill>
+          <Pill>AI Skill</Pill>
+          <Pill>Tailwind</Pill>
+        </div>
+      ),
+      prompt: `블로그 태그·카테고리·기술 스택 등 작은 라벨이 필요해.
+
+스타일:
+- inline-flex rounded-md border px-2.5 py-1 text-[12.5px]
+- default tone: 살짝 회색 bg + 회색 border (zinc-50/white/[0.03])
+- transition-colors hover시 border 진해짐
+
+shadcn Badge처럼 화려한 색 거부. 본문에 자연스럽게 섞이는 가벼운 톤.`,
+      html: `<span class="inline-flex items-center rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[12.5px] text-zinc-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300">
+  NPM
+</span>`,
+      react: `<Pill>NPM</Pill>`,
+    },
+    {
+      index: "02",
+      badge: "active · accent",
+      title: "활성 / accent 톤",
+      description: "필터 선택 상태(active) 또는 강조(accent).",
+      preview: (
+        <div className="flex flex-wrap gap-2">
+          <Pill active>전체</Pill>
+          <Pill>학습 일지</Pill>
+          <Pill>AI 워크플로우</Pill>
+          <Pill tone="accent">Live</Pill>
+        </div>
+      ),
+      prompt: `필터 선택 상태나 진행 중 표시.
+- active=true: emerald-500/[0.12] 배경 + emerald 텍스트
+- tone="accent": active와 비슷한 emerald 톤이지만 살짝 더 흐림 (선택은 안된 상태에서 액센트만)`,
+      react: `<Pill active>전체</Pill>
+<Pill>학습 일지</Pill>
+<Pill tone="accent">Live</Pill>`,
+    },
+    {
+      index: "03",
+      badge: "as=a",
+      title: "링크 — as='a'",
+      description: "클릭 가능한 태그 (블로그 카테고리 필터 등).",
+      preview: (
+        <div className="flex flex-wrap gap-2">
+          <Pill as="a" href="#">학습 일지</Pill>
+          <Pill as="a" href="#" tone="accent">AI 워크플로우</Pill>
+        </div>
+      ),
+      prompt: `Pill을 클릭 가능한 링크로. as="a" + href.`,
+      react: `<Pill as="a" href="/blog?tag=ai">AI 워크플로우</Pill>`,
+    },
+  ],
+  props: [
+    { name: "as", type: '"span" | "a"', default: '"span"', desc: "시맨틱 태그" },
+    { name: "href", type: "string", desc: "as='a'일 때 링크" },
+    { name: "external", type: "boolean", desc: "외부 링크" },
+    { name: "tone", type: '"default" | "accent" | "muted"', default: '"default"', desc: "색 톤" },
+    { name: "active", type: "boolean", default: "false", desc: "활성 상태 (필터 선택)" },
   ],
 };

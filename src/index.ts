@@ -36,6 +36,30 @@ export type { HeaderProps, HeaderLink } from "./components/header";
 export { Footer } from "./components/footer";
 export type { FooterProps, FooterColumn } from "./components/footer";
 
+export { Quote } from "./components/quote";
+export type { QuoteProps } from "./components/quote";
+
+export { Highlight } from "./components/highlight";
+export type { HighlightProps } from "./components/highlight";
+
+export { Image } from "./components/image";
+export type { ImageProps } from "./components/image";
+
+export { Video } from "./components/video";
+export type { VideoProps } from "./components/video";
+
+export { DefList } from "./components/definition-list";
+export type { DefListProps, DefListItem } from "./components/definition-list";
+
+export { StatList } from "./components/stat-list";
+export type { StatListProps, StatItem } from "./components/stat-list";
+
+export { Timeline } from "./components/timeline";
+export type { TimelineProps, TimelineItem } from "./components/timeline";
+
+export { Pill } from "./components/pill";
+export type { PillProps } from "./components/pill";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

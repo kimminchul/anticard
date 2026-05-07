@@ -1,0 +1,56 @@
+---
+title: Image
+description: 본문 이미지 + caption. figure + figcaption. 살짝 rounded, border 없음.
+group: components
+order: 14
+published: true
+updated: 2026-05-08
+---
+
+`<Image>`는 본문 이미지 + caption 페어입니다. figure 시맨틱으로 자동 감싸고, 모서리는 살짝만(`rounded-md`).
+
+```tsx
+import { Image } from "@freeive/anti-card";
+
+<Image src="/screenshot.png" alt="..." caption="첫 번째 데모" ratio="16/9" />
+```
+
+## Next.js 환경 주의
+
+Next.js의 `next/image`와 이름이 같습니다. alias로 분리하세요:
+
+```tsx
+import { Image as ACImage } from "@freeive/anti-card";
+import NextImage from "next/image";
+```
+
+또는 anti-card Image 대신 figure만 anti-card 톤으로 감싸고 안에 `next/image`를 넣어도 됩니다.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | — | 이미지 경로 (img 표준) |
+| `alt` | `string` | — | 접근성 텍스트 |
+| `caption` | `ReactNode` | — | figcaption — 12.5px zinc-500 |
+| `ratio` | `"native" \| "16/9" \| "4/3" \| "3/2" \| "1/1"` | `"native"` | 종횡비 강제 |
+| `figureClassName` | `string` | — | figure 외곽 클래스 |
+| `...rest` | `ImgHTMLAttributes<HTMLImageElement>` | — | 표준 img 속성 |
+
+## 디자인
+
+- `<figure class="my-8">` + 컨테이너 + `<img>` + `<figcaption>`
+- 컨테이너: `rounded-md bg-zinc-100 dark:bg-white/[0.04]` (로딩 placeholder)
+- shadow / border / 큰 모서리 둥글기 거부
+
+## ratio 가이드
+
+- `native` — 이미지 자체 비율
+- `16/9` — 일반 스크린샷, 영상 썸네일
+- `4/3` — 사진
+- `3/2` — DSLR 비율
+- `1/1` — 정사각, 프로필
+
+## 관련
+
+- [Video](/anti-card/video) — 동일 figure 패턴

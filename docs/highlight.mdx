@@ -1,0 +1,51 @@
+---
+title: Highlight
+description: 본문 안 한 줄 강조. 형광펜 거부 — 색 또는 굵기 변경만으로 강조.
+group: components
+order: 13
+published: true
+updated: 2026-05-08
+---
+
+`<Highlight>`는 본문 안에서 한 줄을 강조할 때 사용합니다. shadcn식 `<mark>` 노란 형광펜 배경을 거부하고, **색 / 굵기 변경만**으로 강조.
+
+```tsx
+import { Highlight } from "@freeive/anti-card";
+
+<Highlight>이 한 줄이 핵심이다.</Highlight>
+<Highlight tone="accent" size="large">메인 메시지.</Highlight>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tone` | `"default" \| "accent"` | `"default"` | 본문 색(굵기만) / emerald |
+| `size` | `"default" \| "large"` | `"default"` | 15px / 18~24px |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+
+## 매트릭스
+
+| size × tone | 용도 |
+|---|---|
+| `default` × `default` | 본문 안 한 줄 강조 (굵기 + zinc-900) |
+| `default` × `accent` | 인라인 액센트 (긴 글 안 작은 강조) |
+| `large` × `default` | 섹션 안의 강조 한 줄 |
+| `large` × `accent` | 섹션 핵심 메시지 (페이지당 1~2번) |
+
+## 안티 패턴
+
+```html
+<!-- ❌ 형광펜 (mark) -->
+<mark class="bg-yellow-200 px-1">강조</mark>
+
+<!-- ❌ 큰 박스 강조 -->
+<div class="border-l-4 border-blue-500 bg-blue-50 p-4">강조</div>
+```
+
+→ Highlight는 박스·배경 없이 색·굵기만으로 강조.
+
+## 관련
+
+- [Quote](/anti-card/quote) — 인용 + 좌측 헤어라인
+- [Eyebrow](/anti-card/eyebrow) — accent 톤은 동일한 emerald

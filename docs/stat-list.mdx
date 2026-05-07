@@ -1,0 +1,62 @@
+---
+title: StatList
+description: 큰 숫자 + smallcaps 라벨. Heritage 카운터 패턴. 카드 박스 거부.
+group: components
+order: 17
+published: true
+updated: 2026-05-08
+---
+
+`<StatList>`는 통계 숫자 행입니다. `10+ Years / 30+ Clients / 150+ Projects` 같은 카운터 패턴 — 카드 박스 없이 헤어라인 + 큰 숫자 + smallcaps 라벨로 위계.
+
+```tsx
+import { StatList } from "@freeive/anti-card";
+
+<StatList items={[
+  { value: "10+", label: "Years" },
+  { value: "30+", label: "Clients" },
+  { value: "150+", label: "Projects" },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `StatItem[]` | — | `{value, label, hint?}[]` |
+| `layout` | `"row" \| "stack"` | `"row"` | grid 가로 / 수직 stack |
+
+```ts
+type StatItem = {
+  value: ReactNode;  // 큰 숫자
+  label: ReactNode;  // smallcaps 라벨
+  hint?: ReactNode;  // 보조 설명 (선택)
+};
+```
+
+## 디자인
+
+- value: `clamp(2rem, 4vw, 3rem)` — 32~48px, font-semibold tracking-tight
+- label: 12px uppercase tracking-[0.08em] zinc-500 (Eyebrow 톤)
+- hint: 12.5px zinc-500 (선택)
+- 컨테이너: row=2~3열 grid + 헤어라인 / stack=수직 + divide-y
+
+## 안티 패턴
+
+```html
+<!-- ❌ 카드 그리드 (Heritage 이전 버전) -->
+<ul class="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border bg-white/[0.04]">
+  <li class="bg-ink-950 p-7">
+    <p class="text-3xl font-semibold">10+</p>
+    <p class="smallcaps">Years</p>
+  </li>
+  <!-- ... -->
+</ul>
+```
+
+→ StatList는 카드 박스 거부, 헤어라인 + 큰 타입 + 공간만으로 통계 강조.
+
+## 관련
+
+- [Eyebrow](/anti-card/eyebrow) — 라벨 톤
+- [Heritage 페이지](https://freeive.com/heritage) — 실제 사용 사례

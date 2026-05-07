@@ -1,0 +1,55 @@
+---
+title: Video
+description: 본문 비디오 + caption. controls 기본, ratio 강제.
+group: components
+order: 15
+published: true
+updated: 2026-05-08
+---
+
+`<Video>`는 본문 비디오 + caption입니다. `<Image>`와 동일한 figure 패턴.
+
+```tsx
+import { Video } from "@freeive/anti-card";
+
+<Video src="/demo.mp4" poster="/demo.jpg" caption="손가락 그림 그리기 데모" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | — | 비디오 경로 |
+| `poster` | `string` | — | 재생 전 이미지 |
+| `controls` | `boolean` | `true` | 재생 컨트롤 |
+| `ratio` | `"16/9" \| "4/3" \| "1/1" \| "21/9"` | `"16/9"` | 종횡비 |
+| `caption` | `ReactNode` | — | figcaption |
+| `figureClassName` | `string` | — | figure 외곽 클래스 |
+| `...rest` | `VideoHTMLAttributes<HTMLVideoElement>` | — | autoplay/loop/muted 등 |
+
+## autoplay 패턴
+
+자동 재생은 muted 필수 (브라우저 정책):
+
+```tsx
+<Video src="/loop.mp4" autoPlay loop muted playsInline ratio="1/1" />
+```
+
+## HTML 레퍼런스
+
+```html
+<figure class="my-8">
+  <div class="overflow-hidden rounded-md bg-zinc-900 dark:bg-black aspect-[16/9]">
+    <video controls poster="/demo.jpg" class="block h-full w-full object-cover">
+      <source src="/demo.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <figcaption class="mt-3 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+    캡션
+  </figcaption>
+</figure>
+```
+
+## 관련
+
+- [Image](/anti-card/image) — 동일 figure 패턴

@@ -5,6 +5,26 @@
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-05-08
+
+### Added
+- **P1 마일스톤** — 블로그/콘텐츠 톤 컴포넌트 8개:
+  - `Quote` — 본문 인용 (좌측 헤어라인 + lead/leadLarge)
+  - `Highlight` — 한 줄 강조 (default/accent × default/large, 형광펜 거부)
+  - `Image` — figure + caption (16/9/4:3/3:2/1:1/native ratio)
+  - `Video` — figure + caption + controls
+  - `DefList` — dl/dt/dd 정의 리스트 (row/stack layout)
+  - `StatList` — Heritage 카운터 패턴 (10+/30+/150+ 톤)
+  - `Timeline` — ol 시간 순 행 (when 120px / title + description)
+  - `Pill` — 태그/필터 칩 (default/accent/muted × active × span/a)
+- 각 컴포넌트 `docs/{name}.mdx` 8개
+- playground 8개 ComponentDef + NAV status ready
+
+### Notes
+- 0.2.0 = 블로그 글 1편을 anti-card 톤으로 완성하는 데 필요한 부품 set
+- 다음 마일스톤(0.3.0) = P2 페이지 패턴 + 액션 (Hero/CTA/Button 등 9개)
+- 누적: 19개 컴포넌트 (Eyebrow/SectionFrame/ListRow + P0 8 + P1 8)
+
 ## [0.1.1] — 2026-05-07
 
 ### Added
