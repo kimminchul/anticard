@@ -59,6 +59,26 @@ import { Eyebrow } from "@freeive/anti-card";
 
 `tone`은 사전 정의 두 가지뿐. 더 다양한 색은 `className` 사용을 권장합니다.
 
+## HTML 레퍼런스 (framework-free)
+
+React 안 쓰는 환경(Vue·Svelte·순수 HTML)에서 같은 톤을 만들고 싶을 때 그대로 복사:
+
+```html
+<!-- neutral -->
+<p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
+  Heritage · 2016 — Now
+</p>
+
+<!-- accent -->
+<p class="text-[12px] uppercase tracking-[0.08em] text-emerald-400 font-medium">
+  Live · 진행 중
+</p>
+```
+
+이 패턴이 안티 카드의 진짜 정의입니다. React 컴포넌트 `<Eyebrow>`는 이 클래스
+조합에 변형 옵션과 className 머지를 더한 편의 wrapper일 뿐입니다.
+
 ## 관련
 
 - [SectionFrame](/anti-card/section-frame) — Eyebrow를 자동 포함하는 컴포지트
+- [AI Skill](/anti-card/ai-skill) — Claude/Cursor에 이 패턴을 주입

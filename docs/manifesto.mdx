@@ -1,0 +1,92 @@
+---
+title: Manifesto
+description: 왜 만들었는가, 시장의 어디가 비어있었는가, 무엇을 거부하는가.
+group: start
+order: 0
+published: true
+updated: 2026-05-07
+---
+
+## 시장에 admin lib는 20개, end-user lib는 0개
+
+`shadcn/ui` · `Mantine` · `MUI` · `Ant Design` · `Chakra UI` — 인기 UI
+라이브러리 대부분은 **사실 Admin/Dashboard 라이브러리**입니다.
+`Card`, `Sidebar`, `DataTable`, `Form` 같은 컴포넌트 중심이고, 화면을 정보로
+빽빽이 채우는 데 강합니다.
+
+그런데 **end-user 화면**(랜딩, 마케팅, 콘텐츠 사이트)을 위한 라이브러리는
+거의 없습니다. 그나마 비슷한 게 부트스트랩이지만 톤이 너무 정형적이라 모던
+사이트는 안 씁니다.
+
+→ 이 빈 자리에 안티 카드.
+
+## Admin은 카드여도 OK. End-user는 답답함.
+
+Admin 화면은 **정보 밀도**가 우선입니다. 한 화면에 30개 row, 5개 widget,
+3단 nav를 동시에 보여줘야 합니다. 카드 박스는 그릇 역할을 합니다 — OK.
+
+End-user 화면은 다릅니다. **인상·정서·공간감**이 우선입니다.
+한 화면에 너무 많은 게 있으면 답답해집니다. 카드 안에 카드를 또 쌓으면
+콘텐츠가 그릇에 갇힌 느낌이 됩니다. 모든 사이트가 비슷해집니다.
+
+| | Admin | End-user (안티 카드 영역) |
+|---|---|---|
+| 우선 | 정보 밀도 | 정서·인상 |
+| 카드 박스 | OK | 답답함 |
+| 헤딩 | 작게 | 크게, 시그니처 |
+| 라벨 | form label | smallcaps eyebrow |
+| 리듬 | 균등 그리드 | 큰 호흡과 리스트 |
+
+## 안티 카드는 카드를 거부한다
+
+위계는 카드의 그림자가 아니라 **공간·대비·여백**으로 만들 수 있습니다.
+
+1. **공간** — 섹션 사이 100~160px 여백
+2. **대비** — 텍스트 크기·굵기·색의 단계
+3. **헤어라인** — 1px 라인은 박스보다 가벼움
+4. **smallcaps 라벨** — [`<Eyebrow>`](/anti-card/eyebrow)
+5. **리스트의 행** — 카드 그리드 대신 행, [`<ListRow>`](/anti-card/list-row)
+
+## 시장에 없던 것은 컴포넌트가 아니라 'AI 디자인 가이드'다
+
+이건 사용자가 가장 정확히 짚은 점입니다.
+
+컴포넌트 라이브러리 자체는 시장에 너무 많습니다. 안티 카드의 차별점은
+컴포넌트가 아니라 **AI Skill** 입니다.
+
+- AI 코딩 도구(Claude, Cursor, v0)는 화면을 만들 때 **shadcn 카드 패턴**을 기본으로 씁니다.
+- 그래서 모든 사이트가 비슷해집니다.
+- 안티 카드 Skill은 AI에게 **다른 디자인 결정 기준**을 주입합니다.
+- 결과: AI가 만들었지만 AI가 만든 것 같지 않은 화면.
+
+→ 자세히는 [AI Skill](/anti-card/ai-skill)
+
+## 두 레이어 — 본체와 보조
+
+```
+Layer 1 — AI Skill (진짜 본체)
+├── Claude / Cursor에 설치
+├── 디자인 원칙·패턴·HTML 레퍼런스 주입
+├── framework-agnostic (React/Vue/순수 HTML)
+└── 결과 = "AI가 만들었지만 AI가 만든 것 같지 않은 화면"
+
+Layer 2 — React 컴포넌트 (보조)
+├── npm install @freeive/anti-card
+├── Eyebrow / SectionFrame / ListRow / …
+├── 익숙한 React 환경에서 빠른 시작
+└── 시연 + 빠른 시작용. 본체는 아님.
+```
+
+**시장에 없던 것은 Layer 1 입니다.** 컴포넌트 라이브러리 자체는 너무 많고요.
+
+## 자체 검증
+
+[freeive.com](https://freeive.com) 의 모든 페이지는 카드 박스를 쓰지 않고
+다섯 가지 원칙으로만 짜여 있습니다. 사이트가 곧 안티 카드의 첫 활용사례.
+
+## 다음에 읽을 것
+
+- [Admin vs End-user](/anti-card/admin-vs-end-user) — 차이를 더 깊이
+- [AI Skill](/anti-card/ai-skill) — 진짜 본체
+- [시작하기](/anti-card/getting-started) — 설치·사용법
+- [왜 카드가 아닌가](/anti-card/why-not-cards) — 5원칙 자세히

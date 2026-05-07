@@ -1,0 +1,97 @@
+---
+title: Admin vs End-user
+description: 안티 카드가 어느 영역을 위한 것인지. 시장의 빈자리가 어디인지.
+group: start
+order: 3
+published: true
+updated: 2026-05-07
+---
+
+UI 라이브러리를 고를 때 가장 큰 함정은 **이 라이브러리가 admin용인지
+end-user용인지** 모르고 쓰는 것입니다. 둘은 디자인 원리가 다릅니다.
+
+## 인기 라이브러리들의 진짜 정체
+
+| 라이브러리 | 강한 영역 | 부르는 이름과 다르게 사실은 |
+|---|---|---|
+| shadcn/ui | Card · Sheet · DataTable · Form | Admin lib |
+| Mantine | DataGrid · Modal · Notifications | Admin lib |
+| MUI (Material) | Drawer · DataGrid · DatePicker | Admin lib |
+| Ant Design | Pro Components · Form · Table | Admin lib (강한) |
+| Chakra UI | Form · Modal · Toast | Admin-leaning |
+| Tailwind UI | (Marketing 컴포넌트 다수 있음) | 그나마 end-user 친화 |
+| Bootstrap | Jumbotron · Hero · Navbar | End-user 시대의 마지막 lib |
+
+**부트스트랩이 거의 유일했던 end-user 시대 lib** 였고, 그마저도 톤이 정형적이라
+모던 사이트에선 안 씁니다.
+
+## 차이의 본질
+
+### Admin: 그릇이 명확해야 한다
+
+- 한 화면에 정보가 많음 → 그릇(카드)이 필요
+- 사용자는 작업하러 옴 → 빠른 클릭이 우선
+- 위계는 form layout · table column 으로
+- 디자인 톤은 중립·기능적
+
+### End-user: 콘텐츠가 곧 형태
+
+- 한 화면에 정보 적음 → 그릇이 답답함
+- 사용자는 인상받으러 옴 → 정서·공간감 우선
+- 위계는 헤딩 크기·여백·헤어라인으로
+- 디자인 톤은 시그니처·브랜드
+
+## 같은 정보를 양쪽 톤으로 짠다면
+
+### Admin 톤
+
+```html
+<Card>
+  <CardHeader>
+    <CardTitle>EBS 온라인 클래스 재구조화</CardTitle>
+    <CardDescription>2024 · GS ITM → EBS</CardDescription>
+  </CardHeader>
+  <CardContent>... </CardContent>
+</Card>
+```
+
+→ 카드 안에 헤더 카드, 콘텐츠 카드. 그릇 안의 그릇.
+
+### End-user 톤 (안티 카드)
+
+```html
+<li class="grid grid-cols-[140px_1fr_auto] py-6 border-b">
+  <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
+  <span class="text-[15.5px] font-medium">EBS 온라인 클래스 재구조화</span>
+  <span class="text-[12.5px] text-zinc-400">EBS</span>
+</li>
+```
+
+→ 카드 없음. divide-y가 영역 구분, 텍스트 크기가 위계.
+→ React 컴포넌트로는 [`<ListRow>`](/anti-card/list-row).
+
+## 안티 카드가 안 만드는 것
+
+**안티 카드는 admin lib가 아닙니다.** 그래서 다음은 만들지 않습니다:
+
+- ❌ DataTable / DataGrid (정보 밀도용 — admin lib에 맡김)
+- ❌ Modal · Dialog · Drawer (작업 흐름용 — Radix/HeadlessUI 추천)
+- ❌ Form · Input · Select (form 라이브러리 풍부)
+- ❌ Toast · Notification (sonner/radix-toast)
+- ❌ Sidebar · Navigation (admin shell)
+
+**안티 카드가 만드는 것** (만들 것):
+
+- ✅ Eyebrow · SectionFrame · ListRow (현재)
+- ✅ Pill · Tag · Stat (예정)
+- ✅ Hero · Footer · Marquee (예정)
+- ✅ Showcase Grid · Quote · Highlight (예정)
+- ✅ Three.js 인터랙션 시드 (1~2년 후)
+
+> Admin은 다른 lib에 맡기세요. End-user 화면은 안티 카드.
+> 한 프로젝트에서 두 lib을 같이 쓰는 건 자연스러운 패턴입니다.
+
+## 다음에 읽을 것
+
+- [Manifesto](/anti-card/manifesto) — 정체성
+- [AI Skill](/anti-card/ai-skill) — 진짜 본체

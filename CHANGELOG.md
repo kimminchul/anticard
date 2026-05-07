@@ -5,6 +5,25 @@
 
 ## [Unreleased]
 
+## [0.0.3] — 2026-05-07
+
+### Added
+- 정체성 정리: **End-user UI lib + AI Skill** (Layer 1/2 분리)
+- `docs/manifesto.mdx` — 시장의 빈 자리, admin vs end-user, 5원칙
+- `docs/admin-vs-end-user.mdx` — 영역 차이 + 안 만드는 컴포넌트 명시
+- `docs/ai-skill.mdx` — AI Skill이 진짜 본체, 작동 원리, before/after
+- `skill/` 디렉토리:
+  - `CLAUDE.md` — Claude Code용 system prompt (한국어)
+  - `cursorrules` — Cursor용 (영문)
+  - `README.md` — 사용법
+- 각 컴포넌트 docs에 **HTML 레퍼런스 섹션** 추가 (framework-free)
+- README 재작성 (Layer 1/2 명시)
+- `package.json` `files`에 `skill` 추가
+
+### Changed
+- 정체성 카피: "AI 시대 디자인 동질화에 답변" → "End-user UI를 위한 lib +
+  AI Skill, 시장의 빈 자리"
+
 ## [0.0.2] — 2026-05-07
 
 ### Added

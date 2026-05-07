@@ -71,7 +71,61 @@ auto. 모바일에서는 단일 컬럼 stack.
 [freeive.com/heritage](https://freeive.com/heritage) 의 모든 섹터별 프로젝트
 리스트가 ListRow로 만들어져 있습니다.
 
+## HTML 레퍼런스 (framework-free)
+
+React 안 쓰는 환경에서 같은 톤:
+
+```html
+<ul class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+  <li class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
+    <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
+    <span class="text-[15.5px] font-medium leading-snug text-zinc-100">
+      EBS 온라인 클래스 재구조화
+    </span>
+    <span class="text-[12.5px] text-zinc-400">EBS</span>
+  </li>
+</ul>
+```
+
+링크형(클릭 가능):
+
+```html
+<li class="group hover:bg-white/[0.02] transition-colors">
+  <a href="/heritage/ebs" class="block px-1 group-hover:text-emerald-400">
+    <div class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
+      <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
+      <span class="text-[15.5px] font-medium">EBS 온라인 클래스 재구조화</span>
+      <span class="text-[12.5px] text-zinc-400">EBS</span>
+    </div>
+  </a>
+</li>
+```
+
+## 안티 패턴 (이렇게 만들지 마세요)
+
+같은 정보를 카드 그리드로 짜면 다음과 같이 됩니다 — **이걸 거부하는 게 안티 카드**:
+
+```html
+<!-- ❌ 카드 그리드 (anti-pattern) -->
+<div class="grid grid-cols-3 gap-4">
+  <div class="border rounded-lg p-6">
+    <div class="text-sm text-zinc-500">2024</div>
+    <div class="text-base font-semibold mt-2">EBS 온라인 클래스 재구조화</div>
+    <div class="text-sm text-zinc-400 mt-1">EBS</div>
+  </div>
+  <!-- ... 50개 -->
+</div>
+```
+
+문제:
+- 50개 카드 = 50개 박스 = 답답
+- 모든 항목이 균등 → 위계 사라짐
+- 카드 안의 카드 안의 카드 → 모든 사이트가 비슷해짐
+
+→ ListRow의 행 레이아웃이 정확히 이 문제를 해결합니다.
+
 ## 관련
 
 - [SectionFrame](/anti-card/section-frame) — children으로 ul + ListRow 권장
 - [Eyebrow](/anti-card/eyebrow) — meta에 Eyebrow 톤 텍스트가 자동 적용됨
+- [AI Skill](/anti-card/ai-skill) — Claude/Cursor에 이 패턴을 주입

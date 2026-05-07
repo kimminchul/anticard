@@ -74,7 +74,34 @@ import { SectionFrame } from "@freeive/anti-card";
 </SectionFrame>
 ```
 
+## HTML 레퍼런스 (framework-free)
+
+React 안 쓰는 환경에서 같은 톤. 그대로 복사:
+
+```html
+<section class="border-t border-white/[0.06] py-16 md:py-20">
+  <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
+    Heritage · 2016 — Now
+  </p>
+  <h2 class="mt-3 max-w-[20ch] text-2xl md:text-3xl font-semibold tracking-tight text-zinc-50">
+    어떤 무대에서 일했는가.
+  </h2>
+  <p class="mt-6 max-w-[58ch] text-[15px] leading-relaxed text-zinc-300">
+    텔레콤·금융·교육의 큰 싸움을 거친 깊이가 토대.
+  </p>
+  <div class="mt-10 md:mt-12">
+    <!-- children: ul + li 또는 자유 콘텐츠 -->
+  </div>
+</section>
+```
+
+페이지 첫 섹션이면 `border-t` 부분 제거 (= `divider={false}` 효과).
+
+Hero 섹션이면 `py-24 md:py-32` 로 더 큰 여백, `<h2>` 대신 `<h1>`,
+`text-[clamp(2rem,5vw,4rem)] leading-[1.05]` 로 큰 헤딩.
+
 ## 관련
 
 - [Eyebrow](/anti-card/eyebrow) — `eyebrow` prop으로 자동 포함됨
 - [ListRow](/anti-card/list-row) — `children`으로 권장되는 행 레이아웃
+- [AI Skill](/anti-card/ai-skill) — Claude/Cursor에 이 패턴을 주입
