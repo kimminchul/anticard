@@ -9,7 +9,7 @@ import { Eyebrow, SectionFrame, ListRow } from "@freeive/anti-card";
  *  2) 초보자 용어 문제 해소 — 한글 컴포넌트명 + 한글 설명
  *  3) End-user(랜딩) 화면 최적화. 카드 안의 카드 지양.
  *
- * 사이드바: 한글 그룹별 컴포넌트 리스트 (Ready / Soon).
+ * 각 컴포넌트 탭: 디자인 / 프롬프트 / HTML / CSS / JS / React
  */
 
 interface NavItem {
@@ -51,7 +51,7 @@ const NAV: NavGroup[] = [
   },
   {
     group: "리스트",
-    desc: "정보를 나열하는 패턴 (카드 그리드의 대안)",
+    desc: "정보 나열 (카드 그리드의 대안)",
     items: [
       { id: "list-row", ko: "리스트 행", en: "ListRow", status: "ready" },
       { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "soon" },
@@ -62,10 +62,10 @@ const NAV: NavGroup[] = [
   },
   {
     group: "액션",
-    desc: "버튼·링크·전환 영역",
+    desc: "버튼·링크·전환",
     items: [
       { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "soon" },
-      { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary/Ghost)", status: "soon" },
+      { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary)", status: "soon" },
       { id: "link-row", ko: "링크 행", en: "Link Row", status: "soon" },
       { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "soon" },
       { id: "banner", ko: "알림 배너", en: "Banner", status: "soon" },
@@ -73,7 +73,7 @@ const NAV: NavGroup[] = [
   },
   {
     group: "콘텐츠 블록",
-    desc: "본문 영역에 들어가는 단위",
+    desc: "본문에 들어가는 단위",
     items: [
       { id: "callout", ko: "강조 박스", en: "Callout", status: "soon" },
       { id: "faq", ko: "FAQ 아코디언", en: "FAQ", status: "soon" },
@@ -115,11 +115,11 @@ const NAV: NavGroup[] = [
   },
   {
     group: "인터랙션",
-    desc: "움직임·반응. 정체성을 만드는 시그니처.",
+    desc: "움직임·반응. 시그니처.",
     items: [
       { id: "fade-in", ko: "부드러운 등장", en: "Fade-in on Scroll", status: "soon" },
       { id: "hover-accent", ko: "호버 강조", en: "Hover Accent", status: "soon" },
-      { id: "scroll-progress", ko: "스크롤 진행 표시", en: "Scroll Progress", status: "soon" },
+      { id: "scroll-progress", ko: "스크롤 진행", en: "Scroll Progress", status: "soon" },
       { id: "marquee", ko: "흐르는 띠", en: "Marquee", status: "soon" },
       { id: "wave-card", ko: "물결 진행 카드", en: "Wave Card", status: "soon" },
     ],
@@ -140,18 +140,9 @@ const NAV: NavGroup[] = [
 const VERSION = "0.0.3";
 
 const STATUS_META: Record<NavItem["status"], { label: string; cls: string }> = {
-  ready: {
-    label: "ready",
-    cls: "text-emerald-400",
-  },
-  soon: {
-    label: "soon",
-    cls: "text-zinc-600",
-  },
-  planned: {
-    label: "planned",
-    cls: "text-zinc-700",
-  },
+  ready: { label: "ready", cls: "text-emerald-400" },
+  soon: { label: "soon", cls: "text-zinc-600" },
+  planned: { label: "planned", cls: "text-zinc-700" },
 };
 
 export default function App() {
@@ -191,20 +182,10 @@ function Header() {
         </span>
       </div>
       <nav className="flex items-center gap-5 text-[12.5px] text-zinc-400">
-        <a
-          href="https://github.com/kimminchul/anticard"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-zinc-100"
-        >
+        <a href="https://github.com/kimminchul/anticard" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-100">
           Github
         </a>
-        <a
-          href="https://freeive.com/anti-card"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-zinc-100"
-        >
+        <a href="https://freeive.com/anti-card" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-100">
           freeive.com/anti-card
         </a>
       </nav>
@@ -218,22 +199,17 @@ interface SidebarProps {
 }
 
 function Sidebar({ filter, onFilterChange }: SidebarProps) {
-  const readyCount = NAV.flatMap((g) => g.items).filter(
-    (i) => i.status === "ready"
-  ).length;
+  const readyCount = NAV.flatMap((g) => g.items).filter((i) => i.status === "ready").length;
   const totalCount = NAV.flatMap((g) => g.items).length;
 
   return (
     <aside className="self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-2">
-      {/* Filter */}
       <div className="flex items-center gap-1 rounded-md border border-white/[0.06] p-0.5">
         <button
           type="button"
           onClick={() => onFilterChange("all")}
           className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
-            filter === "all"
-              ? "bg-white/[0.06] text-zinc-100"
-              : "text-zinc-500 hover:text-zinc-300"
+            filter === "all" ? "bg-white/[0.06] text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
           전체 {totalCount}
@@ -242,9 +218,7 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
           type="button"
           onClick={() => onFilterChange("ready")}
           className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
-            filter === "ready"
-              ? "bg-emerald-500/10 text-emerald-400"
-              : "text-zinc-500 hover:text-zinc-300"
+            filter === "ready" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
           준비됨 {readyCount}
@@ -253,10 +227,7 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
 
       <div className="mt-6 space-y-7">
         {NAV.map((group) => {
-          const items =
-            filter === "ready"
-              ? group.items.filter((i) => i.status === "ready")
-              : group.items;
+          const items = filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items;
           if (items.length === 0) return null;
 
           return (
@@ -265,9 +236,7 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
                 {group.group}
               </p>
               {group.desc && (
-                <p className="mt-1 text-[11.5px] leading-snug text-zinc-600">
-                  {group.desc}
-                </p>
+                <p className="mt-1 text-[11.5px] leading-snug text-zinc-600">{group.desc}</p>
               )}
               <ul className="mt-3 space-y-1.5 border-l border-white/[0.06] pl-3 text-[13px]">
                 {items.map((item) => {
@@ -281,16 +250,12 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
                           className="flex items-baseline justify-between gap-2 text-zinc-300 transition-colors hover:text-emerald-400"
                         >
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${meta.cls}`}>
-                            {meta.label}
-                          </span>
+                          <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
                         </a>
                       ) : (
                         <span className="flex items-baseline justify-between gap-2 text-zinc-600">
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${meta.cls}`}>
-                            {meta.label}
-                          </span>
+                          <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
                         </span>
                       )}
                     </li>
@@ -303,37 +268,20 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
       </div>
 
       <div className="mt-10 border-t border-white/[0.06] pt-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
-          Docs
-        </p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">Docs</p>
         <ul className="mt-3 space-y-1 border-l border-white/[0.06] pl-3 text-[13px]">
           <li>
-            <a
-              href="https://freeive.com/anti-card/manifesto"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-zinc-400 transition-colors hover:text-emerald-400"
-            >
+            <a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
               Manifesto
             </a>
           </li>
           <li>
-            <a
-              href="https://freeive.com/anti-card/admin-vs-end-user"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-zinc-400 transition-colors hover:text-emerald-400"
-            >
+            <a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
               Admin vs End-user
             </a>
           </li>
           <li>
-            <a
-              href="https://freeive.com/anti-card/ai-skill"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-zinc-400 transition-colors hover:text-emerald-400"
-            >
+            <a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
               AI Skill
             </a>
           </li>
@@ -354,79 +302,142 @@ function Intro() {
       </h2>
       <p className="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-zinc-400">
         AI 시대의 UI 프레임워크는 방식이 바꿔야 합니다. 안티 카드는{" "}
-        <strong className="text-zinc-200">가장 순수한 HTML/CSS</strong>를
-        제공하고, AI가 이 디자인과 구조를 참고합니다. 사이드바의 컴포넌트 리스트는
-        End-user(랜딩) 화면 만들 때 자주 쓰는 패턴들을 한글로 정리한 것입니다.
+        <strong className="text-zinc-200">가장 순수한 HTML/CSS</strong>를 제공하고, AI가
+        이 디자인과 구조를 참고합니다. 각 컴포넌트는{" "}
+        <strong className="text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong>{" "}
+        탭을 제공합니다.
       </p>
-      <ul className="mt-6 grid grid-cols-1 gap-2 max-w-[60ch] text-[13.5px] text-zinc-400 sm:grid-cols-2">
-        <li className="flex gap-2">
-          <span className="text-emerald-400">▸</span>
-          <span>
-            <strong className="text-zinc-200">ready</strong> — 컴포넌트 + 디자인 +
-            HTML 레퍼런스 완성
-          </span>
-        </li>
-        <li className="flex gap-2">
-          <span className="text-zinc-600">▸</span>
-          <span>
-            <strong className="text-zinc-300">soon</strong> — 곧 추가 예정 (사용자
-            우선순위에 따라)
-          </span>
-        </li>
-        <li className="flex gap-2">
-          <span className="text-zinc-700">▸</span>
-          <span>
-            <strong className="text-zinc-400">planned</strong> — 0.x 후반 또는 1.0
-            로드맵
-          </span>
-        </li>
-      </ul>
     </section>
   );
 }
 
-/* ================ Reusable blocks ================ */
+/* ================ Tabs ================ */
 
-interface ExampleProps {
-  title: string;
-  description?: string;
-  preview: React.ReactNode;
-  code: string;
+type TabId = "design" | "prompt" | "html" | "css" | "js" | "react";
+
+const TABS: Array<{ id: TabId; label: string }> = [
+  { id: "design", label: "디자인" },
+  { id: "prompt", label: "프롬프트" },
+  { id: "html", label: "HTML" },
+  { id: "css", label: "CSS" },
+  { id: "js", label: "JS" },
+  { id: "react", label: "React" },
+];
+
+function Tabs({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
+  return (
+    <div className="mt-8 border-b border-white/[0.06]">
+      <div className="flex flex-wrap gap-1">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onChange(t.id)}
+            className={`relative px-4 py-2.5 text-[13px] transition-colors ${
+              active === t.id
+                ? "text-emerald-400"
+                : "text-zinc-400 hover:text-zinc-100"
+            }`}
+          >
+            {t.label}
+            {active === t.id && (
+              <span className="absolute inset-x-3 -bottom-px h-px bg-emerald-400" />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-function Example({ title, description, preview, code }: ExampleProps) {
-  return (
-    <div className="mt-8 first:mt-0">
-      <h4 className="text-[14px] font-medium tracking-tight text-zinc-100">
-        {title}
-      </h4>
-      {description && (
-        <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
-          {description}
-        </p>
-      )}
+/* ================ Code block (with copy) ================ */
 
-      <div className="mt-4 overflow-hidden rounded-lg border border-white/[0.06]">
+function CodeBlock({ code, language }: { code: string; language?: string }) {
+  return (
+    <div className="mt-4 overflow-hidden rounded-lg border border-white/[0.06] bg-zinc-950">
+      <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+        <span>{language || "Code"}</span>
+        <button
+          type="button"
+          onClick={() => navigator.clipboard.writeText(code)}
+          className="rounded border border-white/10 px-2 py-0.5 text-[10.5px] tracking-normal text-zinc-300 transition-colors hover:border-emerald-400/50 hover:text-emerald-400"
+        >
+          copy
+        </button>
+      </div>
+      <pre className="overflow-x-auto px-5 py-4 text-[12.5px] leading-relaxed text-zinc-200">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+/* ================ Variant block (only in design tab) ================ */
+
+function Variant({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mt-6 first:mt-0">
+      <h4 className="text-[13px] font-medium tracking-tight text-zinc-100">{title}</h4>
+      {description && (
+        <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-400">{description}</p>
+      )}
+      <div className="mt-3 overflow-hidden rounded-lg border border-white/[0.06]">
         <div className="border-b border-white/[0.06] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
           Preview
         </div>
-        <div className="p-6 md:p-8">{preview}</div>
+        <div className="p-6 md:p-8">{children}</div>
       </div>
+    </div>
+  );
+}
 
-      <div className="mt-2 overflow-hidden rounded-lg border border-white/[0.06] bg-zinc-950">
-        <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
-          <span>Code</span>
+/* ================ Empty / Note panels ================ */
+
+function EmptyTab({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="mt-6 rounded-lg border border-white/[0.06] bg-white/[0.02] px-6 py-10 text-center">
+      <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500">{title}</p>
+      <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-zinc-300">
+        {body}
+      </p>
+    </div>
+  );
+}
+
+function PromptBlock({ prompt }: { prompt: string }) {
+  return (
+    <div className="mt-6">
+      <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+        AI에게 시킬 자연어 요청 예시
+      </p>
+      <p className="mt-2 text-[13px] leading-relaxed text-zinc-500">
+        Claude / Cursor 등에 그대로 붙여넣으면 안티 카드 톤으로 만들어집니다.
+        <code className="ml-1 rounded bg-white/5 px-1 py-0.5 text-[11.5px] text-zinc-300">
+          skill/CLAUDE.md
+        </code>
+        를 같이 적용해두면 더 정확합니다.
+      </p>
+      <div className="mt-4 overflow-hidden rounded-lg border border-emerald-500/15 bg-emerald-500/[0.03]">
+        <div className="flex items-center justify-between border-b border-emerald-500/15 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-emerald-400">
+          <span>Prompt</span>
           <button
             type="button"
-            onClick={() => navigator.clipboard.writeText(code)}
-            className="rounded border border-white/10 px-2 py-0.5 text-[10.5px] tracking-normal text-zinc-300 transition-colors hover:border-emerald-400/50 hover:text-emerald-400"
-            title="복사"
+            onClick={() => navigator.clipboard.writeText(prompt)}
+            className="rounded border border-emerald-400/30 px-2 py-0.5 text-[10.5px] tracking-normal text-emerald-400 transition-colors hover:bg-emerald-500/10"
           >
             copy
           </button>
         </div>
-        <pre className="overflow-x-auto px-5 py-4 text-[12.5px] leading-relaxed text-zinc-200">
-          <code>{code}</code>
+        <pre className="overflow-x-auto whitespace-pre-wrap px-5 py-4 text-[13.5px] leading-relaxed text-zinc-100">
+          {prompt}
         </pre>
       </div>
     </div>
@@ -467,11 +478,7 @@ function PropsTable({ rows }: { rows: PropRow[] }) {
                 <code className="text-[12px]">{p.type}</code>
               </td>
               <td className="py-2.5 align-top text-zinc-400">
-                {p.default ? (
-                  <code className="text-[12px]">{p.default}</code>
-                ) : (
-                  <span className="text-zinc-600">—</span>
-                )}
+                {p.default ? <code className="text-[12px]">{p.default}</code> : <span className="text-zinc-600">—</span>}
               </td>
               <td className="py-2.5 align-top text-zinc-300">{p.desc}</td>
             </tr>
@@ -482,30 +489,16 @@ function PropsTable({ rows }: { rows: PropRow[] }) {
   );
 }
 
-function SectionHeading({
-  id,
-  ko,
-  en,
-  desc,
-}: {
-  id: string;
-  ko: string;
-  en: string;
-  desc: string;
-}) {
+function SectionHeading({ id, ko, en, desc }: { id: string; ko: string; en: string; desc: string }) {
   return (
     <div id={id} className="scroll-mt-10">
       <div className="flex items-baseline gap-3">
-        <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">
-          {ko}
-        </h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">{ko}</h2>
         <span className="text-[12px] text-zinc-500">
           <code className="text-zinc-400">{`<${en}>`}</code>
         </span>
       </div>
-      <p className="mt-3 max-w-[60ch] text-[14.5px] leading-relaxed text-zinc-400">
-        {desc}
-      </p>
+      <p className="mt-3 max-w-[60ch] text-[14.5px] leading-relaxed text-zinc-400">{desc}</p>
     </div>
   );
 }
@@ -513,6 +506,8 @@ function SectionHeading({
 /* ================ Eyebrow ================ */
 
 function EyebrowSection() {
+  const [tab, setTab] = useState<TabId>("design");
+
   return (
     <section>
       <SectionHeading
@@ -521,80 +516,130 @@ function EyebrowSection() {
         en="Eyebrow"
         desc="섹션의 카테고리를 작은 라벨로 분리하는 smallcaps 컴포넌트. 카드 박스 없이 영역을 구분하는 가장 가벼운 신호."
       />
+      <Tabs active={tab} onChange={setTab} />
 
-      <Example
-        title="Default — 기본 톤"
-        description="본문 텍스트보다 한 단계 어두운 회색."
-        preview={<Eyebrow>Heritage · 2016 — Now</Eyebrow>}
-        code={`<Eyebrow>Heritage · 2016 — Now</Eyebrow>`}
-      />
+      {tab === "design" && (
+        <div className="mt-2">
+          <Variant title="기본 톤 (neutral)" description="본문 텍스트보다 한 단계 어두운 회색.">
+            <Eyebrow>Heritage · 2016 — Now</Eyebrow>
+          </Variant>
+          <Variant title="강조 톤 (accent)" description="진행 중·라이브 같은 상태 표시에.">
+            <div className="space-y-3">
+              <Eyebrow tone="accent">Live · 진행 중</Eyebrow>
+              <Eyebrow tone="accent">In progress</Eyebrow>
+            </div>
+          </Variant>
+          <Variant title="실제 사용 패턴" description="라벨 + 큰 헤딩 + 서브 카피 묶음. SectionFrame이 이 묶음을 자동으로 만듭니다.">
+            <div>
+              <Eyebrow>Pillars</Eyebrow>
+              <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-50">
+                네 개의 축으로 운영합니다.
+              </h2>
+              <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-zinc-400">
+                만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
+              </p>
+            </div>
+          </Variant>
+          <Variant title="커스텀 색 (className)" description="사전 정의 두 톤 외 색은 className으로.">
+            <div className="space-y-3">
+              <Eyebrow className="text-yellow-400">env not set</Eyebrow>
+              <Eyebrow className="text-rose-400">danger zone</Eyebrow>
+            </div>
+          </Variant>
+        </div>
+      )}
 
-      <Example
-        title="Accent — 강조 톤"
-        description="진행 중·라이브 같은 상태 표시에."
-        preview={
-          <div className="space-y-3">
-            <Eyebrow tone="accent">Live · 진행 중</Eyebrow>
-            <Eyebrow tone="accent">In progress</Eyebrow>
-          </div>
-        }
-        code={`<Eyebrow tone="accent">Live · 진행 중</Eyebrow>`}
-      />
+      {tab === "prompt" && (
+        <PromptBlock
+          prompt={`섹션 위에 작은 카테고리 라벨(eyebrow)을 만들어줘.
+- 12px 크기, 대문자, 자간 0.08em, font-medium
+- 색은 zinc-500 (어두운 회색)
+- shadcn 카드 헤더 같은 게 아니라 정말 작은 한 줄 라벨
+- 헤딩 위에 한 단계 차분한 톤으로
 
-      <Example
-        title="With heading — 실제 사용 패턴"
-        description="라벨 + 큰 헤딩 + 서브 카피 한 묶음. SectionFrame 안에서 자동으로 이렇게 됩니다."
-        preview={
-          <div>
-            <Eyebrow>Pillars</Eyebrow>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-50">
-              네 개의 축으로 운영합니다.
-            </h2>
-            <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-zinc-400">
-              만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
-            </p>
-          </div>
-        }
-        code={`<Eyebrow>Pillars</Eyebrow>
-<h2 className="mt-3 text-2xl font-semibold tracking-tight">
-  네 개의 축으로 운영합니다.
-</h2>
-<p className="mt-3 max-w-[40ch] text-zinc-400">
-  만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
-</p>`}
-      />
+상태(진행 중·라이브) 표시일 땐 색만 emerald-400으로 바꿔줘.
+박스로 감싸지 말고, 단순한 <p> 한 줄.`}
+        />
+      )}
 
-      <Example
-        title="Custom tone — className으로 색"
-        description="사전 정의 두 톤 외 색은 className으로. twMerge가 충돌 자동 해결."
-        preview={
-          <div className="space-y-3">
-            <Eyebrow className="text-yellow-400">env not set</Eyebrow>
-            <Eyebrow className="text-rose-400">danger zone</Eyebrow>
-          </div>
-        }
-        code={`<Eyebrow className="text-yellow-400">env not set</Eyebrow>
-<Eyebrow className="text-rose-400">danger zone</Eyebrow>`}
-      />
+      {tab === "html" && (
+        <CodeBlock
+          language="HTML (Tailwind)"
+          code={`<!-- 기본 -->
+<p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
+  Heritage · 2016 — Now
+</p>
+
+<!-- 강조 톤 -->
+<p class="text-[12px] uppercase tracking-[0.08em] text-emerald-400 font-medium">
+  Live · 진행 중
+</p>
+
+<!-- 헤딩과 함께 -->
+<section>
+  <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
+    Pillars
+  </p>
+  <h2 class="mt-3 text-2xl font-semibold tracking-tight">
+    네 개의 축으로 운영합니다.
+  </h2>
+</section>`}
+        />
+      )}
+
+      {tab === "css" && (
+        <>
+          <CodeBlock
+            language="CSS (vanilla, Tailwind 안 쓸 때)"
+            code={`.eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: #71717a; /* zinc-500 */
+  margin: 0;
+}
+.eyebrow.accent {
+  color: #34d399; /* emerald-400 */
+}`}
+          />
+          <CodeBlock
+            language="HTML (vanilla CSS와 함께)"
+            code={`<p class="eyebrow">Heritage · 2016 — Now</p>
+<p class="eyebrow accent">Live · 진행 중</p>`}
+          />
+        </>
+      )}
+
+      {tab === "js" && (
+        <EmptyTab
+          title="JS 필요 없음"
+          body="Eyebrow는 정적 텍스트 컴포넌트라 JavaScript 인터랙션이 필요 없습니다. 위 HTML/CSS 만으로 동작합니다."
+        />
+      )}
+
+      {tab === "react" && (
+        <CodeBlock
+          language="React (Layer 2, 보조)"
+          code={`import { Eyebrow } from "@freeive/anti-card";
+
+export function Example() {
+  return (
+    <>
+      <Eyebrow>Heritage · 2016 — Now</Eyebrow>
+      <Eyebrow tone="accent">Live · 진행 중</Eyebrow>
+      <Eyebrow className="text-yellow-400">env not set</Eyebrow>
+    </>
+  );
+}`}
+        />
+      )}
 
       <PropsTable
         rows={[
-          {
-            name: "tone",
-            type: '"neutral" | "accent"',
-            default: '"neutral"',
-            desc: "accent는 액센트 컬러로 강조",
-          },
-          {
-            name: "className",
-            type: "string",
-            desc: "Tailwind 클래스 추가 (twMerge로 충돌 해결)",
-          },
-          {
-            name: "...rest",
-            type: "HTMLAttributes<HTMLParagraphElement>",
-            desc: "표준 p 속성",
-          },
+          { name: "tone", type: '"neutral" | "accent"', default: '"neutral"', desc: "accent는 액센트 컬러로 강조" },
+          { name: "className", type: "string", desc: "Tailwind 클래스 추가 (twMerge로 충돌 해결)" },
+          { name: "...rest", type: "HTMLAttributes<HTMLParagraphElement>", desc: "표준 p 속성" },
         ]}
       />
     </section>
@@ -604,6 +649,8 @@ function EyebrowSection() {
 /* ================ SectionFrame ================ */
 
 function SectionFrameSection() {
+  const [tab, setTab] = useState<TabId>("design");
+
   return (
     <section>
       <SectionHeading
@@ -612,116 +659,182 @@ function SectionFrameSection() {
         en="SectionFrame"
         desc="카드 박스 없이 섹션을 짜는 헤어라인 + 여백 + 라벨 묶음. 안티 카드 5원칙 중 세 가지를 한 컴포넌트로."
       />
+      <Tabs active={tab} onChange={setTab} />
 
-      <Example
-        title="Default — 라벨 + 제목 + 설명"
-        description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동."
-        preview={
-          <SectionFrame
-            eyebrow="Pillars"
-            title="네 개의 축으로 운영합니다."
-            description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
-          />
-        }
-        code={`<SectionFrame
-  eyebrow="Pillars"
-  title="네 개의 축으로 운영합니다."
-  description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
-/>`}
-      />
+      {tab === "design" && (
+        <div className="mt-2">
+          <Variant title="기본 — 라벨 + 제목 + 설명" description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동.">
+            <SectionFrame
+              eyebrow="Pillars"
+              title="네 개의 축으로 운영합니다."
+              description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
+            />
+          </Variant>
+          <Variant title="첫 섹션 (divider 끔)" description="페이지 첫 섹션이면 divider={false}.">
+            <SectionFrame
+              divider={false}
+              eyebrow="Hero"
+              title="첫 섹션은 헤어라인 없이."
+              description="페이지 시작부에는 위쪽 라인이 어색하니 끕니다."
+            />
+          </Variant>
+          <Variant title="ListRow와 함께" description="children에 ListRow ul을 넣으면 표준 섹션.">
+            <SectionFrame divider={false} eyebrow="Heritage · Education" title="교육·에듀테크">
+              <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+                <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
+                <ListRow meta="2021" trailing="EBS">EBS 온라인 클래스 재구조화</ListRow>
+              </ul>
+            </SectionFrame>
+          </Variant>
+        </div>
+      )}
 
-      <Example
-        title="No divider — 첫 섹션"
-        description="페이지 첫 섹션이면 divider={false}. 헤어라인 중복 방지."
-        preview={
-          <SectionFrame
-            divider={false}
-            eyebrow="Hero"
-            title="첫 섹션은 헤어라인 없이."
-            description="페이지 시작부에는 위쪽 라인이 어색하니 끕니다."
+      {tab === "prompt" && (
+        <PromptBlock
+          prompt={`섹션 프레임을 만들어줘. 카드 박스 없이.
+- 위쪽에 1px 헤어라인 (border-t border-white/[0.06])
+- 위·아래 패딩 py-16 md:py-20 (안티 카드 5원칙: 큰 호흡)
+- eyebrow 라벨 (12px uppercase smallcaps)
+- 그 아래 큰 헤딩 (text-2xl md:text-3xl font-semibold tracking-tight)
+- 그 아래 서브 카피 (max-w-[58ch] text-[15px] text-zinc-300)
+- children 영역은 mt-10 md:mt-12 간격
+
+페이지 첫 섹션이면 헤어라인 빼줘.
+Hero는 padding을 더 크게 py-24 md:py-32, 헤딩은 clamp(2rem,5vw,4rem).`}
+        />
+      )}
+
+      {tab === "html" && (
+        <CodeBlock
+          language="HTML (Tailwind)"
+          code={`<section class="border-t border-white/[0.06] py-16 md:py-20">
+  <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
+    Pillars
+  </p>
+  <h2 class="mt-3 max-w-[20ch] text-2xl md:text-3xl font-semibold tracking-tight text-zinc-50">
+    네 개의 축으로 운영합니다.
+  </h2>
+  <p class="mt-6 max-w-[58ch] text-[15px] leading-relaxed text-zinc-300">
+    만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
+  </p>
+
+  <div class="mt-10 md:mt-12">
+    <!-- children: ul + li 또는 자유 콘텐츠 -->
+  </div>
+</section>
+
+<!-- 첫 섹션이면 border-t 제거 -->
+<!-- Hero면 py-24 md:py-32, h1 + clamp(2rem,5vw,4rem) -->`}
+        />
+      )}
+
+      {tab === "css" && (
+        <>
+          <CodeBlock
+            language="CSS (vanilla)"
+            code={`.section-frame {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 4rem;     /* py-16 */
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section-frame {
+    padding-top: 5rem;   /* md:py-20 */
+    padding-bottom: 5rem;
+  }
+}
+.section-frame.first {
+  border-top: 0;
+}
+.section-frame .eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: #71717a;
+}
+.section-frame h2 {
+  margin-top: 0.75rem;     /* mt-3 */
+  max-width: 20ch;
+  font-size: 1.5rem;       /* text-2xl */
+  font-weight: 600;
+  letter-spacing: -0.025em; /* tracking-tight */
+  color: #fafafa;           /* zinc-50 */
+}
+@media (min-width: 768px) {
+  .section-frame h2 {
+    font-size: 1.875rem; /* md:text-3xl */
+  }
+}
+.section-frame .description {
+  margin-top: 1.5rem;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #d4d4d8;          /* zinc-300 */
+}
+.section-frame > .children {
+  margin-top: 2.5rem;
+}
+@media (min-width: 768px) {
+  .section-frame > .children {
+    margin-top: 3rem;
+  }
+}`}
           />
-        }
-        code={`<SectionFrame
+          <CodeBlock
+            language="HTML (vanilla CSS와 함께)"
+            code={`<section class="section-frame">
+  <p class="eyebrow">Pillars</p>
+  <h2>네 개의 축으로 운영합니다.</h2>
+  <p class="description">만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.</p>
+  <div class="children"><!-- ... --></div>
+</section>`}
+          />
+        </>
+      )}
+
+      {tab === "js" && (
+        <EmptyTab
+          title="JS 필요 없음"
+          body="SectionFrame은 정적 레이아웃이라 JavaScript 인터랙션이 필요 없습니다. 헤어라인·여백·라벨 모두 CSS 한 번에."
+        />
+      )}
+
+      {tab === "react" && (
+        <CodeBlock
+          language="React (Layer 2)"
+          code={`import { SectionFrame } from "@freeive/anti-card";
+
+export function Heritage() {
+  return (
+    <SectionFrame
+      eyebrow="Pillars"
+      title="네 개의 축으로 운영합니다."
+      description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
+    >
+      {/* children */}
+    </SectionFrame>
+  );
+}
+
+// Hero 섹션
+<SectionFrame
   divider={false}
+  as="h1"
   eyebrow="Hero"
   title="첫 섹션은 헤어라인 없이."
 />`}
-      />
-
-      <Example
-        title="With ListRow — 가장 자주 쓰는 조합"
-        description="children에 ListRow ul을 넣으면 안티 카드 표준 섹션."
-        preview={
-          <SectionFrame
-            divider={false}
-            eyebrow="Heritage · Education"
-            title="교육·에듀테크"
-            description="EBS, 아이스크림미디어 등."
-          >
-            <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-              <ListRow meta="2024" trailing="아이스크림미디어">
-                미니북 저작 퍼블리셔
-              </ListRow>
-              <ListRow meta="2021" trailing="EBS">
-                EBS 온라인 클래스 재구조화
-              </ListRow>
-            </ul>
-          </SectionFrame>
-        }
-        code={`<SectionFrame
-  eyebrow="Heritage · Education"
-  title="교육·에듀테크"
-  description="..."
->
-  <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-    <ListRow meta="2024" trailing="아이스크림미디어">
-      미니북 저작 퍼블리셔
-    </ListRow>
-  </ul>
-</SectionFrame>`}
-      />
-
-      <Example
-        title="Heading levels — h1 / h2 / h3"
-        description="페이지 메인 섹션이면 as='h1', 하위 영역이면 as='h3'. 기본 h2."
-        preview={
-          <div className="space-y-12">
-            <SectionFrame
-              divider={false}
-              as="h1"
-              eyebrow="Page"
-              title="as='h1' — 페이지 메인"
-            />
-            <SectionFrame eyebrow="Section" title="as='h2' — 일반 (기본)" />
-            <SectionFrame as="h3" eyebrow="Sub" title="as='h3' — 하위" />
-          </div>
-        }
-        code={`<SectionFrame as="h1" eyebrow="Page" title="..." />
-<SectionFrame eyebrow="Section" title="..." />     // 기본 h2
-<SectionFrame as="h3" eyebrow="Sub" title="..." />`}
-      />
+        />
+      )}
 
       <PropsTable
         rows={[
           { name: "eyebrow", type: "ReactNode", desc: "섹션 카테고리 라벨" },
           { name: "title", type: "ReactNode", desc: "섹션 큰 제목" },
-          {
-            name: "description",
-            type: "ReactNode",
-            desc: "제목 아래 서브 카피",
-          },
-          {
-            name: "as",
-            type: '"h1" | "h2" | "h3"',
-            default: '"h2"',
-            desc: "헤딩 레벨",
-          },
-          {
-            name: "divider",
-            type: "boolean",
-            default: "true",
-            desc: "위쪽 헤어라인 표시 여부",
-          },
+          { name: "description", type: "ReactNode", desc: "제목 아래 서브 카피" },
+          { name: "as", type: '"h1" | "h2" | "h3"', default: '"h2"', desc: "헤딩 레벨" },
+          { name: "divider", type: "boolean", default: "true", desc: "위쪽 헤어라인 표시 여부" },
           { name: "children", type: "ReactNode", desc: "본문 콘텐츠" },
         ]}
       />
@@ -732,124 +845,194 @@ function SectionFrameSection() {
 /* ================ ListRow ================ */
 
 function ListRowSection() {
+  const [tab, setTab] = useState<TabId>("design");
+
   return (
     <section>
       <SectionHeading
         id="list-row"
         ko="리스트 행"
         en="ListRow"
-        desc="카드 그리드 대신 행 레이아웃. divide-y + border-y 와 함께 ul 안에서 사용. 가장 자주 쓰는 컴포넌트."
+        desc="카드 그리드 대신 행 레이아웃. divide-y + border-y 와 함께 ul 안에서 사용. 안티 카드의 가장 자주 쓰는 컴포넌트."
       />
+      <Tabs active={tab} onChange={setTab} />
 
-      <Example
-        title="Default — meta + 본문"
-        description="가장 단순. trailing 없으면 우측 영역 비어있음."
-        preview={
-          <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-            <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
-            <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
-          </ul>
-        }
-        code={`<ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-  <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
-  <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
+      {tab === "design" && (
+        <div className="mt-2">
+          <Variant title="기본 — meta + 본문" description="가장 단순. trailing 없으면 우측 영역 비어있음.">
+            <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+              <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
+              <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
+            </ul>
+          </Variant>
+          <Variant title="trailing — 표준 패턴" description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준.">
+            <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+              <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
+              <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
+              <ListRow meta="2022" trailing="라이나생명">대고객 디지털채널 재구축</ListRow>
+            </ul>
+          </Variant>
+          <Variant title="클릭 가능 — href" description="href 주면 자동 a 태그, hover 시 액센트.">
+            <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+              <ListRow meta="2024" trailing="EBS" href="#">EBS 온라인 클래스 재구조화 (클릭 가능)</ListRow>
+              <ListRow meta="2023" trailing="롯데카드" href="#">mydata 수집 및 admin 개발 (클릭 가능)</ListRow>
+            </ul>
+          </Variant>
+        </div>
+      )}
+
+      {tab === "prompt" && (
+        <PromptBlock
+          prompt={`정보 리스트를 카드 그리드 말고 행 레이아웃으로 만들어줘.
+
+- 컨테이너는 ul, divide-y divide-white/[0.06] border-y border-white/[0.06]
+- 각 li는 grid-cols-[140px_1fr_auto] (좌측 meta 140px / 본문 1fr / 우측 trailing auto)
+- 모바일은 grid-cols-1로 stack
+- li 패딩 py-6, gap-3 md:gap-8
+
+좌측 meta: 12px uppercase tracking-[0.08em] text-zinc-500 (smallcaps)
+본문(가운데): 15.5px font-medium text-zinc-100
+우측 trailing: 12.5px text-zinc-400
+
+카드 박스(border + rounded + shadow) 절대 사용하지 말 것.
+50개 항목이면 카드 그리드는 답답해짐 — 행 레이아웃이 적합.`}
+        />
+      )}
+
+      {tab === "html" && (
+        <CodeBlock
+          language="HTML (Tailwind)"
+          code={`<ul class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+  <li class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
+    <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
+    <span class="text-[15.5px] font-medium leading-snug text-zinc-100">
+      EBS 온라인 클래스 재구조화
+    </span>
+    <span class="text-[12.5px] text-zinc-400">EBS</span>
+  </li>
+  <li class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
+    <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2023</span>
+    <span class="text-[15.5px] font-medium leading-snug text-zinc-100">
+      mydata 수집 및 admin 개발
+    </span>
+    <span class="text-[12.5px] text-zinc-400">롯데카드</span>
+  </li>
+</ul>
+
+<!-- 클릭 가능한 행 -->
+<li class="group transition-colors hover:bg-white/[0.02]">
+  <a href="/heritage/ebs" class="block px-1 group-hover:text-emerald-400">
+    <div class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
+      <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
+      <span class="text-[15.5px] font-medium">EBS 온라인 클래스 재구조화</span>
+      <span class="text-[12.5px] text-zinc-400">EBS</span>
+    </div>
+  </a>
+</li>`}
+        />
+      )}
+
+      {tab === "css" && (
+        <>
+          <CodeBlock
+            language="CSS (vanilla)"
+            code={`.list-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.list-rows > li {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.list-rows > li:last-child {
+  border-bottom: 0;
+}
+@media (min-width: 768px) {
+  .list-rows > li {
+    grid-template-columns: 140px 1fr auto;
+    gap: 2rem;
+    align-items: baseline;
+  }
+}
+.list-rows .meta {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+}
+.list-rows .title {
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #f4f4f5;
+}
+.list-rows .trailing {
+  font-size: 12.5px;
+  color: #a1a1aa;
+}
+.list-rows a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.list-rows a:hover {
+  color: #34d399; /* emerald-400 */
+  background: rgba(255, 255, 255, 0.02);
+}`}
+          />
+          <CodeBlock
+            language="HTML (vanilla CSS와 함께)"
+            code={`<ul class="list-rows">
+  <li>
+    <span class="meta">2024</span>
+    <span class="title">EBS 온라인 클래스 재구조화</span>
+    <span class="trailing">EBS</span>
+  </li>
 </ul>`}
-      />
+          />
+        </>
+      )}
 
-      <Example
-        title="With trailing — 표준 패턴"
-        description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준."
-        preview={
-          <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-            <ListRow meta="2024" trailing="아이스크림미디어">
-              미니북 저작 퍼블리셔
-            </ListRow>
-            <ListRow meta="2023" trailing="롯데카드">
-              mydata 수집 및 admin 개발
-            </ListRow>
-            <ListRow meta="2022" trailing="라이나생명">
-              대고객 디지털채널 재구축
-            </ListRow>
-          </ul>
-        }
-        code={`<ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-  <ListRow meta="2024" trailing="아이스크림미디어">
-    미니북 저작 퍼블리셔
-  </ListRow>
-</ul>`}
-      />
+      {tab === "js" && (
+        <EmptyTab
+          title="JS 필요 없음"
+          body="ListRow는 정적 행 레이아웃이라 JavaScript가 필요 없습니다. 클릭 동작은 a 태그가, hover 효과는 CSS가 처리."
+        />
+      )}
 
-      <Example
-        title="Clickable — href"
-        description="href 주면 자동 a 태그, hover 시 액센트 색."
-        preview={
-          <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-            <ListRow meta="2024" trailing="EBS" href="#">
-              EBS 온라인 클래스 재구조화 (클릭 가능)
-            </ListRow>
-            <ListRow meta="2023" trailing="롯데카드" href="#">
-              mydata 수집 및 admin 개발 (클릭 가능)
-            </ListRow>
-          </ul>
-        }
-        code={`<ListRow meta="2024" trailing="EBS" href="/heritage/ebs">
-  EBS 온라인 클래스 재구조화
-</ListRow>`}
-      />
+      {tab === "react" && (
+        <CodeBlock
+          language="React (Layer 2)"
+          code={`import { ListRow } from "@freeive/anti-card";
 
-      <Example
-        title="Mixed content — meta·trailing에 ReactNode"
-        description="meta·trailing은 string 뿐 아니라 ReactNode."
-        preview={
-          <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-            <ListRow
-              meta={<span className="text-emerald-400">v0.0.3</span>}
-              trailing={
-                <span className="rounded-full border border-white/15 px-2 py-0.5 text-[11px]">
-                  released
-                </span>
-              }
-            >
-              정체성 정리 + AI Skill / docs / HTML 레퍼런스
-            </ListRow>
-            <ListRow
-              meta={<span className="text-emerald-400">v0.0.2</span>}
-              trailing={
-                <span className="rounded-full border border-white/15 px-2 py-0.5 text-[11px]">
-                  released
-                </span>
-              }
-            >
-              docs 디렉토리 + sync 스크립트
-            </ListRow>
-          </ul>
-        }
-        code={`<ListRow
-  meta={<span className="text-emerald-400">v0.0.3</span>}
-  trailing={<Pill>released</Pill>}
->
-  정체성 정리 + AI Skill
-</ListRow>`}
-      />
+export function Sectors() {
+  return (
+    <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+      <ListRow meta="2024" trailing="EBS" href="/heritage/ebs">
+        EBS 온라인 클래스 재구조화
+      </ListRow>
+      <ListRow meta="2023" trailing="롯데카드">
+        mydata 수집 및 admin 개발
+      </ListRow>
+    </ul>
+  );
+}`}
+        />
+      )}
 
       <PropsTable
         rows={[
-          {
-            name: "meta",
-            type: "ReactNode",
-            desc: "좌측 작은 라벨. 보통 카테고리·날짜·버전.",
-          },
+          { name: "meta", type: "ReactNode", desc: "좌측 작은 라벨 (smallcaps)" },
           { name: "trailing", type: "ReactNode", desc: "우측 보조 라벨" },
-          {
-            name: "children",
-            type: "ReactNode",
-            desc: "본문 (제목). 가장 두드러지는 텍스트.",
-          },
-          {
-            name: "href",
-            type: "string",
-            desc: "있으면 a 태그로 감싸지고 hover 시 액센트",
-          },
+          { name: "children", type: "ReactNode", desc: "본문 (제목)" },
+          { name: "href", type: "string", desc: "있으면 a 태그로 감싸지고 hover 시 액센트" },
         ]}
       />
     </section>
@@ -872,7 +1055,7 @@ function Footer() {
         <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">
           playground/App.tsx
         </code>{" "}
-        의 NAV 배열에 등록 + Section 추가
+        의 NAV 배열 + Section 함수 + 6개 탭 콘텐츠 추가
       </p>
       <p className="mt-2">
         사이트(:3000) 통합:{" "}
