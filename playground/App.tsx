@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eyebrow, SectionFrame, ListRow } from "@freeive/anti-card";
 
 /**
@@ -145,25 +145,50 @@ const STATUS_META: Record<NavItem["status"], { label: string; cls: string }> = {
   planned: { label: "planned", cls: "text-zinc-700" },
 };
 
+/**
+ * Ready 컴포넌트 ID → 렌더 함수 매핑.
+ * 새 ready 컴포넌트 추가 시 여기에 등록.
+ */
+const READY_SECTIONS: Record<string, () => JSX.Element> = {
+  intro: Intro,
+  eyebrow: EyebrowSection,
+  "section-frame": SectionFrameSection,
+  "list-row": ListRowSection,
+};
+
+const DEFAULT_ID = "intro";
+
 export default function App() {
   const [filter, setFilter] = useState<"all" | "ready">("all");
+  const [activeId, setActiveId] = useState<string>(DEFAULT_ID);
+
+  // Hash → activeId sync (사이드바 클릭이 #id 변경 → 여기서 잡음)
+  useEffect(() => {
+    const sync = () => {
+      const id = window.location.hash.replace("#", "") || DEFAULT_ID;
+      if (READY_SECTIONS[id]) {
+        setActiveId(id);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  const ActiveSection = READY_SECTIONS[activeId] ?? Intro;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <Header />
       <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[240px_1fr]">
-        <Sidebar filter={filter} onFilterChange={setFilter} />
+        <Sidebar
+          filter={filter}
+          onFilterChange={setFilter}
+          activeId={activeId}
+        />
         <main className="min-w-0">
-          <Intro />
-          <div className="mt-20 border-t border-white/[0.08] pt-16">
-            <EyebrowSection />
-          </div>
-          <div className="mt-24 border-t border-white/[0.08] pt-16">
-            <SectionFrameSection />
-          </div>
-          <div className="mt-24 border-t border-white/[0.08] pt-16">
-            <ListRowSection />
-          </div>
+          <ActiveSection />
           <div className="mt-24 border-t border-white/[0.08] pt-8">
             <Footer />
           </div>
@@ -204,14 +229,27 @@ function Header() {
 interface SidebarProps {
   filter: "all" | "ready";
   onFilterChange: (f: "all" | "ready") => void;
+  activeId: string;
 }
 
-function Sidebar({ filter, onFilterChange }: SidebarProps) {
+function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
   const readyCount = NAV.flatMap((g) => g.items).filter((i) => i.status === "ready").length;
   const totalCount = NAV.flatMap((g) => g.items).length;
 
   return (
     <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
+      {/* Intro / 개요 */}
+      <a
+        href="#intro"
+        className={`mb-5 block rounded-md px-3 py-2 text-[13px] transition-colors ${
+          activeId === "intro"
+            ? "bg-emerald-500/10 text-emerald-400"
+            : "text-zinc-200 hover:bg-white/[0.04] hover:text-zinc-50"
+        }`}
+      >
+        개요
+      </a>
+
       <div className="flex items-center gap-1 rounded-md border border-white/[0.08] p-0.5">
         <button
           type="button"
@@ -250,15 +288,22 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
+                  const isActive = activeId === item.id;
                   return (
                     <li key={item.id}>
                       {isClickable ? (
                         <a
                           href={`#${item.id}`}
-                          className="flex items-baseline justify-between gap-2 text-zinc-200 transition-colors hover:text-emerald-400"
+                          className={`-ml-3 flex items-baseline justify-between gap-2 rounded-r-md py-0.5 pl-3 pr-2 transition-colors ${
+                            isActive
+                              ? "border-l-2 border-emerald-400 bg-emerald-500/10 text-emerald-400"
+                              : "border-l-2 border-transparent text-zinc-200 hover:border-white/20 hover:text-emerald-400"
+                          }`}
                         >
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[10px] ${isActive ? "text-emerald-400" : meta.cls}`}>
+                            {meta.label}
+                          </span>
                         </a>
                       ) : (
                         <span className="flex items-baseline justify-between gap-2 text-zinc-500">
@@ -305,7 +350,7 @@ function Intro() {
       <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-400">
         Playground
       </p>
-      <h2 className="mt-3 max-w-[24ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-50">
+      <h2 className="mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-50">
         컴포넌트 시연실
       </h2>
       <p className="mt-5 text-[15px] leading-relaxed text-zinc-400">
@@ -315,6 +360,56 @@ function Intro() {
         <strong className="text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong>{" "}
         탭을 제공합니다.
       </p>
+
+      {/* Ready 컴포넌트 빠른 진입 */}
+      <div className="mt-12 border-t border-white/[0.08] pt-10">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">
+          준비된 컴포넌트
+        </p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500">
+          좌측 사이드바에서도 선택할 수 있습니다.
+        </p>
+        <ul className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.02] sm:grid-cols-3">
+          {[
+            {
+              id: "eyebrow",
+              ko: "아이브로우 라벨",
+              en: "Eyebrow",
+              desc: "섹션 카테고리 라벨 (smallcaps)",
+            },
+            {
+              id: "section-frame",
+              ko: "섹션 프레임",
+              en: "SectionFrame",
+              desc: "카드 없는 섹션 + 헤어라인",
+            },
+            {
+              id: "list-row",
+              ko: "리스트 행",
+              en: "ListRow",
+              desc: "카드 그리드 대신 행 레이아웃",
+            },
+          ].map((c) => (
+            <li key={c.id} className="bg-zinc-950">
+              <a
+                href={`#${c.id}`}
+                className="group flex h-full flex-col gap-2 p-5 transition-colors hover:bg-white/[0.03]"
+              >
+                <span className="text-[11px] uppercase tracking-[0.08em] text-emerald-400">
+                  ready
+                </span>
+                <span className="text-[15px] font-medium text-zinc-100 group-hover:text-emerald-400">
+                  {c.ko}{" "}
+                  <code className="ml-1 text-[12px] text-zinc-400">{`<${c.en}>`}</code>
+                </span>
+                <span className="text-[12.5px] leading-relaxed text-zinc-400">
+                  {c.desc}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
