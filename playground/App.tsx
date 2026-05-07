@@ -760,10 +760,10 @@ const EYEBROW_DEF: ComponentDef = {
       preview: (
         <div>
           <Eyebrow>Pillars</Eyebrow>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-50">
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
             네 개의 축으로 운영합니다.
           </h2>
-          <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-zinc-400">
+          <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-zinc-600 dark:text-zinc-400">
             만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
           </p>
         </div>
