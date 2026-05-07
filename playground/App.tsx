@@ -1,29 +1,167 @@
+import { useState } from "react";
 import { Eyebrow, SectionFrame, ListRow } from "@freeive/anti-card";
 
 /**
  * anti-card 컴포넌트 격리 dev. shadcn/ui docs 스타일.
- * 좌측 sidebar + 우측 섹션별 다중 variant.
  *
- * 새 컴포넌트 추가 시:
- *   1) src/components/foo.tsx + src/index.ts export
- *   2) COMPONENTS 배열 + Section 함수 추가
- *   3) 각 변형은 <Example title preview code /> 한 블록
+ * 정체성:
+ *  1) AI에게 가장 순수한 HTML/CSS를 제공 → AI가 참고
+ *  2) 초보자 용어 문제 해소 — 한글 컴포넌트명 + 한글 설명
+ *  3) End-user(랜딩) 화면 최적화. 카드 안의 카드 지양.
+ *
+ * 사이드바: 한글 그룹별 컴포넌트 리스트 (Ready / Soon).
  */
 
-const COMPONENTS = [
-  { id: "eyebrow", name: "Eyebrow" },
-  { id: "section-frame", name: "SectionFrame" },
-  { id: "list-row", name: "ListRow" },
+interface NavItem {
+  id: string;
+  ko: string;
+  en: string;
+  status: "ready" | "soon" | "planned";
+}
+interface NavGroup {
+  group: string;
+  desc?: string;
+  items: NavItem[];
+}
+
+const NAV: NavGroup[] = [
+  {
+    group: "레이아웃",
+    desc: "페이지 골격을 짜는 큰 단위",
+    items: [
+      { id: "header", ko: "헤더", en: "Header", status: "soon" },
+      { id: "footer", ko: "푸터", en: "Footer", status: "soon" },
+      { id: "container", ko: "컨테이너", en: "Container", status: "soon" },
+      { id: "section-frame", ko: "섹션 프레임", en: "SectionFrame", status: "ready" },
+      { id: "hairline", ko: "헤어라인 구분선", en: "Hairline", status: "soon" },
+      { id: "grid-columns", ko: "그리드·컬럼", en: "Grid", status: "soon" },
+    ],
+  },
+  {
+    group: "타이포그래피",
+    desc: "글로 위계를 만드는 모든 것",
+    items: [
+      { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", status: "ready" },
+      { id: "hero-heading", ko: "히어로 큰 제목", en: "Hero Heading", status: "soon" },
+      { id: "section-heading", ko: "섹션 제목", en: "Section Heading", status: "soon" },
+      { id: "lead", ko: "리드 카피", en: "Lead", status: "soon" },
+      { id: "quote", ko: "인용구", en: "Quote", status: "soon" },
+      { id: "highlight", ko: "강조 문장", en: "Highlight", status: "soon" },
+    ],
+  },
+  {
+    group: "리스트",
+    desc: "정보를 나열하는 패턴 (카드 그리드의 대안)",
+    items: [
+      { id: "list-row", ko: "리스트 행", en: "ListRow", status: "ready" },
+      { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "soon" },
+      { id: "stat-list", ko: "통계 숫자 행", en: "Stat List", status: "soon" },
+      { id: "timeline", ko: "타임라인", en: "Timeline", status: "soon" },
+      { id: "compare-table", ko: "비교 표", en: "Compare Table", status: "soon" },
+    ],
+  },
+  {
+    group: "액션",
+    desc: "버튼·링크·전환 영역",
+    items: [
+      { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "soon" },
+      { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary/Ghost)", status: "soon" },
+      { id: "link-row", ko: "링크 행", en: "Link Row", status: "soon" },
+      { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "soon" },
+      { id: "banner", ko: "알림 배너", en: "Banner", status: "soon" },
+    ],
+  },
+  {
+    group: "콘텐츠 블록",
+    desc: "본문 영역에 들어가는 단위",
+    items: [
+      { id: "callout", ko: "강조 박스", en: "Callout", status: "soon" },
+      { id: "faq", ko: "FAQ 아코디언", en: "FAQ", status: "soon" },
+      { id: "pricing-table", ko: "가격 표", en: "Pricing Table", status: "soon" },
+      { id: "steps", ko: "단계 (3·4단계)", en: "Steps", status: "soon" },
+      { id: "feature-row", ko: "특징 나열 행", en: "Feature Row", status: "soon" },
+    ],
+  },
+  {
+    group: "신뢰·증거",
+    desc: "이 사이트가 왜 믿을만한가",
+    items: [
+      { id: "client-logos", ko: "클라이언트 로고 띠", en: "Client Logos", status: "soon" },
+      { id: "testimonial", ko: "사용자 후기", en: "Testimonial", status: "soon" },
+      { id: "stat-block", ko: "큰 통계 블록", en: "Stat Block", status: "soon" },
+      { id: "case-study", ko: "케이스 스터디", en: "Case Study", status: "soon" },
+    ],
+  },
+  {
+    group: "미디어",
+    desc: "이미지·영상·갤러리",
+    items: [
+      { id: "image", ko: "이미지", en: "Image", status: "soon" },
+      { id: "video", ko: "비디오 플레이어", en: "Video", status: "soon" },
+      { id: "gallery", ko: "갤러리", en: "Gallery", status: "soon" },
+      { id: "carousel", ko: "캐러셀·슬라이드", en: "Carousel", status: "planned" },
+    ],
+  },
+  {
+    group: "폼",
+    desc: "입력·선택. 안티 카드 영역에선 최소한.",
+    items: [
+      { id: "input", ko: "입력 필드", en: "Input", status: "soon" },
+      { id: "textarea", ko: "여러 줄 입력", en: "Textarea", status: "soon" },
+      { id: "select", ko: "드롭다운", en: "Select", status: "soon" },
+      { id: "checkbox-radio", ko: "체크박스·라디오", en: "Checkbox/Radio", status: "soon" },
+      { id: "pill", ko: "필 / 태그", en: "Pill / Tag", status: "soon" },
+    ],
+  },
+  {
+    group: "인터랙션",
+    desc: "움직임·반응. 정체성을 만드는 시그니처.",
+    items: [
+      { id: "fade-in", ko: "부드러운 등장", en: "Fade-in on Scroll", status: "soon" },
+      { id: "hover-accent", ko: "호버 강조", en: "Hover Accent", status: "soon" },
+      { id: "scroll-progress", ko: "스크롤 진행 표시", en: "Scroll Progress", status: "soon" },
+      { id: "marquee", ko: "흐르는 띠", en: "Marquee", status: "soon" },
+      { id: "wave-card", ko: "물결 진행 카드", en: "Wave Card", status: "soon" },
+    ],
+  },
+  {
+    group: "페이지 패턴",
+    desc: "한 페이지 단위의 큰 조합",
+    items: [
+      { id: "hero-pattern", ko: "히어로 (메인 첫 화면)", en: "Hero", status: "soon" },
+      { id: "sectors-pattern", ko: "섹터 리스트 페이지", en: "Sectors", status: "soon" },
+      { id: "pricing-pattern", ko: "가격 페이지", en: "Pricing", status: "soon" },
+      { id: "talk-pattern", ko: "Talk·Contact", en: "Talk / Contact", status: "soon" },
+      { id: "empty-error", ko: "빈 상태·404", en: "Empty / 404", status: "soon" },
+    ],
+  },
 ];
 
-const VERSION = "0.0.2";
+const VERSION = "0.0.3";
+
+const STATUS_META: Record<NavItem["status"], { label: string; cls: string }> = {
+  ready: {
+    label: "ready",
+    cls: "text-emerald-400",
+  },
+  soon: {
+    label: "soon",
+    cls: "text-zinc-600",
+  },
+  planned: {
+    label: "planned",
+    cls: "text-zinc-700",
+  },
+};
 
 export default function App() {
+  const [filter, setFilter] = useState<"all" | "ready">("all");
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <Header />
-      <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[200px_1fr]">
-        <Sidebar />
+      <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[240px_1fr]">
+        <Sidebar filter={filter} onFilterChange={setFilter} />
         <main className="min-w-0 space-y-24">
           <Intro />
           <EyebrowSection />
@@ -74,50 +212,133 @@ function Header() {
   );
 }
 
-function Sidebar() {
+interface SidebarProps {
+  filter: "all" | "ready";
+  onFilterChange: (f: "all" | "ready") => void;
+}
+
+function Sidebar({ filter, onFilterChange }: SidebarProps) {
+  const readyCount = NAV.flatMap((g) => g.items).filter(
+    (i) => i.status === "ready"
+  ).length;
+  const totalCount = NAV.flatMap((g) => g.items).length;
+
   return (
-    <aside className="self-start md:sticky md:top-10">
-      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
-        Components
-      </p>
-      <ul className="mt-3 space-y-1 border-l border-white/[0.06] pl-3 text-[13.5px]">
-        {COMPONENTS.map((c) => (
-          <li key={c.id}>
+    <aside className="self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-2">
+      {/* Filter */}
+      <div className="flex items-center gap-1 rounded-md border border-white/[0.06] p-0.5">
+        <button
+          type="button"
+          onClick={() => onFilterChange("all")}
+          className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
+            filter === "all"
+              ? "bg-white/[0.06] text-zinc-100"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          전체 {totalCount}
+        </button>
+        <button
+          type="button"
+          onClick={() => onFilterChange("ready")}
+          className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
+            filter === "ready"
+              ? "bg-emerald-500/10 text-emerald-400"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          준비됨 {readyCount}
+        </button>
+      </div>
+
+      <div className="mt-6 space-y-7">
+        {NAV.map((group) => {
+          const items =
+            filter === "ready"
+              ? group.items.filter((i) => i.status === "ready")
+              : group.items;
+          if (items.length === 0) return null;
+
+          return (
+            <div key={group.group}>
+              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
+                {group.group}
+              </p>
+              {group.desc && (
+                <p className="mt-1 text-[11.5px] leading-snug text-zinc-600">
+                  {group.desc}
+                </p>
+              )}
+              <ul className="mt-3 space-y-1.5 border-l border-white/[0.06] pl-3 text-[13px]">
+                {items.map((item) => {
+                  const meta = STATUS_META[item.status];
+                  const isClickable = item.status === "ready";
+                  return (
+                    <li key={item.id}>
+                      {isClickable ? (
+                        <a
+                          href={`#${item.id}`}
+                          className="flex items-baseline justify-between gap-2 text-zinc-300 transition-colors hover:text-emerald-400"
+                        >
+                          <span>{item.ko}</span>
+                          <span className={`text-[10px] ${meta.cls}`}>
+                            {meta.label}
+                          </span>
+                        </a>
+                      ) : (
+                        <span className="flex items-baseline justify-between gap-2 text-zinc-600">
+                          <span>{item.ko}</span>
+                          <span className={`text-[10px] ${meta.cls}`}>
+                            {meta.label}
+                          </span>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-10 border-t border-white/[0.06] pt-6">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
+          Docs
+        </p>
+        <ul className="mt-3 space-y-1 border-l border-white/[0.06] pl-3 text-[13px]">
+          <li>
             <a
-              href={`#${c.id}`}
+              href="https://freeive.com/anti-card/manifesto"
+              target="_blank"
+              rel="noopener noreferrer"
               className="block text-zinc-400 transition-colors hover:text-emerald-400"
             >
-              {c.name}
+              Manifesto
             </a>
           </li>
-        ))}
-      </ul>
-
-      <p className="mt-8 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
-        Docs
-      </p>
-      <ul className="mt-3 space-y-1 border-l border-white/[0.06] pl-3 text-[13.5px]">
-        <li>
-          <a
-            href="https://freeive.com/anti-card/getting-started"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-zinc-400 transition-colors hover:text-emerald-400"
-          >
-            Getting Started
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://freeive.com/anti-card/why-not-cards"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-zinc-400 transition-colors hover:text-emerald-400"
-          >
-            Why not cards
-          </a>
-        </li>
-      </ul>
+          <li>
+            <a
+              href="https://freeive.com/anti-card/admin-vs-end-user"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-zinc-400 transition-colors hover:text-emerald-400"
+            >
+              Admin vs End-user
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://freeive.com/anti-card/ai-skill"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-zinc-400 transition-colors hover:text-emerald-400"
+            >
+              AI Skill
+            </a>
+          </li>
+        </ul>
+      </div>
     </aside>
   );
 }
@@ -131,11 +352,35 @@ function Intro() {
       <h2 className="mt-3 max-w-[24ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-50">
         컴포넌트 시연실
       </h2>
-      <p className="mt-5 max-w-[60ch] text-[15px] leading-relaxed text-zinc-400">
-        격리된 vite 환경에서 anti-card 컴포넌트만 빠르게 시각 확인. 각 컴포넌트마다 여러
-        사용 패턴(variant)을 미리보기 + 코드로 보여줍니다. 코드 저장 시 즉시 hot
-        reload.
+      <p className="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-zinc-400">
+        AI 시대의 UI 프레임워크는 방식이 바꿔야 합니다. 안티 카드는{" "}
+        <strong className="text-zinc-200">가장 순수한 HTML/CSS</strong>를
+        제공하고, AI가 이 디자인과 구조를 참고합니다. 사이드바의 컴포넌트 리스트는
+        End-user(랜딩) 화면 만들 때 자주 쓰는 패턴들을 한글로 정리한 것입니다.
       </p>
+      <ul className="mt-6 grid grid-cols-1 gap-2 max-w-[60ch] text-[13.5px] text-zinc-400 sm:grid-cols-2">
+        <li className="flex gap-2">
+          <span className="text-emerald-400">▸</span>
+          <span>
+            <strong className="text-zinc-200">ready</strong> — 컴포넌트 + 디자인 +
+            HTML 레퍼런스 완성
+          </span>
+        </li>
+        <li className="flex gap-2">
+          <span className="text-zinc-600">▸</span>
+          <span>
+            <strong className="text-zinc-300">soon</strong> — 곧 추가 예정 (사용자
+            우선순위에 따라)
+          </span>
+        </li>
+        <li className="flex gap-2">
+          <span className="text-zinc-700">▸</span>
+          <span>
+            <strong className="text-zinc-400">planned</strong> — 0.x 후반 또는 1.0
+            로드맵
+          </span>
+        </li>
+      </ul>
     </section>
   );
 }
@@ -239,18 +484,25 @@ function PropsTable({ rows }: { rows: PropRow[] }) {
 
 function SectionHeading({
   id,
-  name,
+  ko,
+  en,
   desc,
 }: {
   id: string;
-  name: string;
+  ko: string;
+  en: string;
   desc: string;
 }) {
   return (
     <div id={id} className="scroll-mt-10">
-      <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">
-        {name}
-      </h2>
+      <div className="flex items-baseline gap-3">
+        <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">
+          {ko}
+        </h2>
+        <span className="text-[12px] text-zinc-500">
+          <code className="text-zinc-400">{`<${en}>`}</code>
+        </span>
+      </div>
       <p className="mt-3 max-w-[60ch] text-[14.5px] leading-relaxed text-zinc-400">
         {desc}
       </p>
@@ -265,20 +517,21 @@ function EyebrowSection() {
     <section>
       <SectionHeading
         id="eyebrow"
-        name="Eyebrow"
+        ko="아이브로우 라벨"
+        en="Eyebrow"
         desc="섹션의 카테고리를 작은 라벨로 분리하는 smallcaps 컴포넌트. 카드 박스 없이 영역을 구분하는 가장 가벼운 신호."
       />
 
       <Example
-        title="Default"
-        description="기본 톤. 본문 텍스트보다 한 단계 어두운 회색."
+        title="Default — 기본 톤"
+        description="본문 텍스트보다 한 단계 어두운 회색."
         preview={<Eyebrow>Heritage · 2016 — Now</Eyebrow>}
         code={`<Eyebrow>Heritage · 2016 — Now</Eyebrow>`}
       />
 
       <Example
-        title="Accent tone"
-        description="강조할 라벨. 진행 중·라이브 같은 상태 표시에."
+        title="Accent — 강조 톤"
+        description="진행 중·라이브 같은 상태 표시에."
         preview={
           <div className="space-y-3">
             <Eyebrow tone="accent">Live · 진행 중</Eyebrow>
@@ -289,8 +542,8 @@ function EyebrowSection() {
       />
 
       <Example
-        title="With heading"
-        description="실제 사용 패턴 — 라벨 + 큰 헤딩 + 서브 카피 한 묶음. SectionFrame 안에서 자동으로 이렇게 됩니다."
+        title="With heading — 실제 사용 패턴"
+        description="라벨 + 큰 헤딩 + 서브 카피 한 묶음. SectionFrame 안에서 자동으로 이렇게 됩니다."
         preview={
           <div>
             <Eyebrow>Pillars</Eyebrow>
@@ -312,7 +565,7 @@ function EyebrowSection() {
       />
 
       <Example
-        title="Custom tone via className"
+        title="Custom tone — className으로 색"
         description="사전 정의 두 톤 외 색은 className으로. twMerge가 충돌 자동 해결."
         preview={
           <div className="space-y-3">
@@ -355,13 +608,14 @@ function SectionFrameSection() {
     <section>
       <SectionHeading
         id="section-frame"
-        name="SectionFrame"
-        desc="카드 박스 없이 섹션을 짠다. 안티 카드 5원칙 중 ‘공간(여백) + 헤어라인 + smallcaps 라벨’ 세 가지를 한 컴포넌트로 묶음."
+        ko="섹션 프레임"
+        en="SectionFrame"
+        desc="카드 박스 없이 섹션을 짜는 헤어라인 + 여백 + 라벨 묶음. 안티 카드 5원칙 중 세 가지를 한 컴포넌트로."
       />
 
       <Example
-        title="Default — eyebrow + title + description"
-        description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동으로 그려집니다."
+        title="Default — 라벨 + 제목 + 설명"
+        description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동."
         preview={
           <SectionFrame
             eyebrow="Pillars"
@@ -377,7 +631,7 @@ function SectionFrameSection() {
       />
 
       <Example
-        title="No divider (첫 섹션)"
+        title="No divider — 첫 섹션"
         description="페이지 첫 섹션이면 divider={false}. 헤어라인 중복 방지."
         preview={
           <SectionFrame
@@ -391,19 +645,18 @@ function SectionFrameSection() {
   divider={false}
   eyebrow="Hero"
   title="첫 섹션은 헤어라인 없이."
-  description="..."
 />`}
       />
 
       <Example
-        title="With ListRow children"
-        description="children 영역에 ListRow ul을 넣으면 안티 카드의 표준 섹션 형태가 됩니다."
+        title="With ListRow — 가장 자주 쓰는 조합"
+        description="children에 ListRow ul을 넣으면 안티 카드 표준 섹션."
         preview={
           <SectionFrame
             divider={false}
             eyebrow="Heritage · Education"
             title="교육·에듀테크"
-            description="EBS, 아이스크림미디어 등 미디어·교육 분야 프로젝트."
+            description="EBS, 아이스크림미디어 등."
           >
             <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
               <ListRow meta="2024" trailing="아이스크림미디어">
@@ -429,7 +682,7 @@ function SectionFrameSection() {
       />
 
       <Example
-        title="Heading levels"
+        title="Heading levels — h1 / h2 / h3"
         description="페이지 메인 섹션이면 as='h1', 하위 영역이면 as='h3'. 기본 h2."
         preview={
           <div className="space-y-12">
@@ -439,19 +692,12 @@ function SectionFrameSection() {
               eyebrow="Page"
               title="as='h1' — 페이지 메인"
             />
-            <SectionFrame
-              eyebrow="Section"
-              title="as='h2' — 일반 섹션 (기본)"
-            />
-            <SectionFrame
-              as="h3"
-              eyebrow="Sub"
-              title="as='h3' — 하위 영역"
-            />
+            <SectionFrame eyebrow="Section" title="as='h2' — 일반 (기본)" />
+            <SectionFrame as="h3" eyebrow="Sub" title="as='h3' — 하위" />
           </div>
         }
         code={`<SectionFrame as="h1" eyebrow="Page" title="..." />
-<SectionFrame as="h2" eyebrow="Section" title="..." />     // 기본
+<SectionFrame eyebrow="Section" title="..." />     // 기본 h2
 <SectionFrame as="h3" eyebrow="Sub" title="..." />`}
       />
 
@@ -490,13 +736,14 @@ function ListRowSection() {
     <section>
       <SectionHeading
         id="list-row"
-        name="ListRow"
+        ko="리스트 행"
+        en="ListRow"
         desc="카드 그리드 대신 행 레이아웃. divide-y + border-y 와 함께 ul 안에서 사용. 가장 자주 쓰는 컴포넌트."
       />
 
       <Example
-        title="Default"
-        description="meta + 본문(children) 만으로 가장 단순. trailing 없으면 우측 정렬 영역이 비어있음."
+        title="Default — meta + 본문"
+        description="가장 단순. trailing 없으면 우측 영역 비어있음."
         preview={
           <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
             <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
@@ -510,8 +757,8 @@ function ListRowSection() {
       />
 
       <Example
-        title="With trailing"
-        description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준 패턴."
+        title="With trailing — 표준 패턴"
+        description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준."
         preview={
           <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
             <ListRow meta="2024" trailing="아이스크림미디어">
@@ -529,15 +776,12 @@ function ListRowSection() {
   <ListRow meta="2024" trailing="아이스크림미디어">
     미니북 저작 퍼블리셔
   </ListRow>
-  <ListRow meta="2023" trailing="롯데카드">
-    mydata 수집 및 admin 개발
-  </ListRow>
 </ul>`}
       />
 
       <Example
-        title="Clickable rows"
-        description="href 주면 자동으로 a 태그로 감싸지고 hover 시 본문이 액센트 색으로."
+        title="Clickable — href"
+        description="href 주면 자동 a 태그, hover 시 액센트 색."
         preview={
           <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
             <ListRow meta="2024" trailing="EBS" href="#">
@@ -554,10 +798,20 @@ function ListRowSection() {
       />
 
       <Example
-        title="Mixed content (ReactNode meta/trailing)"
-        description="meta·trailing은 string 뿐 아니라 ReactNode. Eyebrow나 Pill 같은 컴포넌트 그대로 넣을 수 있음."
+        title="Mixed content — meta·trailing에 ReactNode"
+        description="meta·trailing은 string 뿐 아니라 ReactNode."
         preview={
           <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+            <ListRow
+              meta={<span className="text-emerald-400">v0.0.3</span>}
+              trailing={
+                <span className="rounded-full border border-white/15 px-2 py-0.5 text-[11px]">
+                  released
+                </span>
+              }
+            >
+              정체성 정리 + AI Skill / docs / HTML 레퍼런스
+            </ListRow>
             <ListRow
               meta={<span className="text-emerald-400">v0.0.2</span>}
               trailing={
@@ -568,23 +822,13 @@ function ListRowSection() {
             >
               docs 디렉토리 + sync 스크립트
             </ListRow>
-            <ListRow
-              meta={<span className="text-emerald-400">v0.0.1</span>}
-              trailing={
-                <span className="rounded-full border border-white/15 px-2 py-0.5 text-[11px]">
-                  seed
-                </span>
-              }
-            >
-              초기 컴포넌트 3종
-            </ListRow>
           </ul>
         }
         code={`<ListRow
-  meta={<span className="text-emerald-400">v0.0.2</span>}
+  meta={<span className="text-emerald-400">v0.0.3</span>}
   trailing={<Pill>released</Pill>}
 >
-  docs 디렉토리 + sync 스크립트
+  정체성 정리 + AI Skill
 </ListRow>`}
       />
 
@@ -593,7 +837,7 @@ function ListRowSection() {
           {
             name: "meta",
             type: "ReactNode",
-            desc: "좌측 작은 라벨 (smallcaps). 보통 카테고리·날짜·버전.",
+            desc: "좌측 작은 라벨. 보통 카테고리·날짜·버전.",
           },
           { name: "trailing", type: "ReactNode", desc: "우측 보조 라벨" },
           {
@@ -628,7 +872,7 @@ function Footer() {
         <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">
           playground/App.tsx
         </code>{" "}
-        에 Section 함수 + 여러 Example 추가
+        의 NAV 배열에 등록 + Section 추가
       </p>
       <p className="mt-2">
         사이트(:3000) 통합:{" "}
