@@ -308,7 +308,7 @@ function Intro() {
       <h2 className="mt-3 max-w-[24ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-50">
         컴포넌트 시연실
       </h2>
-      <p className="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-zinc-400">
+      <p className="mt-5 text-[15px] leading-relaxed text-zinc-400">
         AI 시대의 UI 프레임워크는 방식이 바꿔야 합니다. 안티 카드는{" "}
         <strong className="text-zinc-200">가장 순수한 HTML/CSS</strong>를 제공하고, AI가
         이 디자인과 구조를 참고합니다. 각 컴포넌트는{" "}
@@ -509,7 +509,7 @@ function SectionHeading({ id, ko, en, desc }: { id: string; ko: string; en: stri
           <code>{`<${en}>`}</code>
         </span>
       </div>
-      <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-zinc-300">{desc}</p>
+      <p className="mt-4 text-[15px] leading-relaxed text-zinc-300">{desc}</p>
     </div>
   );
 }
