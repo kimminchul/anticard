@@ -10,9 +10,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Selection — color는 강제하지 않음 (라이트/다크 본문 색 그대로 유지) */
 ::selection {
-  background: rgba(124, 242, 196, 0.25);
-  color: #fff;
+  background: rgba(52, 211, 153, 0.35); /* emerald-400/35 */
+}
+.dark ::selection {
+  background: rgba(124, 242, 196, 0.25); /* lighter emerald for dark */
 }
 
 /* Code blocks in playground */
