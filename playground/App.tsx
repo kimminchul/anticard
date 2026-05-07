@@ -423,17 +423,7 @@ function EmptyTab({ title, body }: { title: string; body: string }) {
 function PromptBlock({ prompt }: { prompt: string }) {
   return (
     <div className="mt-6">
-      <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500">
-        AI에게 시킬 자연어 요청 예시
-      </p>
-      <p className="mt-2 text-[13px] leading-relaxed text-zinc-500">
-        Claude / Cursor 등에 그대로 붙여넣으면 안티 카드 톤으로 만들어집니다.
-        <code className="ml-1 rounded bg-white/5 px-1 py-0.5 text-[11.5px] text-zinc-300">
-          skill/CLAUDE.md
-        </code>
-        를 같이 적용해두면 더 정확합니다.
-      </p>
-      <div className="mt-4 overflow-hidden rounded-lg border border-emerald-500/15 bg-emerald-500/[0.03]">
+      <div className="overflow-hidden rounded-lg border border-emerald-500/15 bg-emerald-500/[0.03]">
         <div className="flex items-center justify-between border-b border-emerald-500/15 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-emerald-400">
           <span>Prompt</span>
           <button
@@ -448,6 +438,16 @@ function PromptBlock({ prompt }: { prompt: string }) {
           {prompt}
         </pre>
       </div>
+      <p className="mt-4 text-[11px] uppercase tracking-[0.08em] text-zinc-400">
+        AI에게 시킬 자연어 요청 예시
+      </p>
+      <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
+        Claude / Cursor 등에 그대로 붙여넣으면 안티 카드 톤으로 만들어집니다.
+        <code className="ml-1 rounded bg-white/5 px-1 py-0.5 text-[11.5px] text-zinc-200">
+          skill/CLAUDE.md
+        </code>
+        를 같이 적용해두면 더 정확합니다.
+      </p>
     </div>
   );
 }
