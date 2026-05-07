@@ -917,7 +917,7 @@ const SECTION_FRAME_DEF: ComponentDef = {
       description: "children에 ListRow ul을 넣으면 안티 카드 표준 섹션.",
       preview: (
         <SectionFrame divider={false} eyebrow="Heritage · Education" title="교육·에듀테크">
-          <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+          <ul className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
             <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
             <ListRow meta="2021" trailing="EBS">EBS 온라인 클래스 재구조화</ListRow>
           </ul>
@@ -976,7 +976,7 @@ const LIST_ROW_DEF: ComponentDef = {
       title: "기본 — meta + 본문",
       description: "가장 단순. trailing 없으면 우측 영역 비어있음.",
       preview: (
-        <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        <ul className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
           <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
           <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
         </ul>
@@ -1008,7 +1008,7 @@ const LIST_ROW_DEF: ComponentDef = {
       title: "trailing — 표준 패턴",
       description: "우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지 표준.",
       preview: (
-        <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        <ul className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
           <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
           <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
           <ListRow meta="2022" trailing="라이나생명">대고객 디지털채널 재구축</ListRow>
@@ -1078,7 +1078,7 @@ const LIST_ROW_DEF: ComponentDef = {
       title: "클릭 가능 — href",
       description: "href 주면 자동 a 태그, hover 시 본문이 액센트 색.",
       preview: (
-        <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        <ul className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
           <ListRow meta="2024" trailing="EBS" href="#">EBS 온라인 클래스 재구조화 (클릭 가능)</ListRow>
           <ListRow meta="2023" trailing="롯데카드" href="#">mydata 수집 및 admin 개발 (클릭 가능)</ListRow>
         </ul>
