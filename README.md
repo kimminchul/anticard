@@ -101,6 +101,25 @@ import { SectionFrame, ListRow, Eyebrow } from "@freeive/anti-card";
 - **[freeive.com](https://freeive.com)** — 사이트 자체가 첫 활용사례
 - 자세히: `freeive.com/anti-card`
 
+## Playground
+
+49개 컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
+
+- **공개 URL**: [kimminchul.github.io/anticard](https://kimminchul.github.io/anticard) (GitHub Pages, main push 시 자동 배포)
+- **로컬**: `npm run dev:play` → http://localhost:5174
+
+각 컴포넌트 페이지에 AI 프롬프트 포함 — Claude/Cursor에 복사해서 동일 톤으로 코드 생성 가능.
+
+GitHub Pages 빌드 (로컬 테스트):
+
+```bash
+# bash / git bash
+GH_PAGES=1 npm run build:play && npm run preview:play
+
+# PowerShell
+$env:GH_PAGES="1"; npm run build:play; npm run preview:play
+```
+
 ## 개발 (contributors)
 
 ```bash

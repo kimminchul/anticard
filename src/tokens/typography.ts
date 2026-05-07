@@ -18,9 +18,9 @@ export const typography = {
   displayLg:
     "text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-zinc-900 dark:text-zinc-50",
 
-  /** HeroHeading default — 일반 페이지 첫 화면 타이틀 (30~48px). Lab/Heritage/Blog 등. */
+  /** HeroHeading default — 일반 페이지 첫 화면 타이틀 (26~40px). Lab/Heritage/Blog 등. */
   display:
-    "text-[clamp(1.875rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-zinc-900 dark:text-zinc-50",
+    "text-[clamp(1.625rem,3vw,2.5rem)] font-semibold leading-[1.15] tracking-[-0.015em] text-zinc-900 dark:text-zinc-50",
 
   /** SectionHeading h2 — 섹션 제목 */
   h2: "text-[clamp(1.5rem,2.5vw,1.875rem)] font-semibold leading-[1.2] tracking-[-0.015em] text-zinc-900 dark:text-zinc-50",
