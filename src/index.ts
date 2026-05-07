@@ -141,6 +141,24 @@ export type {
   CompareRow,
 } from "./components/compare-table";
 
+export { Grid } from "./components/grid";
+export type { GridProps } from "./components/grid";
+
+export { Input } from "./components/input";
+export type { InputProps } from "./components/input";
+
+export { Textarea } from "./components/textarea";
+export type { TextareaProps } from "./components/textarea";
+
+export { Select } from "./components/select";
+export type { SelectProps, SelectOption } from "./components/select";
+
+export { Checkbox, Radio } from "./components/checkbox-radio";
+export type { CheckboxProps, RadioProps } from "./components/checkbox-radio";
+
+export { Gallery } from "./components/gallery";
+export type { GalleryProps, GalleryItem } from "./components/gallery";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

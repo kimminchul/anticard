@@ -1,0 +1,54 @@
+---
+title: Gallery
+description: 이미지 그리드. Image 패턴 + 균등 grid + 자동 caption.
+group: components
+order: 48
+published: true
+updated: 2026-05-08
+---
+
+`<Gallery>`는 이미지 그리드입니다. `<Image>` 패턴 + 자동 lazy loading.
+
+```tsx
+import { Gallery } from "@freeive/anti-card";
+
+<Gallery
+  columns={3}
+  ratio="4/3"
+  items={[
+    { src: "/1.jpg", alt: "데모 1", caption: "손가락 그림" },
+    { src: "/2.jpg", alt: "데모 2", href: "/lab/demo-2" },
+    { src: "/3.jpg", alt: "데모 3" },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `GalleryItem[]` | — | `{src, alt, caption?, href?}[]` |
+| `columns` | `2 \| 3 \| 4` | `3` | 데스크톱 컬럼 |
+| `ratio` | `"native" \| "16/9" \| "4/3" \| "1/1"` | `"4/3"` | 종횡비 |
+| `gap` | `"tight" \| "default" \| "loose"` | `"default"` | 간격 |
+
+## 디자인
+
+- ul + li (시맨틱)
+- 모바일 1열 → md:columns
+- 각 이미지: `rounded-md`, native 또는 강제 ratio
+- caption: 12.5px zinc-500
+- href시 hover scale 1.02 + opacity-90 (살짝)
+- `loading="lazy"` 자동
+
+## Image와의 차이
+
+- `<Image>`: 단일 이미지 + caption
+- `<Gallery>`: 여러 이미지 + grid + lazy loading
+
+여러 이미지면 Gallery, 본문 안 단일 이미지면 Image.
+
+## 관련
+
+- [Image](/anti-card/image) — 단일 이미지
+- [Grid](/anti-card/grid) — 일반 grid (Gallery 내부 사용)

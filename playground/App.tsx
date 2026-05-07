@@ -45,6 +45,13 @@ import {
   PricingPattern,
   Steps,
   CompareTable,
+  Grid,
+  Input,
+  Textarea,
+  Select,
+  Checkbox,
+  Radio,
+  Gallery,
 } from "@freeive/anti-card";
 
 /**
@@ -78,7 +85,7 @@ const NAV: NavGroup[] = [
       { id: "container", ko: "컨테이너", en: "Container", status: "ready" },
       { id: "section-frame", ko: "섹션 프레임", en: "SectionFrame", status: "ready" },
       { id: "hairline", ko: "헤어라인 구분선", en: "Hairline", status: "ready" },
-      { id: "grid-columns", ko: "그리드·컬럼", en: "Grid", status: "soon" },
+      { id: "grid-columns", ko: "그리드·컬럼", en: "Grid", status: "ready" },
     ],
   },
   {
@@ -143,7 +150,7 @@ const NAV: NavGroup[] = [
     items: [
       { id: "image", ko: "이미지", en: "Image", status: "ready" },
       { id: "video", ko: "비디오 플레이어", en: "Video", status: "ready" },
-      { id: "gallery", ko: "갤러리", en: "Gallery", status: "soon" },
+      { id: "gallery", ko: "갤러리", en: "Gallery", status: "ready" },
       { id: "carousel", ko: "캐러셀·슬라이드", en: "Carousel", status: "planned" },
     ],
   },
@@ -151,10 +158,10 @@ const NAV: NavGroup[] = [
     group: "폼",
     desc: "입력·선택. 안티 카드 영역에선 최소한.",
     items: [
-      { id: "input", ko: "입력 필드", en: "Input", status: "soon" },
-      { id: "textarea", ko: "여러 줄 입력", en: "Textarea", status: "soon" },
-      { id: "select", ko: "드롭다운", en: "Select", status: "soon" },
-      { id: "checkbox-radio", ko: "체크박스·라디오", en: "Checkbox/Radio", status: "soon" },
+      { id: "input", ko: "입력 필드", en: "Input", status: "ready" },
+      { id: "textarea", ko: "여러 줄 입력", en: "Textarea", status: "ready" },
+      { id: "select", ko: "드롭다운", en: "Select", status: "ready" },
+      { id: "checkbox-radio", ko: "체크박스·라디오", en: "Checkbox/Radio", status: "ready" },
       { id: "pill", ko: "필 / 태그", en: "Pill / Tag", status: "ready" },
     ],
   },
@@ -263,6 +270,12 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "pricing-pattern": () => <ComponentPage def={PRICING_PATTERN_DEF} />,
   steps: () => <ComponentPage def={STEPS_DEF} />,
   "compare-table": () => <ComponentPage def={COMPARE_TABLE_DEF} />,
+  "grid-columns": () => <ComponentPage def={GRID_DEF} />,
+  input: () => <ComponentPage def={INPUT_DEF} />,
+  textarea: () => <ComponentPage def={TEXTAREA_DEF} />,
+  select: () => <ComponentPage def={SELECT_DEF} />,
+  "checkbox-radio": () => <ComponentPage def={CHECKBOX_RADIO_DEF} />,
+  gallery: () => <ComponentPage def={GALLERY_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -4507,5 +4520,268 @@ PricingTable과 함께 사용 — Table에 못 들어가는 디테일을 Compare
   props: [
     { name: "columns", type: "CompareColumn[]", desc: "{name, highlighted?}[]" },
     { name: "rows", type: "CompareRow[]", desc: "{feature, hint?, values: (ReactNode | boolean)[]}[]" },
+  ],
+};
+
+const GRID_DEF: ComponentDef = {
+  id: "grid-columns",
+  ko: "그리드·컬럼",
+  en: "Grid",
+  desc: "단순 grid wrapper. '카드 그리드'가 아닌 정렬용 — gap만 있고 박스 X.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 3열",
+      description: "모바일 1열 → md:3열 자동.",
+      preview: (
+        <Grid columns={3}>
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div
+              key={n}
+              className="border-y border-zinc-200/60 py-6 text-center text-[14px] dark:border-white/[0.06]"
+            >
+              항목 {n}
+            </div>
+          ))}
+        </Grid>
+      ),
+      prompt: `단순 grid 레이아웃 wrapper. 모바일 1열 → 데스크톱 columns 자동.
+gap: tight(12) / default(24~32) / loose(40~56). Image 배열 등 정렬에 사용.`,
+      react: `<Grid columns={3}>
+  <Image src="/1.jpg" />
+  <Image src="/2.jpg" />
+</Grid>`,
+    },
+  ],
+  props: [
+    { name: "columns", type: "1~6", default: "3", desc: "데스크톱 컬럼" },
+    { name: "mobileColumns", type: "1 | 2", default: "1", desc: "모바일 컬럼" },
+    { name: "gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격" },
+    { name: "as", type: '"div" | "ul" | "section"', default: '"div"', desc: "시맨틱" },
+  ],
+};
+
+const INPUT_DEF: ComponentDef = {
+  id: "input",
+  ko: "입력 필드",
+  en: "Input",
+  desc: "텍스트 입력. label/hint/error 자동, focus시 emerald 헤어라인.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — label + hint",
+      description: "둥근 모서리 살짝, shadow X.",
+      preview: (
+        <div className="max-w-md">
+          <Input
+            label="이메일"
+            type="email"
+            placeholder="ive@freeive.com"
+            hint="답장이 필요한 주소"
+          />
+        </div>
+      ),
+      prompt: `폼 입력 필드. shadcn Input과 비슷하지만 둥근 모서리 약함, shadow 거부.
+focus시 border-emerald-500 + ring 2px/20%. forwardRef로 react-hook-form 호환.`,
+      react: `<Input label="이메일" type="email" hint="답장이 필요한 주소" />`,
+    },
+    {
+      index: "02",
+      badge: "error",
+      title: "error 상태",
+      description: "border + ring rose, hint 자리에 error.",
+      preview: (
+        <div className="max-w-md">
+          <Input label="이름" error="이름은 필수입니다." placeholder="이름" />
+        </div>
+      ),
+      prompt: `error prop만 주면 자동: border-rose-500 + aria-invalid + rose hint 텍스트.`,
+      react: `<Input label="이름" error="이름은 필수입니다." />`,
+    },
+  ],
+  props: [
+    { name: "label", type: "ReactNode", desc: "위 라벨" },
+    { name: "error", type: "ReactNode", desc: "에러 (border rose)" },
+    { name: "hint", type: "ReactNode", desc: "보조 설명" },
+    { name: "...rest", type: "InputHTMLAttributes<HTMLInputElement>", desc: "표준" },
+  ],
+};
+
+const TEXTAREA_DEF: ComponentDef = {
+  id: "textarea",
+  ko: "여러 줄 입력",
+  en: "Textarea",
+  desc: "여러 줄 입력. Input과 동일 톤 + resize-y.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 4줄",
+      description: "Input과 동일 톤. resize-y로 사용자가 늘림.",
+      preview: (
+        <div className="max-w-md">
+          <Textarea
+            label="프로젝트 설명"
+            placeholder="어떤 프로젝트인가요? 의사결정자 본인 여부와 목적을 함께 적어주시면 빠릅니다."
+            rows={4}
+          />
+        </div>
+      ),
+      prompt: `여러 줄 입력. Input과 거의 동일. rows 기본 4. resize-y (세로만 늘림).`,
+      react: `<Textarea label="설명" rows={5} placeholder="..." />`,
+    },
+  ],
+  props: [
+    { name: "label / error / hint", type: "ReactNode", desc: "Input과 동일" },
+    { name: "rows", type: "number", default: "4", desc: "기본 줄 수" },
+    { name: "...rest", type: "TextareaHTMLAttributes<HTMLTextAreaElement>", desc: "표준" },
+  ],
+};
+
+const SELECT_DEF: ComponentDef = {
+  id: "select",
+  ko: "드롭다운",
+  en: "Select",
+  desc: "native select. 커스텀 dropdown 거부 — 접근성·모바일 OS 통합.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — placeholder + options",
+      description: "options 배열 또는 children으로.",
+      preview: (
+        <div className="max-w-md">
+          <Select
+            label="카테고리"
+            placeholder="선택하세요"
+            defaultValue=""
+            options={[
+              { value: "learning", label: "학습 일지" },
+              { value: "ai", label: "AI 워크플로우" },
+              { value: "review", label: "회고" },
+            ]}
+          />
+        </div>
+      ),
+      prompt: `native select. shadcn custom dropdown 거부 — native가 접근성·모바일 OS·키보드 모두 지원.
+appearance-none + 커스텀 SVG 화살표.`,
+      react: `<Select label="카테고리" placeholder="선택" options={[
+  { value: "ai", label: "AI 워크플로우" },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "label / error / hint", type: "ReactNode", desc: "Input과 동일" },
+    { name: "options", type: "SelectOption[]", desc: "{value, label, disabled?}[]" },
+    { name: "placeholder", type: "string", desc: "빈 값 옵션" },
+  ],
+};
+
+const CHECKBOX_RADIO_DEF: ComponentDef = {
+  id: "checkbox-radio",
+  ko: "체크박스·라디오",
+  en: "Checkbox / Radio",
+  desc: "체크박스 + 라디오. label + description 묶음, checked시 emerald.",
+  examples: [
+    {
+      index: "01",
+      badge: "checkbox",
+      title: "Checkbox — 약관 동의",
+      description: "라벨 + description 작은 글씨.",
+      preview: (
+        <div className="max-w-md space-y-3">
+          <Checkbox
+            name="terms"
+            label="이용약관에 동의합니다."
+            description="14세 이상 사용자만 가입 가능합니다."
+          />
+          <Checkbox
+            name="marketing"
+            label="마케팅 정보 수신에 동의합니다."
+            description="선택 사항."
+          />
+        </div>
+      ),
+      prompt: `약관 동의·필터·옵션 다중 선택. label + description 자동.
+checked시 bg-emerald + ✓ SVG (data URL).`,
+      react: `<Checkbox name="terms" label="이용약관" description="14세 이상" required />`,
+    },
+    {
+      index: "02",
+      badge: "radio",
+      title: "Radio — 단일 선택",
+      description: "name이 같은 라디오들 중 하나만.",
+      preview: (
+        <fieldset className="max-w-md space-y-3">
+          <Radio name="plan" value="free" label="Free" description="개인용." defaultChecked />
+          <Radio name="plan" value="pro" label="Pro" description="1인 팀." />
+          <Radio name="plan" value="team" label="Team" description="팀·기업." />
+        </fieldset>
+      ),
+      prompt: `단일 선택 그룹. <fieldset> + 같은 name의 Radio들. checked시 border 5px emerald + 내부 점.`,
+      react: `<fieldset>
+  <Radio name="plan" value="free" label="Free" />
+  <Radio name="plan" value="pro" label="Pro" />
+</fieldset>`,
+    },
+  ],
+  props: [
+    { name: "label", type: "ReactNode", desc: "라벨 (필수)" },
+    { name: "description", type: "ReactNode", desc: "보조 설명" },
+    { name: "...rest", type: "InputHTMLAttributes (type 제외)", desc: "name/value/checked 등" },
+  ],
+};
+
+const GALLERY_DEF: ComponentDef = {
+  id: "gallery",
+  ko: "갤러리",
+  en: "Gallery",
+  desc: "이미지 그리드. Image 패턴 + 균등 grid + caption 자동.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 3열 4:3",
+      description: "균등 그리드 + 모서리 살짝 + caption.",
+      preview: (
+        <Gallery
+          columns={3}
+          ratio="4/3"
+          items={[
+            {
+              src: "https://placehold.co/600x450/0a0a0a/64748b?text=Demo+1",
+              alt: "데모 1",
+              caption: "손가락 그림 그리기",
+            },
+            {
+              src: "https://placehold.co/600x450/0a0a0a/64748b?text=Demo+2",
+              alt: "데모 2",
+              caption: "손짓 공 잡기",
+              href: "#",
+            },
+            {
+              src: "https://placehold.co/600x450/0a0a0a/64748b?text=Demo+3",
+              alt: "데모 3",
+              caption: "한글 자음 매칭",
+            },
+          ]}
+        />
+      ),
+      prompt: `이미지 그리드. Lab 데모 미리보기 / 블로그 갤러리 등.
+모바일 1열, md:3열 (또는 2/4). rounded-md, native/강제 ratio. caption 자동.
+href시 살짝 scale + opacity-90.`,
+      react: `<Gallery columns={3} ratio="4/3" items={[
+  { src: "/1.jpg", alt: "...", caption: "..." },
+  { src: "/2.jpg", alt: "...", href: "/lab/demo-2" },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "GalleryItem[]", desc: "{src, alt, caption?, href?}[]" },
+    { name: "columns", type: "2 | 3 | 4", default: "3", desc: "데스크톱 컬럼" },
+    { name: "ratio", type: '"native" | "16/9" | "4/3" | "1/1"', default: '"4/3"', desc: "종횡비" },
+    { name: "gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격" },
   ],
 };

@@ -1,0 +1,39 @@
+---
+title: Textarea
+description: 여러 줄 입력. Input과 동일 톤 + resize-y.
+group: components
+order: 45
+published: true
+updated: 2026-05-08
+---
+
+`<Textarea>`는 여러 줄 입력 필드입니다. `<Input>`과 거의 동일.
+
+```tsx
+import { Textarea } from "@freeive/anti-card";
+
+<Textarea
+  label="프로젝트 설명"
+  placeholder="어떤 프로젝트인가요?"
+  rows={5}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label / error / hint` | `ReactNode` | — | Input과 동일 |
+| `rows` | `number` | `4` | 기본 줄 수 |
+| `wrapperClassName` | `string` | — | wrapper className |
+| `...rest` | `TextareaHTMLAttributes<HTMLTextAreaElement>` | — | 표준 |
+
+## 디자인
+
+- `<Input>`과 동일 톤
+- `resize-y` — 사용자가 세로만 늘릴 수 있음
+- min-height = rows × line-height
+
+## 관련
+
+- [Input](/anti-card/input)

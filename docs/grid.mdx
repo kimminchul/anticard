@@ -1,0 +1,46 @@
+---
+title: Grid
+description: 단순 grid wrapper. '카드 그리드'가 아닌 정렬용 — gap만 있고 박스 X.
+group: components
+order: 43
+published: true
+updated: 2026-05-08
+---
+
+`<Grid>`는 단순 그리드 레이아웃 wrapper입니다. 모바일 → 데스크톱 컬럼 자동 전환.
+
+```tsx
+import { Grid } from "@freeive/anti-card";
+
+<Grid columns={3}>
+  <Image src="/1.jpg" />
+  <Image src="/2.jpg" />
+  <Image src="/3.jpg" />
+</Grid>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `columns` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` | 데스크톱 컬럼 |
+| `mobileColumns` | `1 \| 2` | `1` | 모바일 컬럼 |
+| `gap` | `"tight" \| "default" \| "loose"` | `"default"` | 간격 |
+| `as` | `"div" \| "ul" \| "section"` | `"div"` | 시맨틱 |
+
+## gap
+
+| gap | 값 |
+|---|---|
+| `tight` | gap-3 |
+| `default` | gap-6 md:gap-8 |
+| `loose` | gap-10 md:gap-14 |
+
+## 카드 그리드와의 차이
+
+`<Grid>`는 **정렬**만 제공 — 박스 / border / bg / shadow 없음. "카드 그리드"는 안티 카드 정체성에 위배.
+정보 나열은 `<ListRow>` 또는 `<ul>` + 헤어라인 권장. Grid는 **이미지 / FeatureRow 등 본질이 grid**인 경우만.
+
+## 관련
+
+- [Gallery](/anti-card/gallery) — Grid 기반 이미지 갤러리

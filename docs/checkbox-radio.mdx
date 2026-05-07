@@ -1,0 +1,59 @@
+---
+title: Checkbox / Radio
+description: 체크박스 + 라디오. label + description 묶음, checked시 emerald.
+group: components
+order: 47
+published: true
+updated: 2026-05-08
+---
+
+`<Checkbox>` / `<Radio>`는 native input + label + description 패턴입니다.
+
+```tsx
+import { Checkbox, Radio } from "@freeive/anti-card";
+
+<Checkbox
+  name="terms"
+  label="이용약관에 동의합니다."
+  description="14세 이상 사용자만 가입 가능."
+  required
+/>
+
+<fieldset>
+  <Radio name="plan" value="free" label="Free" description="개인용" />
+  <Radio name="plan" value="pro" label="Pro" description="1인 팀" />
+</fieldset>
+```
+
+## Props (공통)
+
+| Prop | Type | Description |
+|---|---|---|
+| `label` | `ReactNode` | 라벨 (필수) |
+| `description` | `ReactNode` | 보조 설명 (작은 글씨) |
+| `wrapperClassName` | `string` | label wrapper className |
+| `...rest` | `InputHTMLAttributes (type 제외)` | name / value / checked / onChange 등 |
+
+## 디자인
+
+**Checkbox**:
+- 4x4 input + `rounded-[3px]` + border zinc-300
+- checked: bg-emerald-500 + ✓ SVG (data URL)
+- focus-visible: outline 2px emerald 40%
+
+**Radio**:
+- 4x4 input + `rounded-full` + border zinc-300
+- checked: border 5px emerald + 내부 white(라이트)/zinc-950(다크) 점
+
+## react-hook-form
+
+```tsx
+<Checkbox
+  label="동의"
+  {...register("agreed", { required: true })}
+/>
+```
+
+## 관련
+
+- [Input](/anti-card/input) — 텍스트 입력

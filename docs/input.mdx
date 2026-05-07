@@ -1,0 +1,60 @@
+---
+title: Input
+description: 텍스트 입력. label/hint/error 자동, focus시 emerald 헤어라인.
+group: components
+order: 44
+published: true
+updated: 2026-05-08
+---
+
+`<Input>`은 폼 텍스트 입력입니다. shadcn Input보다 둥근 모서리 약함, shadow 거부.
+
+```tsx
+import { Input } from "@freeive/anti-card";
+
+<Input
+  label="이메일"
+  type="email"
+  placeholder="ive@freeive.com"
+  hint="답장이 필요한 주소"
+/>
+
+<Input label="이름" required error="이름은 필수입니다." />
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `label` | `ReactNode` | 위 라벨 |
+| `error` | `ReactNode` | 에러 메시지 (border rose) |
+| `hint` | `ReactNode` | 보조 설명 |
+| `wrapperClassName` | `string` | wrapper className |
+| `...rest` | `InputHTMLAttributes<HTMLInputElement>` | type / value / onChange 등 표준 |
+
+## 디자인
+
+- `rounded-md` (살짝)
+- border-zinc-300 → focus border-emerald-500 + ring 2px/20%
+- 14px text, py-2 px-3
+- label: 13px medium 위
+- hint/error: 12.5px 아래
+
+## react-hook-form 호환
+
+`React.forwardRef`로 ref 전달. react-hook-form `register` 직접 사용 가능.
+
+```tsx
+const { register, formState: { errors } } = useForm();
+
+<Input
+  label="이메일"
+  {...register("email", { required: "이메일은 필수" })}
+  error={errors.email?.message}
+/>
+```
+
+## 관련
+
+- [Textarea](/anti-card/textarea) — 여러 줄
+- [Select](/anti-card/select) / [Checkbox](/anti-card/checkbox-radio)

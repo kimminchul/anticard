@@ -5,6 +5,26 @@
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-05-08
+
+### Added
+- **P6 + P7 마일스톤** — 폼 + 그리드 + 갤러리 컴포넌트 6개 (P6 5개 + P7 1개 통합 release):
+  - `Grid` — 단순 grid wrapper (1~6 columns × tight/default/loose × as)
+  - `Input` — 텍스트 입력 (label/hint/error, forwardRef, react-hook-form 호환)
+  - `Textarea` — 여러 줄 입력 (rows × resize-y, Input 동일 톤)
+  - `Select` — native select + 커스텀 SVG 화살표 (커스텀 dropdown 거부)
+  - `Checkbox` + `Radio` — native input + label + description (checked emerald)
+  - `Gallery` — 이미지 그리드 (2/3/4 columns × ratio × lazy loading)
+- 각 컴포넌트 docs 6개
+
+### Notes
+- 0.6.0 → 0.8.0 (P6 + P7 통합 release, P7은 Gallery 1개라 별도 마일스톤 분리 X)
+- 폼 컴포넌트는 anti-card 정체성과 균형 — 박스를 완전히 거부하기 어렵지만 둥근 모서리 최소(rounded-md), shadow X, focus emerald 헤어라인
+- native select / checkbox / radio 사용 — 커스텀 dropdown 거부, 접근성·모바일 OS·키보드 자동 지원
+- **누적: 49개 컴포넌트** (3 + P0 8 + P1 8 + P2 8 + P3 4 + P4 5 + P5 6 + P6+P7 6 + Checkbox/Radio 분리 = 49)
+- Carousel만 `planned` 상태 유지 (장기 검토)
+- **모든 P0~P7 컴포넌트 완료** — 다음 단계는 AI Skill catalog 작업 (Layer 1)
+
 ## [0.6.0] — 2026-05-08
 
 ### Added
