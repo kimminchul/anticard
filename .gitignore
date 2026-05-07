@@ -11,3 +11,6 @@ dist
 
 # tests/coverage (future)
 coverage
+
+# npm pack output
+*.tgz

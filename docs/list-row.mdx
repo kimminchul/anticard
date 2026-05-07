@@ -1,0 +1,77 @@
+---
+title: ListRow
+description: 카드 그리드 대신 행 레이아웃으로 정보 밀도를 높이는 컴포넌트.
+group: components
+order: 3
+published: true
+updated: 2026-05-07
+---
+
+`<ListRow>`는 카드 그리드 대신 **행 레이아웃**을 시도하는 컴포넌트입니다.
+카드 그리드는 모든 항목을 균등하게 보이게 하고 정보 밀도를 떨어뜨리는 반면,
+행은 한 화면에 더 많은 정보를 자연스럽게 펼치고 위계를 본문 크기·meta로 만듭니다.
+
+```tsx
+import { ListRow } from "@freeive/anti-card";
+
+<ul className="divide-y divide-white/[0.04] border-y border-white/[0.04]">
+  <ListRow meta="2024" trailing="EBS" href="/heritage/ebs">
+    EBS 온라인 클래스 재구조화
+  </ListRow>
+</ul>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `meta` | `ReactNode` | — | 좌측 작은 라벨 (smallcaps). 보통 카테고리·날짜·버전. |
+| `trailing` | `ReactNode` | — | 우측 라벨. 클라이언트, 보조 정보. |
+| `children` | `ReactNode` | — | 본문(제목). 가장 두드러지는 텍스트. |
+| `href` | `string` | — | 클릭 가능 행이면 a 태그로 감쌈 |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+| `...rest` | `HTMLAttributes<HTMLLIElement>` | — | 표준 li 속성 |
+
+## 레이아웃
+
+`md:grid-cols-[140px_1fr_auto]` — 좌측 meta 140px 고정, 본문 flex, 우측 trailing
+auto. 모바일에서는 단일 컬럼 stack.
+
+## ul / li 관계
+
+`<ListRow>`는 `<li>`로 렌더됩니다. 반드시 `<ul>` 안에 넣어주세요.
+
+```tsx
+<ul className="divide-y divide-white/[0.04] border-y border-white/[0.04]">
+  <ListRow meta="2024" trailing="EBS">EBS 온라인 클래스 재구조화</ListRow>
+  <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
+</ul>
+```
+
+`divide-y` + `border-y` 조합이 안티 카드 톤의 기본 ul 스타일입니다.
+
+## 클릭 가능
+
+`href` prop을 주면 자동으로 a 태그로 감싸지고, hover 시 본문 색이 액센트로 바뀝니다.
+
+```tsx
+<ListRow meta="2024" trailing="EBS" href="/heritage/ebs">
+  EBS 온라인 클래스 재구조화
+</ListRow>
+```
+
+## 디자인 메모
+
+- 데스크톱: 3컬럼 grid (`140px / 1fr / auto`)
+- 모바일: 단일 컬럼 stack
+- `data-anti-card="list-row"` attribute로 외부 스타일 타겟팅 가능
+
+## 활용 사례
+
+[freeive.com/heritage](https://freeive.com/heritage) 의 모든 섹터별 프로젝트
+리스트가 ListRow로 만들어져 있습니다.
+
+## 관련
+
+- [SectionFrame](/anti-card/section-frame) — children으로 ul + ListRow 권장
+- [Eyebrow](/anti-card/eyebrow) — meta에 Eyebrow 톤 텍스트가 자동 적용됨

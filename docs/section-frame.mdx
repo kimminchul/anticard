@@ -1,0 +1,80 @@
+---
+title: SectionFrame
+description: 카드 박스 없이 섹션을 짜는 헤어라인 + 여백 + 라벨 프레임.
+group: components
+order: 2
+published: true
+updated: 2026-05-07
+---
+
+`<SectionFrame>`은 안티 카드 5원칙 중 **공간(여백) + 헤어라인 + smallcaps 라벨**
+세 가지를 한 컴포넌트로 묶어, AI가 카드 박스를 생성하려는 충동을 줄입니다.
+
+```tsx
+import { SectionFrame } from "@freeive/anti-card";
+
+<SectionFrame
+  eyebrow="Framework · v0"
+  title="카드 안에 카드를 쌓지 않는다."
+  description="AI 도구가 생성하는 동질화 UI에 대한 답변."
+>
+  {/* 본문 콘텐츠 */}
+</SectionFrame>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `eyebrow` | `ReactNode` | — | 섹션 카테고리 라벨 (smallcaps) |
+| `title` | `ReactNode` | — | 섹션 큰 제목 |
+| `description` | `ReactNode` | — | 제목 아래 서브 카피 |
+| `as` | `"h1" \| "h2" \| "h3"` | `"h2"` | 헤딩 레벨 |
+| `divider` | `boolean` | `true` | 위쪽 헤어라인 표시 여부 |
+| `children` | `ReactNode` | — | 본문 (리스트, 그리드, ListRow 등) |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+| `...rest` | `HTMLAttributes<HTMLElement>` | — | (`title` 제외) |
+
+## 헤딩 레벨
+
+페이지의 첫 큰 섹션이면 `as="h1"`, 아니면 기본 `h2`. 하위 영역이면 `h3`.
+
+```tsx
+<SectionFrame as="h1" eyebrow="Hero" title="..." />
+<SectionFrame eyebrow="Pillars" title="..." />
+<SectionFrame as="h3" eyebrow="Sub" title="..." />
+```
+
+## 헤어라인 끄기
+
+연속된 섹션의 첫 번째에서는 헤어라인을 빼는 게 자연스럽습니다.
+
+```tsx
+<SectionFrame divider={false} eyebrow="Hero" title="..." />
+<SectionFrame eyebrow="Pillars" title="..." />     {/* 위쪽 라인 자동 */}
+```
+
+## 디자인 메모
+
+- 위·아래 패딩 `py-16 md:py-20` (안티 카드 5원칙 중 "공간")
+- 헤어라인은 `border-t border-zinc-200/60 dark:border-white/[0.06]`
+- `data-anti-card="section-frame"` attribute로 외부 스타일 타겟팅 가능
+
+## 활용 사례
+
+```tsx
+<SectionFrame
+  eyebrow="Sectors"
+  title="어떤 무대에서 일했는가."
+>
+  <ul className="divide-y divide-white/[0.04] border-y border-white/[0.04]">
+    <ListRow meta="2024" trailing="EBS">EBS 온라인 클래스 재구조화</ListRow>
+    <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
+  </ul>
+</SectionFrame>
+```
+
+## 관련
+
+- [Eyebrow](/anti-card/eyebrow) — `eyebrow` prop으로 자동 포함됨
+- [ListRow](/anti-card/list-row) — `children`으로 권장되는 행 레이아웃

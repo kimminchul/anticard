@@ -1,0 +1,64 @@
+---
+title: Eyebrow
+description: 섹션의 카테고리를 작은 라벨로 분리하는 smallcaps 컴포넌트.
+group: components
+order: 1
+published: true
+updated: 2026-05-07
+---
+
+`<Eyebrow>`는 섹션 위에 붙는 작은 카테고리 라벨입니다. 박스나 카드 없이도 영역을
+구분하는 안티 카드 5원칙 중 하나(smallcaps 라벨).
+
+```tsx
+import { Eyebrow } from "@freeive/anti-card";
+
+<Eyebrow>Framework · v0</Eyebrow>
+<h1>제목</h1>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tone` | `"neutral" \| "accent"` | `"neutral"` | `accent`는 액센트 컬러로 강조 |
+| `className` | `string` | — | Tailwind 클래스 추가 (twMerge로 충돌 해결) |
+| `...rest` | `HTMLAttributes<HTMLParagraphElement>` | — | 표준 p 속성 |
+
+## 톤 변형
+
+```tsx
+<Eyebrow>Heritage · 2016 — Now</Eyebrow>          // neutral (기본)
+<Eyebrow tone="accent">Live · in progress</Eyebrow>  // accent
+```
+
+## 디자인 메모
+
+- 글자 크기 12px, letter-spacing 0.08em, 대문자 변환
+- `font-medium`으로 너무 가늘지 않게
+- `data-anti-card="eyebrow"` attribute로 외부 스타일 타겟팅 가능
+
+## 자주 묻는 패턴
+
+### 헤딩 위 라벨
+
+```tsx
+<section>
+  <Eyebrow>Pillars</Eyebrow>
+  <h2 className="mt-3 text-3xl font-semibold tracking-tight">
+    네 개의 축으로 운영합니다.
+  </h2>
+</section>
+```
+
+### 색조 변경 (Tailwind class)
+
+```tsx
+<Eyebrow className="text-yellow-500">env not set</Eyebrow>
+```
+
+`tone`은 사전 정의 두 가지뿐. 더 다양한 색은 `className` 사용을 권장합니다.
+
+## 관련
+
+- [SectionFrame](/anti-card/section-frame) — Eyebrow를 자동 포함하는 컴포지트

@@ -1,0 +1,46 @@
+---
+title: 왜 카드가 아닌가
+description: AI 도구가 만드는 ‘카드 안의 카드’ 패턴이 가진 문제와, 다른 위계 표현 방식들.
+group: start
+order: 2
+published: true
+updated: 2026-05-07
+---
+
+shadcn/ui로 대표되는 카드 컴포넌트는 빠르고 안전합니다. 그래서 AI도 기본적으로 그것부터
+씁니다. 문제는 **모든 화면이 그 모양으로 수렴**한다는 것입니다.
+
+## 카드의 안전함이 만든 문제
+
+- 시각적 위계가 둔해집니다. 카드 안에 카드, 그 안에 카드. 정보 우선순위가 사라집니다.
+- 모든 사이트가 같은 모양이 됩니다. 시그니처가 만들어지지 않습니다.
+- 카드는 **콘텐츠를 그릇에 담는 발상**입니다. 콘텐츠가 곧 형태인 페이지는 만들기 어렵습니다.
+
+## 다른 위계 표현 다섯 가지
+
+카드 없이 위계를 만드는 다섯 가지를 안티 카드의 출발 원칙으로 둡니다.
+
+1. **공간** — 섹션 사이 여백을 카드 테두리 대신 사용. 100~160px의 큰 호흡.
+2. **대비** — 텍스트 크기·굵기·색의 단계로 위계. clamp 기반 큰 헤딩.
+3. **헤어라인** — 1px 라인은 박스보다 가볍게 영역을 구분.
+4. **smallcaps 라벨** — 영역의 카테고리를 작은 라벨로 분리. 박스 대신.
+5. **리스트의 행** — 카드 그리드 대신 행 레이아웃이 정보 밀도를 높입니다.
+
+## 각 원칙이 패키지의 어떤 컴포넌트로 옮겨졌나
+
+| 원칙 | 컴포넌트 |
+|---|---|
+| smallcaps 라벨 | [`<Eyebrow>`](/anti-card/eyebrow) |
+| 공간 + 헤어라인 + 라벨 | [`<SectionFrame>`](/anti-card/section-frame) |
+| 리스트의 행 | [`<ListRow>`](/anti-card/list-row) |
+| 대비 | (Tailwind 클래스로 직접 — `text-[clamp(2rem,5vw,4rem)] font-semibold tracking-tightest`) |
+
+## 이 패키지 자체는 첫 활용사례
+
+[freeive.com](https://freeive.com) 의 모든 페이지는 카드 박스를 쓰지 않습니다.
+위 다섯 가지로만 짜여 있습니다. 완벽하지 않지만 안티 카드의 첫 시연입니다.
+
+## 다음에 읽을 것
+
+- [시작하기](/anti-card/getting-started)
+- [Eyebrow](/anti-card/eyebrow) · [SectionFrame](/anti-card/section-frame) · [ListRow](/anti-card/list-row)
