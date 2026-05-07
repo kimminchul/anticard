@@ -672,6 +672,14 @@ function PropsTable({
 function Footer() {
   return (
     <footer className="text-[12.5px] text-zinc-500">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10.5px] font-medium text-amber-700 dark:text-amber-400">
+          dev only
+        </span>
+        <span className="text-[12px] text-zinc-500">
+          이 playground는 패키지 dev 전용. npm 발행 시 제외됨 (.npmignore).
+        </span>
+      </div>
       <p>
         새 컴포넌트 추가:{" "}
         <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">src/components/foo.tsx</code> →{" "}
