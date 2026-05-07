@@ -7,10 +7,10 @@
   "homepage": "https://freeive.com/anti-card",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/freeive-lab/anti-card.git"
+    "url": "git+https://github.com/kimminchul/anticard.git"
   },
   "bugs": {
-    "url": "https://github.com/freeive-lab/anti-card/issues",
+    "url": "https://github.com/kimminchul/anticard/issues",
     "email": "ive@freeive.com"
   },
   "type": "module",
