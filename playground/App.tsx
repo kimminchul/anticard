@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { Highlight, themes, type Language } from "prism-react-renderer";
 import { Eyebrow, SectionFrame, ListRow } from "@freeive/anti-card";
 
 /**
@@ -409,19 +410,19 @@ function ExampleBlock({ example }: { example: Example }) {
   return (
     <div className="overflow-hidden rounded-lg border border-dashed border-white/[0.12]">
       {/* Header — 번호 + Example + badge + 짧은 라벨 */}
-      <div className="flex items-center justify-between border-b border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-2.5">
+      <div className="flex items-center justify-between border-b border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-3">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[11px] text-emerald-400/70">EX. {example.index}</span>
-          <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-400">Example</span>
+          <span className="font-mono text-[11px] text-emerald-400/80">EX. {example.index}</span>
+          <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-300">Example</span>
           <span className="rounded-full border border-emerald-400/30 bg-emerald-500/[0.06] px-2 py-0.5 text-[10px] font-medium text-emerald-400">
             {example.badge}
           </span>
         </div>
-        <span className="text-[10.5px] tracking-[0.04em] text-zinc-500">{example.title}</span>
+        <span className="text-[12px] tracking-[0.02em] text-zinc-300">{example.title}</span>
       </div>
 
-      {/* Tab nav */}
-      <div className="border-b border-dashed border-white/[0.12] bg-white/[0.01] px-2">
+      {/* Tab nav — 위쪽 여백 추가 */}
+      <div className="border-b border-dashed border-white/[0.12] bg-white/[0.01] px-3 pt-3">
         <div className="flex flex-wrap">
           {TABS.map((t) => {
             const active = tab === t.id;
@@ -430,7 +431,7 @@ function ExampleBlock({ example }: { example: Example }) {
                 key={t.id}
                 type="button"
                 onClick={() => setTab(t.id)}
-                className={`relative px-3 py-2 text-[12px] transition-colors ${
+                className={`relative px-3 py-2 text-[12.5px] transition-colors ${
                   active ? "text-emerald-400" : "text-zinc-400 hover:text-zinc-100"
                 }`}
               >
@@ -476,13 +477,12 @@ function ExampleBlock({ example }: { example: Example }) {
       </div>
 
       {/* Description below tab content */}
-      <div className="border-t border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-3">
-        <p className="text-[12.5px] leading-relaxed text-zinc-400">
-          <span className="font-mono text-emerald-400/70">EX. {example.index}</span>
-          <span className="ml-2 text-zinc-500">·</span>
-          <span className="ml-2 text-zinc-200">{example.title}</span>
-          <span className="ml-2 text-zinc-500">—</span>
-          <span className="ml-2">{example.description}</span>
+      <div className="border-t border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-3.5">
+        <p className="text-[13px] font-medium tracking-tight text-zinc-100">
+          {example.title}
+        </p>
+        <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-400">
+          {example.description}
         </p>
       </div>
     </div>
@@ -491,7 +491,19 @@ function ExampleBlock({ example }: { example: Example }) {
 
 /* ================ Tab content components ================ */
 
+/** 라벨 → Prism 언어 매핑 */
+function detectLanguage(label: string): Language {
+  const lower = label.toLowerCase();
+  if (lower.includes("html")) return "markup";
+  if (lower.includes("css")) return "css";
+  if (lower.includes("javascript") || lower.includes("js")) return "javascript";
+  if (lower.includes("react") || lower.includes("tsx")) return "tsx";
+  if (lower.includes("typescript") || lower.includes("ts")) return "typescript";
+  return "markup";
+}
+
 function CodeInline({ code, language }: { code: string; language: string }) {
+  const lang = detectLanguage(language);
   return (
     <div className="relative">
       <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
@@ -504,9 +516,22 @@ function CodeInline({ code, language }: { code: string; language: string }) {
           copy
         </button>
       </div>
-      <pre className="overflow-x-auto px-5 py-4 text-[12.5px] leading-relaxed text-zinc-200">
-        <code>{code}</code>
-      </pre>
+      <Highlight code={code.trimEnd()} language={lang} theme={themes.vsDark}>
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <pre
+            className={`${className} overflow-x-auto px-5 py-4 text-[12.5px] leading-relaxed`}
+            style={{ ...style, background: "transparent" }}
+          >
+            {tokens.map((line, i) => (
+              <div key={i} {...getLineProps({ line })}>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token })} />
+                ))}
+              </div>
+            ))}
+          </pre>
+        )}
+      </Highlight>
     </div>
   );
 }

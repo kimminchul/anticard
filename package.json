@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.4.1",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
