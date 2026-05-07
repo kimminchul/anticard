@@ -7,3 +7,10 @@ tsup.config.ts
 node_modules
 .github
 .editorconfig
+
+# playground는 dev 전용, npm 패키지에 포함 안 함
+playground
+vite.config.ts
+tailwind.config.ts
+postcss.config.js
+scripts

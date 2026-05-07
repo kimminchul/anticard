@@ -25,11 +25,19 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "docs", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "dev:play": "vite",
+    "build:play": "vite build",
     "sync": "node scripts/sync-to-site.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "echo \"(eslint 추후 추가)\"",
@@ -46,10 +54,15 @@
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.14",
     "react": "^19",
     "react-dom": "^19",
+    "tailwindcss": "^3.4.19",
     "tsup": "^8.3.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.11"
   },
   "publishConfig": {
     "access": "public"
