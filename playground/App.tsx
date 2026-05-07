@@ -139,9 +139,9 @@ const NAV: NavGroup[] = [
 const VERSION = "0.0.3";
 
 const STATUS_META: Record<NavItem["status"], { label: string; cls: string }> = {
-  ready: { label: "ready", cls: "text-emerald-400" },
-  soon: { label: "soon", cls: "text-zinc-500" },
-  planned: { label: "planned", cls: "text-zinc-600" },
+  ready: { label: "ready", cls: "text-emerald-600 dark:text-emerald-400" },
+  soon: { label: "soon", cls: "text-zinc-400 dark:text-zinc-500" },
+  planned: { label: "planned", cls: "text-zinc-300 dark:text-zinc-600" },
 };
 
 /* ================ Example data shape ================ */
@@ -206,7 +206,7 @@ export default function App() {
         <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
         <main className="min-w-0">
           <ActiveSection />
-          <div className="mt-24 border-t border-white/[0.08] pt-8">
+          <div className="mt-24 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
             <Footer />
           </div>
         </main>
@@ -286,18 +286,18 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         href="#intro"
         className={`mb-5 block rounded-md px-3 py-2 text-[13px] transition-colors ${
           activeId === "intro"
-            ? "bg-emerald-500/10 text-emerald-400"
-            : "text-zinc-200 hover:bg-white/[0.04] hover:text-zinc-50"
+            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+            : "text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-200 dark:hover:bg-white/[0.04] dark:hover:text-zinc-50"
         }`}
       >
         개요
       </a>
 
-      <div className="flex items-center gap-1 rounded-md border border-white/[0.08] p-0.5">
-        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "all" ? "bg-white/[0.08] text-zinc-100" : "text-zinc-400 hover:text-zinc-200"}`}>
+      <div className="flex items-center gap-1 rounded-md border border-zinc-200 p-0.5 dark:border-white/[0.08]">
+        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           전체 {totalCount}
         </button>
-        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:text-zinc-200"}`}>
+        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           준비됨 {readyCount}
         </button>
       </div>
@@ -308,11 +308,11 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
           if (items.length === 0) return null;
           return (
             <div key={group.group}>
-              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">
+              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
                 {group.group}
               </p>
               {group.desc && <p className="mt-1 text-[11.5px] leading-snug text-zinc-500">{group.desc}</p>}
-              <ul className="mt-3 space-y-1.5 border-l border-white/[0.08] pl-3 text-[13px]">
+              <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3 text-[13px] dark:border-white/[0.08]">
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
@@ -322,13 +322,13 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                       {isClickable ? (
                         <a
                           href={`#${item.id}`}
-                          className={`-ml-3 flex items-baseline justify-between gap-2 rounded-r-md py-0.5 pl-3 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-400 bg-emerald-500/10 text-emerald-400" : "border-l-2 border-transparent text-zinc-200 hover:border-white/20 hover:text-emerald-400"}`}
+                          className={`-ml-3 flex items-baseline justify-between gap-2 rounded-r-md py-0.5 pl-3 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400" : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"}`}
                         >
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${isActive ? "text-emerald-400" : meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[10px] ${isActive ? "text-emerald-600 dark:text-emerald-400" : meta.cls}`}>{meta.label}</span>
                         </a>
                       ) : (
-                        <span className="flex items-baseline justify-between gap-2 text-zinc-500">
+                        <span className="flex items-baseline justify-between gap-2 text-zinc-400 dark:text-zinc-500">
                           <span>{item.ko}</span>
                           <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
                         </span>
@@ -342,12 +342,12 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         })}
       </div>
 
-      <div className="mt-10 border-t border-white/[0.08] pt-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">Docs</p>
-        <ul className="mt-3 space-y-1 border-l border-white/[0.08] pl-3 text-[13px]">
-          <li><a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">Manifesto</a></li>
-          <li><a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">Admin vs End-user</a></li>
-          <li><a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">AI Skill</a></li>
+      <div className="mt-10 border-t border-zinc-200 pt-6 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
+        <ul className="mt-3 space-y-1 border-l border-zinc-200 pl-3 text-[13px] dark:border-white/[0.08]">
+          <li><a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Manifesto</a></li>
+          <li><a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Admin vs End-user</a></li>
+          <li><a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">AI Skill</a></li>
         </ul>
       </div>
     </aside>
@@ -357,32 +357,32 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
 function Intro() {
   return (
     <section>
-      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-400">Playground</p>
-      <h2 className="mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-50">
+      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">Playground</p>
+      <h2 className="mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-900 dark:text-zinc-50">
         컴포넌트 시연실
       </h2>
-      <p className="mt-5 text-[15px] leading-relaxed text-zinc-400">
+      <p className="mt-5 text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
         AI 시대의 UI 프레임워크는 방식이 바꿔야 합니다. 안티 카드는{" "}
-        <strong className="text-zinc-200">가장 순수한 HTML/CSS</strong>를 제공하고, AI가 이 디자인과
+        <strong className="text-zinc-900 dark:text-zinc-200">가장 순수한 HTML/CSS</strong>를 제공하고, AI가 이 디자인과
         구조를 참고합니다. 각 Example마다{" "}
-        <strong className="text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong> 탭을 제공합니다.
+        <strong className="text-zinc-900 dark:text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong> 탭을 제공합니다.
       </p>
-      <div className="mt-12 border-t border-white/[0.08] pt-10">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">준비된 컴포넌트</p>
+      <div className="mt-12 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">준비된 컴포넌트</p>
         <p className="mt-1.5 text-[12.5px] text-zinc-500">좌측 사이드바에서도 선택할 수 있습니다.</p>
-        <ul className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.02] sm:grid-cols-3">
+        <ul className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200/40 dark:border-white/[0.08] dark:bg-white/[0.02] sm:grid-cols-3">
           {[
             { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", desc: "섹션 카테고리 라벨 (smallcaps)" },
             { id: "section-frame", ko: "섹션 프레임", en: "SectionFrame", desc: "카드 없는 섹션 + 헤어라인" },
             { id: "list-row", ko: "리스트 행", en: "ListRow", desc: "카드 그리드 대신 행 레이아웃" },
           ].map((c) => (
-            <li key={c.id} className="bg-zinc-950">
-              <a href={`#${c.id}`} className="group flex h-full flex-col gap-2 p-5 transition-colors hover:bg-white/[0.03]">
-                <span className="text-[11px] uppercase tracking-[0.08em] text-emerald-400">ready</span>
-                <span className="text-[15px] font-medium text-zinc-100 group-hover:text-emerald-400">
-                  {c.ko} <code className="ml-1 text-[12px] text-zinc-400">{`<${c.en}>`}</code>
+            <li key={c.id} className="bg-white dark:bg-zinc-950">
+              <a href={`#${c.id}`} className="group flex h-full flex-col gap-2 p-5 transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.03]">
+                <span className="text-[11px] uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">ready</span>
+                <span className="text-[15px] font-medium text-zinc-900 group-hover:text-emerald-700 dark:text-zinc-100 dark:group-hover:text-emerald-400">
+                  {c.ko} <code className="ml-1 text-[12px] text-zinc-500 dark:text-zinc-400">{`<${c.en}>`}</code>
                 </span>
-                <span className="text-[12.5px] leading-relaxed text-zinc-400">{c.desc}</span>
+                <span className="text-[12.5px] leading-relaxed text-zinc-600 dark:text-zinc-400">{c.desc}</span>
               </a>
             </li>
           ))}
@@ -398,14 +398,14 @@ function ComponentPage({ def }: { def: ComponentDef }) {
   return (
     <section>
       <div id={def.id} className="scroll-mt-10">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-400">Component</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">Component</p>
         <div className="mt-3 flex items-baseline gap-3">
-          <h2 className="text-3xl font-semibold tracking-tight text-zinc-50">{def.ko}</h2>
-          <span className="text-[13px] text-zinc-400">
+          <h2 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">{def.ko}</h2>
+          <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
             <code>{`<${def.en}>`}</code>
           </span>
         </div>
-        <p className="mt-4 text-[15px] leading-relaxed text-zinc-300">{def.desc}</p>
+        <p className="mt-4 text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">{def.desc}</p>
       </div>
 
       {/* Examples — 각 example이 자체 6탭 */}
@@ -437,21 +437,21 @@ function ExampleBlock({ example }: { example: Example }) {
   const [tab, setTab] = useState<TabId>("design");
 
   return (
-    <div className="overflow-hidden rounded-lg border border-dashed border-white/[0.12]">
-      {/* Header — 번호 + Example + badge + 짧은 라벨 */}
-      <div className="flex items-center justify-between border-b border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-3">
+    <div className="overflow-hidden rounded-lg border border-dashed border-zinc-300 dark:border-white/[0.12]">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-dashed border-zinc-300 bg-zinc-50/60 px-5 py-3 dark:border-white/[0.12] dark:bg-white/[0.02]">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[11px] text-emerald-400/80">EX. {example.index}</span>
-          <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-300">Example</span>
-          <span className="rounded-full border border-emerald-400/30 bg-emerald-500/[0.06] px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+          <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400/80">EX. {example.index}</span>
+          <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Example</span>
+          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/[0.06] px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:border-emerald-400/30 dark:text-emerald-400">
             {example.badge}
           </span>
         </div>
-        <span className="text-[12px] tracking-[0.02em] text-zinc-300">{example.title}</span>
+        <span className="text-[12px] tracking-[0.02em] text-zinc-700 dark:text-zinc-300">{example.title}</span>
       </div>
 
-      {/* Tab nav — 위쪽 여백 추가 */}
-      <div className="border-b border-dashed border-white/[0.12] bg-white/[0.01] px-3 pt-3">
+      {/* Tab nav */}
+      <div className="border-b border-dashed border-zinc-300 bg-zinc-50/40 px-3 pt-3 dark:border-white/[0.12] dark:bg-white/[0.01]">
         <div className="flex flex-wrap">
           {TABS.map((t) => {
             const active = tab === t.id;
@@ -461,11 +461,13 @@ function ExampleBlock({ example }: { example: Example }) {
                 type="button"
                 onClick={() => setTab(t.id)}
                 className={`relative px-3 py-2 text-[12.5px] transition-colors ${
-                  active ? "text-emerald-400" : "text-zinc-400 hover:text-zinc-100"
+                  active
+                    ? "text-emerald-700 dark:text-emerald-400"
+                    : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 }`}
               >
                 {t.label}
-                {active && <span className="absolute inset-x-2 -bottom-px h-px bg-emerald-400" />}
+                {active && <span className="absolute inset-x-2 -bottom-px h-px bg-emerald-500 dark:bg-emerald-400" />}
               </button>
             );
           })}
@@ -473,13 +475,13 @@ function ExampleBlock({ example }: { example: Example }) {
       </div>
 
       {/* Tab content */}
-      <div className="bg-zinc-950">
+      <div className="bg-white dark:bg-zinc-950">
         {tab === "design" && (
           <div className="canvas-surface relative p-8 md:p-12">
-            <span className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-emerald-400/30" />
-            <span className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-emerald-400/30" />
-            <span className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-emerald-400/30" />
-            <span className="pointer-events-none absolute bottom-2 right-2 h-2 w-2 border-b border-r border-emerald-400/30" />
+            <span className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-emerald-500/30 dark:border-emerald-400/30" />
+            <span className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-emerald-500/30 dark:border-emerald-400/30" />
+            <span className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-emerald-500/30 dark:border-emerald-400/30" />
+            <span className="pointer-events-none absolute bottom-2 right-2 h-2 w-2 border-b border-r border-emerald-500/30 dark:border-emerald-400/30" />
             {example.preview}
           </div>
         )}
@@ -506,11 +508,11 @@ function ExampleBlock({ example }: { example: Example }) {
       </div>
 
       {/* Description below tab content */}
-      <div className="border-t border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-3.5">
-        <p className="text-[13px] font-medium tracking-tight text-zinc-100">
+      <div className="border-t border-dashed border-zinc-300 bg-zinc-50/60 px-5 py-3.5 dark:border-white/[0.12] dark:bg-white/[0.02]">
+        <p className="text-[13px] font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
           {example.title}
         </p>
-        <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-400">
+        <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-600 dark:text-zinc-400">
           {example.description}
         </p>
       </div>
@@ -531,21 +533,47 @@ function detectLanguage(label: string): Language {
   return "markup";
 }
 
+/** html.classList의 'dark' 변화를 감지하는 훅 */
+function useIsDark(): boolean {
+  const [isDark, setIsDark] = useState<boolean>(() =>
+    typeof document !== "undefined"
+      ? document.documentElement.classList.contains("dark")
+      : true
+  );
+  useEffect(() => {
+    const update = () =>
+      setIsDark(document.documentElement.classList.contains("dark"));
+    update();
+    const obs = new MutationObserver(update);
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => obs.disconnect();
+  }, []);
+  return isDark;
+}
+
 function CodeInline({ code, language }: { code: string; language: string }) {
   const lang = detectLanguage(language);
+  const isDark = useIsDark();
   return (
     <div className="relative">
-      <div className="flex items-center justify-between border-b border-white/[0.04] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+      <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.04] dark:bg-white/[0.02]">
         <span>{language}</span>
         <button
           type="button"
           onClick={() => navigator.clipboard.writeText(code)}
-          className="rounded border border-white/10 px-2 py-0.5 text-[10.5px] tracking-normal text-zinc-300 transition-colors hover:border-emerald-400/50 hover:text-emerald-400"
+          className="rounded border border-zinc-300 px-2 py-0.5 text-[10.5px] tracking-normal text-zinc-700 transition-colors hover:border-emerald-500/50 hover:text-emerald-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
         >
           copy
         </button>
       </div>
-      <Highlight code={code.trimEnd()} language={lang} theme={themes.vsDark}>
+      <Highlight
+        code={code.trimEnd()}
+        language={lang}
+        theme={isDark ? themes.vsDark : themes.vsLight}
+      >
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre
             className={`${className} overflow-x-auto px-5 py-4 text-[12.5px] leading-relaxed`}
@@ -568,24 +596,24 @@ function CodeInline({ code, language }: { code: string; language: string }) {
 function PromptInline({ prompt }: { prompt: string }) {
   return (
     <div>
-      <div className="bg-emerald-500/[0.03]">
-        <div className="flex items-center justify-between border-b border-emerald-500/15 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-emerald-400">
+      <div className="bg-emerald-500/[0.04] dark:bg-emerald-500/[0.03]">
+        <div className="flex items-center justify-between border-b border-emerald-500/20 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-emerald-700 dark:border-emerald-500/15 dark:text-emerald-400">
           <span>Prompt</span>
           <button
             type="button"
             onClick={() => navigator.clipboard.writeText(prompt)}
-            className="rounded border border-emerald-400/30 px-2 py-0.5 text-[10.5px] tracking-normal text-emerald-400 transition-colors hover:bg-emerald-500/10"
+            className="rounded border border-emerald-500/40 px-2 py-0.5 text-[10.5px] tracking-normal text-emerald-700 transition-colors hover:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-400"
           >
             copy
           </button>
         </div>
-        <pre className="overflow-x-auto whitespace-pre-wrap px-5 py-4 text-[13px] leading-relaxed text-zinc-100">
+        <pre className="overflow-x-auto whitespace-pre-wrap px-5 py-4 text-[13px] leading-relaxed text-zinc-900 dark:text-zinc-100">
           {prompt}
         </pre>
       </div>
-      <p className="border-t border-white/[0.04] bg-white/[0.01] px-5 py-3 text-[12.5px] leading-relaxed text-zinc-400">
+      <p className="border-t border-zinc-200 bg-zinc-50/60 px-5 py-3 text-[12.5px] leading-relaxed text-zinc-600 dark:border-white/[0.04] dark:bg-white/[0.01] dark:text-zinc-400">
         Claude / Cursor 등에 그대로 붙여넣으면 안티 카드 톤으로 만들어집니다.{" "}
-        <code className="rounded bg-white/5 px-1 py-0.5 text-[11.5px] text-zinc-200">skill/CLAUDE.md</code>
+        <code className="rounded bg-zinc-200/60 px-1 py-0.5 text-[11.5px] text-zinc-800 dark:bg-white/5 dark:text-zinc-200">skill/CLAUDE.md</code>
         를 같이 적용해두면 더 정확합니다.
       </p>
     </div>
@@ -596,7 +624,7 @@ function NoteInline({ title, body }: { title: string; body: string }) {
   return (
     <div className="px-6 py-10 text-center">
       <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500">{title}</p>
-      <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-zinc-300">{body}</p>
+      <p className="mx-auto mt-3 max-w-[44ch] text-[14px] leading-relaxed text-zinc-700 dark:text-zinc-300">{body}</p>
     </div>
   );
 }
@@ -613,7 +641,7 @@ function PropsTable({
       <h3 className="mt-12 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">Props</h3>
       <table className="mt-3 w-full text-[13px]">
         <thead>
-          <tr className="border-b border-white/[0.06] text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+          <tr className="border-b border-zinc-200 text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.06]">
             <th className="py-2 text-left font-medium">Name</th>
             <th className="py-2 text-left font-medium">Type</th>
             <th className="py-2 text-left font-medium">Default</th>
@@ -622,17 +650,17 @@ function PropsTable({
         </thead>
         <tbody>
           {rows.map((p) => (
-            <tr key={p.name} className="border-b border-white/[0.04]">
+            <tr key={p.name} className="border-b border-zinc-100 dark:border-white/[0.04]">
               <td className="py-2.5 align-top">
-                <code className="rounded bg-white/5 px-1.5 py-0.5 text-[12px] text-zinc-100">{p.name}</code>
+                <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[12px] text-zinc-900 dark:bg-white/5 dark:text-zinc-100">{p.name}</code>
               </td>
-              <td className="py-2.5 align-top text-emerald-400">
+              <td className="py-2.5 align-top text-emerald-700 dark:text-emerald-400">
                 <code className="text-[12px]">{p.type}</code>
               </td>
-              <td className="py-2.5 align-top text-zinc-400">
-                {p.default ? <code className="text-[12px]">{p.default}</code> : <span className="text-zinc-600">—</span>}
+              <td className="py-2.5 align-top text-zinc-500 dark:text-zinc-400">
+                {p.default ? <code className="text-[12px]">{p.default}</code> : <span className="text-zinc-400 dark:text-zinc-600">—</span>}
               </td>
-              <td className="py-2.5 align-top text-zinc-300">{p.desc}</td>
+              <td className="py-2.5 align-top text-zinc-700 dark:text-zinc-300">{p.desc}</td>
             </tr>
           ))}
         </tbody>
@@ -646,13 +674,13 @@ function Footer() {
     <footer className="text-[12.5px] text-zinc-500">
       <p>
         새 컴포넌트 추가:{" "}
-        <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">src/components/foo.tsx</code> →{" "}
-        <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">src/index.ts</code> export →{" "}
-        <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">playground/App.tsx</code> 의 ComponentDef + READY_SECTIONS 등록
+        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">src/components/foo.tsx</code> →{" "}
+        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">src/index.ts</code> export →{" "}
+        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">playground/App.tsx</code> 의 ComponentDef + READY_SECTIONS 등록
       </p>
       <p className="mt-2">
         사이트(:3000) 통합:{" "}
-        <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11.5px] text-zinc-300">npm run sync</code>
+        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">npm run sync</code>
       </p>
     </footer>
   );
