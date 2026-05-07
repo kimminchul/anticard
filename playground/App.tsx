@@ -492,12 +492,15 @@ function Variant({
 }) {
   return (
     <div className="mt-14 first:mt-0">
-      <div className="overflow-hidden rounded-lg border border-white/[0.08]">
-        <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-5 py-2.5">
+      <div className="overflow-hidden rounded-lg border border-dashed border-white/[0.12]">
+        {/* Header — "Example" 라벨 + 번호 + 배지 */}
+        <div className="flex items-center justify-between border-b border-dashed border-white/[0.12] bg-white/[0.02] px-5 py-2.5">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] text-zinc-500">{index}</span>
+            <span className="font-mono text-[11px] text-emerald-400/70">
+              EX. {index}
+            </span>
             <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-400">
-              Preview
+              Example
             </span>
             {badge && (
               <span className="rounded-full border border-emerald-400/30 bg-emerald-500/[0.06] px-2 py-0.5 text-[10px] font-medium text-emerald-400">
@@ -507,11 +510,20 @@ function Variant({
           </div>
           <span className="text-[10.5px] tracking-[0.04em] text-zinc-500">{title}</span>
         </div>
-        <div className="p-6 md:p-8">{children}</div>
+
+        {/* Canvas — dot pattern으로 "데모 영역" 시그널 */}
+        <div className="canvas-surface relative p-8 md:p-12">
+          {/* 코너 마커 — 디자인 도구의 selection corner 느낌 */}
+          <span className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-emerald-400/30" />
+          <span className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-emerald-400/30" />
+          <span className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-emerald-400/30" />
+          <span className="pointer-events-none absolute bottom-2 right-2 h-2 w-2 border-b border-r border-emerald-400/30" />
+          {children}
+        </div>
       </div>
       {description && (
         <p className="mt-3 text-[12.5px] leading-relaxed text-zinc-400">
-          <span className="font-mono text-zinc-600">{index}</span>
+          <span className="font-mono text-emerald-400/70">EX. {index}</span>
           <span className="ml-2 text-zinc-500">·</span>
           <span className="ml-2 text-zinc-200">{title}</span>
           <span className="ml-2 text-zinc-500">—</span>
