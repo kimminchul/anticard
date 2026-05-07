@@ -219,25 +219,54 @@ export default function App() {
 
 function Header() {
   return (
-    <header className="flex items-baseline justify-between border-b border-white/[0.06] pb-5">
+    <header className="flex items-baseline justify-between border-b border-zinc-200/60 pb-5 dark:border-white/[0.06]">
       <div className="flex items-baseline gap-3">
-        <h1 className="text-xl font-semibold tracking-tight text-zinc-50">anti-card</h1>
-        <span className="rounded-full border border-white/15 px-2 py-0.5 text-[11px] text-zinc-300">
+        <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          anti-card
+        </h1>
+        <span className="rounded-full border border-zinc-200 px-2 py-0.5 text-[11px] text-zinc-600 dark:border-white/15 dark:text-zinc-300">
           v{VERSION}
         </span>
-        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] text-emerald-400">
+        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] text-emerald-600 dark:text-emerald-400">
           playground
         </span>
       </div>
-      <nav className="flex items-center gap-5 text-[12.5px] text-zinc-400">
-        <a href="https://github.com/kimminchul/anticard" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-100">
+      <nav className="flex items-center gap-4 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+        <ThemeToggle />
+        <a href="https://github.com/kimminchul/anticard" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
           Github
         </a>
-        <a href="https://freeive.com/anti-card" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-100">
+        <a href="https://freeive.com/anti-card" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
           freeive.com/anti-card
         </a>
       </nav>
     </header>
+  );
+}
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof window === "undefined") return "dark";
+    return (localStorage.getItem("anti-card-theme") as "dark" | "light") ?? "dark";
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+    localStorage.setItem("anti-card-theme", theme);
+  }, [theme]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+      className="flex items-center gap-1.5 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] transition-colors hover:border-emerald-500/50 hover:text-emerald-600 dark:border-white/15 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
+      title={theme === "dark" ? "라이트 모드로" : "다크 모드로"}
+    >
+      <span aria-hidden>{theme === "dark" ? "☾" : "☀"}</span>
+      <span>{theme === "dark" ? "Dark" : "Light"}</span>
+    </button>
   );
 }
 
