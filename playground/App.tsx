@@ -153,12 +153,20 @@ export default function App() {
       <Header />
       <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[240px_1fr]">
         <Sidebar filter={filter} onFilterChange={setFilter} />
-        <main className="min-w-0 space-y-24">
+        <main className="min-w-0">
           <Intro />
-          <EyebrowSection />
-          <SectionFrameSection />
-          <ListRowSection />
-          <Footer />
+          <div className="mt-20 border-t border-white/[0.08] pt-16">
+            <EyebrowSection />
+          </div>
+          <div className="mt-24 border-t border-white/[0.08] pt-16">
+            <SectionFrameSection />
+          </div>
+          <div className="mt-24 border-t border-white/[0.08] pt-16">
+            <ListRowSection />
+          </div>
+          <div className="mt-24 border-t border-white/[0.08] pt-8">
+            <Footer />
+          </div>
         </main>
       </div>
     </div>
@@ -203,13 +211,13 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
   const totalCount = NAV.flatMap((g) => g.items).length;
 
   return (
-    <aside className="self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-2">
-      <div className="flex items-center gap-1 rounded-md border border-white/[0.06] p-0.5">
+    <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
+      <div className="flex items-center gap-1 rounded-md border border-white/[0.08] p-0.5">
         <button
           type="button"
           onClick={() => onFilterChange("all")}
           className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
-            filter === "all" ? "bg-white/[0.06] text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+            filter === "all" ? "bg-white/[0.08] text-zinc-100" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
           전체 {totalCount}
@@ -218,7 +226,7 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
           type="button"
           onClick={() => onFilterChange("ready")}
           className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${
-            filter === "ready" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-500 hover:text-zinc-300"
+            filter === "ready" ? "bg-emerald-500/10 text-emerald-400" : "text-zinc-400 hover:text-zinc-200"
           }`}
         >
           준비됨 {readyCount}
@@ -232,13 +240,13 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
 
           return (
             <div key={group.group}>
-              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">
+              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">
                 {group.group}
               </p>
               {group.desc && (
-                <p className="mt-1 text-[11.5px] leading-snug text-zinc-600">{group.desc}</p>
+                <p className="mt-1 text-[11.5px] leading-snug text-zinc-500">{group.desc}</p>
               )}
-              <ul className="mt-3 space-y-1.5 border-l border-white/[0.06] pl-3 text-[13px]">
+              <ul className="mt-3 space-y-1.5 border-l border-white/[0.08] pl-3 text-[13px]">
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
@@ -247,13 +255,13 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
                       {isClickable ? (
                         <a
                           href={`#${item.id}`}
-                          className="flex items-baseline justify-between gap-2 text-zinc-300 transition-colors hover:text-emerald-400"
+                          className="flex items-baseline justify-between gap-2 text-zinc-200 transition-colors hover:text-emerald-400"
                         >
                           <span>{item.ko}</span>
                           <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
                         </a>
                       ) : (
-                        <span className="flex items-baseline justify-between gap-2 text-zinc-600">
+                        <span className="flex items-baseline justify-between gap-2 text-zinc-500">
                           <span>{item.ko}</span>
                           <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
                         </span>
@@ -267,21 +275,21 @@ function Sidebar({ filter, onFilterChange }: SidebarProps) {
         })}
       </div>
 
-      <div className="mt-10 border-t border-white/[0.06] pt-6">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">Docs</p>
-        <ul className="mt-3 space-y-1 border-l border-white/[0.06] pl-3 text-[13px]">
+      <div className="mt-10 border-t border-white/[0.08] pt-6">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-300">Docs</p>
+        <ul className="mt-3 space-y-1 border-l border-white/[0.08] pl-3 text-[13px]">
           <li>
-            <a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
+            <a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">
               Manifesto
             </a>
           </li>
           <li>
-            <a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
+            <a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">
               Admin vs End-user
             </a>
           </li>
           <li>
-            <a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-400 transition-colors hover:text-emerald-400">
+            <a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-300 transition-colors hover:text-emerald-400">
               AI Skill
             </a>
           </li>
@@ -492,13 +500,16 @@ function PropsTable({ rows }: { rows: PropRow[] }) {
 function SectionHeading({ id, ko, en, desc }: { id: string; ko: string; en: string; desc: string }) {
   return (
     <div id={id} className="scroll-mt-10">
-      <div className="flex items-baseline gap-3">
-        <h2 className="text-2xl font-semibold tracking-tight text-zinc-50">{ko}</h2>
-        <span className="text-[12px] text-zinc-500">
-          <code className="text-zinc-400">{`<${en}>`}</code>
+      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-400">
+        Component
+      </p>
+      <div className="mt-3 flex items-baseline gap-3">
+        <h2 className="text-3xl font-semibold tracking-tight text-zinc-50">{ko}</h2>
+        <span className="text-[13px] text-zinc-400">
+          <code>{`<${en}>`}</code>
         </span>
       </div>
-      <p className="mt-3 max-w-[60ch] text-[14.5px] leading-relaxed text-zinc-400">{desc}</p>
+      <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-zinc-300">{desc}</p>
     </div>
   );
 }
