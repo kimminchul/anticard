@@ -202,7 +202,7 @@ export default function App() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <Header />
-      <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[240px_1fr]">
+      <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[280px_1fr]">
         <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
         <main className="min-w-0">
           <ActiveSection />
@@ -284,7 +284,7 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
     <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
       <a
         href="#intro"
-        className={`mb-5 block rounded-md px-3 py-2 text-[13px] transition-colors ${
+        className={`mb-5 block rounded-md px-3 py-2.5 text-[14px] transition-colors ${
           activeId === "intro"
             ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
             : "text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-200 dark:hover:bg-white/[0.04] dark:hover:text-zinc-50"
@@ -294,25 +294,25 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
       </a>
 
       <div className="flex items-center gap-1 rounded-md border border-zinc-200 p-0.5 dark:border-white/[0.08]">
-        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
+        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1.5 text-[12px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           전체 {totalCount}
         </button>
-        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1 text-[11px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
+        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1.5 text-[12px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           준비됨 {readyCount}
         </button>
       </div>
 
-      <div className="mt-6 space-y-7">
+      <div className="mt-7 space-y-7">
         {NAV.map((group) => {
           const items = filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items;
           if (items.length === 0) return null;
           return (
             <div key={group.group}>
-              <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
                 {group.group}
               </p>
-              {group.desc && <p className="mt-1 text-[11.5px] leading-snug text-zinc-500">{group.desc}</p>}
-              <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3 text-[13px] dark:border-white/[0.08]">
+              {group.desc && <p className="mt-1 text-[12px] leading-snug text-zinc-500">{group.desc}</p>}
+              <ul className="mt-3.5 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
@@ -322,15 +322,15 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                       {isClickable ? (
                         <a
                           href={`#${item.id}`}
-                          className={`-ml-3 flex items-baseline justify-between gap-2 rounded-r-md py-0.5 pl-3 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400" : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"}`}
+                          className={`-ml-3.5 flex items-baseline justify-between gap-2 rounded-r-md py-1 pl-3.5 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400" : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"}`}
                         >
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${isActive ? "text-emerald-600 dark:text-emerald-400" : meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[11px] ${isActive ? "text-emerald-600 dark:text-emerald-400" : meta.cls}`}>{meta.label}</span>
                         </a>
                       ) : (
-                        <span className="flex items-baseline justify-between gap-2 text-zinc-400 dark:text-zinc-500">
+                        <span className="flex items-baseline justify-between gap-2 py-1 text-zinc-400 dark:text-zinc-500">
                           <span>{item.ko}</span>
-                          <span className={`text-[10px] ${meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[11px] ${meta.cls}`}>{meta.label}</span>
                         </span>
                       )}
                     </li>
@@ -343,11 +343,11 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
       </div>
 
       <div className="mt-10 border-t border-zinc-200 pt-6 dark:border-white/[0.08]">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
-        <ul className="mt-3 space-y-1 border-l border-zinc-200 pl-3 text-[13px] dark:border-white/[0.08]">
-          <li><a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Manifesto</a></li>
-          <li><a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Admin vs End-user</a></li>
-          <li><a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">AI Skill</a></li>
+        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
+        <ul className="mt-3.5 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
+          <li><a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Manifesto</a></li>
+          <li><a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Admin vs End-user</a></li>
+          <li><a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">AI Skill</a></li>
         </ul>
       </div>
     </aside>
