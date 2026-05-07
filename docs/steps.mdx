@@ -1,0 +1,51 @@
+---
+title: Steps
+description: 절차 단계. 자동 번호 + 제목 + 설명. vertical / horizontal.
+group: components
+order: 41
+published: true
+updated: 2026-05-08
+---
+
+`<Steps>`는 프로세스 단계를 표시합니다. 자동 번호(01/02/03).
+
+```tsx
+import { Steps } from "@freeive/anti-card";
+
+// vertical (default)
+<Steps items={[
+  { title: "프로젝트 정리", description: "..." },
+  { title: "구현", description: "..." },
+  { title: "검증", description: "..." },
+]} />
+
+// horizontal (3·4단계 시각화)
+<Steps layout="horizontal" items={[
+  { title: "관찰" }, { title: "분석" }, { title: "결정" }, { title: "적용" },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `StepItem[]` | — | `{title, description?}[]` |
+| `layout` | `"vertical" \| "horizontal"` | `"vertical"` | 수직 / 가로 grid |
+
+## layout 가이드
+
+| layout | 시각 | 용도 |
+|---|---|---|
+| `vertical` | 좌측 번호 + 우측 본문 stack | 긴 설명, 5+ 단계 |
+| `horizontal` | 상단 헤어라인 + 번호 + 본문 수직 | 3·4단계 시각 강조 |
+
+## FeatureRow numbered와의 차이
+
+- `FeatureRow numbered`: "이런 특징들" (특징 나열)
+- `Steps`: "이 순서로 한다" (프로세스)
+
+같은 시각이어도 의미 다름 — 콘텐츠 의도에 맞게 선택.
+
+## 관련
+
+- [FeatureRow](/anti-card/feature-row) — 비슷한 시각, 다른 의미

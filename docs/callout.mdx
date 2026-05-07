@@ -1,0 +1,43 @@
+---
+title: Callout
+description: 본문 안의 인라인 강조. Banner와 다름 — 풀폭 띠 X.
+group: components
+order: 37
+published: true
+updated: 2026-05-08
+---
+
+`<Callout>`은 본문 흐름 안의 인라인 강조 영역입니다. 좌측 헤어라인 + 살짝 톤 배경.
+
+```tsx
+import { Callout } from "@freeive/anti-card";
+
+<Callout tone="info" title="참고">
+  이 글의 모든 코드 예시는 Tailwind 3.4 기준입니다.
+</Callout>
+
+<Callout tone="warning" icon="⚠">
+  env not set — 환경 변수 확인 필요.
+</Callout>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tone` | `"info" \| "accent" \| "warning" \| "danger"` | `"info"` | 색 톤 |
+| `title` | `ReactNode` | — | 제목 (선택) |
+| `icon` | `ReactNode` | — | 좌측 아이콘 (텍스트 OK) |
+| `children` | `ReactNode` | — | 본문 |
+
+## Banner와의 차이
+
+| | Banner | Callout |
+|---|---|---|
+| 위치 | 페이지 풀폭 띠 | 본문 흐름 안 |
+| 시각 | border-y + 살짝 bg | border-l-2 + 살짝 bg |
+| 용도 | 사이트 공지 | 본문 참고/주의 |
+
+## 관련
+
+- [Banner](/anti-card/banner) — 풀폭 알림 띠

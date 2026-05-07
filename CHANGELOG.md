@@ -5,6 +5,25 @@
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-05-08
+
+### Added
+- **P5 마일스톤** — 콘텐츠 블록 + 비교 컴포넌트 6개:
+  - `Callout` — 본문 안 인라인 강조 (info/accent/warning/danger × title × icon)
+  - `FAQ` — 자주 묻는 질문 (native details/summary, JS-free)
+  - `PricingTable` — 가격 plan 비교 (1px gap grid, highlighted plan)
+  - `PricingPattern` — 가격 페이지 통째로 (Hero+Table+FAQ+CTA)
+  - `Steps` — 프로세스 단계 (vertical/horizontal × 자동 번호)
+  - `CompareTable` — 기능 비교 (boolean ✓/− 자동, highlighted 컬럼)
+- 각 컴포넌트 docs 6개
+- playground 6 ComponentDef + NAV status ready
+
+### Notes
+- 0.6.0 = 가격 페이지 + FAQ + 비교 영역 한 번에 만들 수 있는 set
+- FAQ는 native `<details>` 시맨틱 — JS 없이 동작 + 접근성 우수
+- 누적: 42개 컴포넌트 (3 + P0 8 + P1 8 + P2 8 + P3 4 + P4 5 + P5 6)
+- 다음 마일스톤(0.7.0) = P6 폼 + 그리드 (Grid/Input/Textarea/Select/CheckboxRadio)
+
 ## [0.5.0] — 2026-05-08
 
 ### Added

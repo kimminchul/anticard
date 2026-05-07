@@ -1,0 +1,57 @@
+---
+title: PricingTable
+description: 가격 plan 비교. 카드 박스 최소화 — 1px gap grid + highlighted plan만 강조.
+group: components
+order: 39
+published: true
+updated: 2026-05-08
+---
+
+`<PricingTable>`은 가격 plan 비교 표입니다.
+
+```tsx
+import { PricingTable } from "@freeive/anti-card";
+
+<PricingTable plans={[
+  { name: "Free", price: "₩0", features: ["기본 기능"], cta: { label: "시작", href: "/signup" } },
+  { name: "Pro", price: "₩9,900", features: [...], highlighted: true,
+    cta: { label: "Pro 시작", href: "/signup", tone: "accent" } },
+  { name: "Team", price: "Custom", features: [...], cta: { label: "Talk", href: "/talk" } },
+]} />
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `plans` | `PricingPlan[]` | plan 배열 |
+
+```ts
+type PricingPlan = {
+  name: ReactNode;
+  price: ReactNode;       // "₩9,900", "$29 / mo", "Custom"
+  priceHint?: ReactNode;  // "월간", "VAT 별도"
+  tagline?: ReactNode;
+  features: ReactNode[];
+  cta?: { label, href?, onClick?, tone? };
+  highlighted?: boolean;  // 추천 plan
+};
+```
+
+## 디자인
+
+- 1px gap grid (모바일 1열 / 데스크톱 3열)
+- 각 plan: bg-white dark:bg-zinc-950, border 자동 (gap에서 살아남)
+- highlighted plan: bg-emerald-50/50 + accent name + accent CTA 자동
+- features: ✓ + 텍스트 행
+- shadow / 큰 둥근 모서리 거부
+
+## CTA: href vs onClick
+
+- `cta.href` → LinkRow (페이지 이동)
+- `cta.onClick` → Button (모달, 결제 시작 등)
+
+## 관련
+
+- [PricingPattern](/anti-card/pricing-pattern) — 가격 페이지 통째로
+- [CompareTable](/anti-card/compare-table) — 더 디테일한 비교

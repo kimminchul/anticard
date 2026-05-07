@@ -1,0 +1,50 @@
+---
+title: PricingPattern
+description: 가격 페이지 통째로 — Hero(center) + PricingTable + FAQ + CTASection.
+group: components
+order: 40
+published: true
+updated: 2026-05-08
+---
+
+`<PricingPattern>`은 가격 페이지를 한 컴포넌트로 구성합니다.
+
+```tsx
+import { PricingPattern } from "@freeive/anti-card";
+
+<PricingPattern
+  eyebrow="Pricing"
+  title="간단한 가격."
+  lead="시작은 무료. 필요할 때만 업그레이드."
+  plans={[...]}
+  faq={[
+    { question: "환불 가능한가요?", answer: "7일 내 100% 환불." },
+  ]}
+  cta={{
+    title: "더 궁금하면 알려주세요.",
+    actions: [{ label: "Talk", href: "/talk", tone: "accent" }],
+  }}
+/>
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `eyebrow / title / lead` | `ReactNode` | Hero 영역 (HeroPattern 내장, align="center") |
+| `plans` | `PricingPlan[]` | PricingTable에 전달 |
+| `faq` | `FAQItem[]` | FAQ 섹션 (선택) |
+| `cta` | `{eyebrow?, title, lead?, actions?}` | 하단 CTA (선택) |
+
+## 자동 처리
+
+- HeroPattern align="center" + padding="default"
+- 섹션 사이 자동 헤어라인 + 충분한 여백
+- FAQ는 자동 SectionHeading h2 ("자주 묻는 질문") 추가
+- CTA는 CTASection (헤어라인 + h2 톤)
+
+## 관련
+
+- [PricingTable](/anti-card/pricing-table) — 내부 사용
+- [FAQ](/anti-card/faq) / [CTASection](/anti-card/cta-section) — 내부 사용
+- [HeroPattern](/anti-card/hero-pattern) — 내부 사용

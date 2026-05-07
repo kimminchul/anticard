@@ -39,6 +39,12 @@ import {
   HoverAccent,
   ScrollProgress,
   Marquee,
+  Callout,
+  FAQ,
+  PricingTable,
+  PricingPattern,
+  Steps,
+  CompareTable,
 } from "@freeive/anti-card";
 
 /**
@@ -96,7 +102,7 @@ const NAV: NavGroup[] = [
       { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "ready" },
       { id: "stat-list", ko: "통계 숫자 행", en: "Stat List", status: "ready" },
       { id: "timeline", ko: "타임라인", en: "Timeline", status: "ready" },
-      { id: "compare-table", ko: "비교 표", en: "Compare Table", status: "soon" },
+      { id: "compare-table", ko: "비교 표", en: "Compare Table", status: "ready" },
     ],
   },
   {
@@ -114,10 +120,10 @@ const NAV: NavGroup[] = [
     group: "콘텐츠 블록",
     desc: "본문에 들어가는 단위",
     items: [
-      { id: "callout", ko: "강조 박스", en: "Callout", status: "soon" },
-      { id: "faq", ko: "FAQ 아코디언", en: "FAQ", status: "soon" },
-      { id: "pricing-table", ko: "가격 표", en: "Pricing Table", status: "soon" },
-      { id: "steps", ko: "단계 (3·4단계)", en: "Steps", status: "soon" },
+      { id: "callout", ko: "강조 박스", en: "Callout", status: "ready" },
+      { id: "faq", ko: "FAQ 아코디언", en: "FAQ", status: "ready" },
+      { id: "pricing-table", ko: "가격 표", en: "Pricing Table", status: "ready" },
+      { id: "steps", ko: "단계 (3·4단계)", en: "Steps", status: "ready" },
       { id: "feature-row", ko: "특징 나열 행", en: "Feature Row", status: "ready" },
     ],
   },
@@ -169,7 +175,7 @@ const NAV: NavGroup[] = [
     items: [
       { id: "hero-pattern", ko: "히어로 (메인 첫 화면)", en: "Hero", status: "ready" },
       { id: "sectors-pattern", ko: "섹터 리스트 페이지", en: "Sectors", status: "ready" },
-      { id: "pricing-pattern", ko: "가격 페이지", en: "Pricing", status: "soon" },
+      { id: "pricing-pattern", ko: "가격 페이지", en: "Pricing", status: "ready" },
       { id: "talk-pattern", ko: "Talk·Contact", en: "Talk / Contact", status: "ready" },
       { id: "empty-error", ko: "빈 상태·404", en: "Empty / 404", status: "ready" },
     ],
@@ -251,6 +257,12 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "hover-accent": () => <ComponentPage def={HOVER_ACCENT_DEF} />,
   "scroll-progress": () => <ComponentPage def={SCROLL_PROGRESS_DEF} />,
   marquee: () => <ComponentPage def={MARQUEE_DEF} />,
+  callout: () => <ComponentPage def={CALLOUT_DEF} />,
+  faq: () => <ComponentPage def={FAQ_DEF} />,
+  "pricing-table": () => <ComponentPage def={PRICING_TABLE_DEF} />,
+  "pricing-pattern": () => <ComponentPage def={PRICING_PATTERN_DEF} />,
+  steps: () => <ComponentPage def={STEPS_DEF} />,
+  "compare-table": () => <ComponentPage def={COMPARE_TABLE_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -4122,5 +4134,378 @@ prefers-reduced-motion 자동 멈춤.
     { name: "pauseOnHover", type: "boolean", default: "true", desc: "hover시 정지" },
     { name: "gap", type: "number (px)", default: "48", desc: "항목 사이 간격" },
     { name: "divider", type: "boolean", default: "false", desc: "헤어라인 위/아래" },
+  ],
+};
+
+const CALLOUT_DEF: ComponentDef = {
+  id: "callout",
+  ko: "강조 박스",
+  en: "Callout",
+  desc: "본문 안의 인라인 강조. Banner와 다름 — 풀폭 띠 X, 본문 흐름 안의 영역.",
+  examples: [
+    {
+      index: "01",
+      badge: "info",
+      title: "기본 — info 톤",
+      description: "참고·노트 영역. 좌측 헤어라인 + 살짝 회색 배경.",
+      preview: (
+        <Callout tone="info" title="참고">
+          이 글의 모든 코드 예시는 Tailwind 3.4 기준이며, anti-card 0.5.0 이상에서 동작합니다.
+        </Callout>
+      ),
+      prompt: `블로그 본문 안의 참고·노트 영역. shadcn처럼 큰 둥근 박스 거부. 좌측 border-l 2px + 살짝 톤 배경.
+
+스타일:
+- border-l-2 (좌측 2px 헤어라인)
+- 살짝 톤 배경 (zinc-50 / emerald-500/[0.06] / yellow-500/[0.06] / rose-500/[0.06])
+- title: 14px medium (선택) + body: 14.5px leading-relaxed
+- icon: 좌측 아이콘 (텍스트도 OK — ⚠ ℹ︎ ✓)`,
+      react: `<Callout tone="info" title="참고">
+  본문 안 참고 영역.
+</Callout>`,
+    },
+    {
+      index: "02",
+      badge: "tone × 4",
+      title: "4가지 톤",
+      description: "info / accent / warning / danger.",
+      preview: (
+        <div className="space-y-3">
+          <Callout tone="info">기본 info — 일반 참고.</Callout>
+          <Callout tone="accent" icon="✓">accent — 핵심·성공.</Callout>
+          <Callout tone="warning" icon="⚠">warning — 주의 사항.</Callout>
+          <Callout tone="danger" icon="!">danger — 위험·실패.</Callout>
+        </div>
+      ),
+      prompt: `4가지 톤 (info=zinc / accent=emerald / warning=yellow / danger=rose). icon prop으로 좌측 아이콘 자유 추가.`,
+      react: `<Callout tone="warning" icon="⚠">env not set.</Callout>`,
+    },
+  ],
+  props: [
+    { name: "tone", type: '"info" | "accent" | "warning" | "danger"', default: '"info"', desc: "색 톤" },
+    { name: "title", type: "ReactNode", desc: "제목 (선택)" },
+    { name: "icon", type: "ReactNode", desc: "좌측 아이콘 (텍스트도 OK)" },
+    { name: "children", type: "ReactNode", desc: "본문" },
+  ],
+};
+
+const FAQ_DEF: ComponentDef = {
+  id: "faq",
+  ko: "FAQ 아코디언",
+  en: "FAQ",
+  desc: "자주 묻는 질문. details/summary 시맨틱 — JS 없이 native 동작. 박스 거부, 헤어라인 행.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 헤어라인 행 + + 토글",
+      description: "각 행 클릭하면 답변 펼침. group-open으로 + → ×.",
+      preview: (
+        <FAQ
+          items={[
+            {
+              question: "anti-card는 어디에 사용하나요?",
+              answer: "랜딩 페이지·콘텐츠 사이트·블로그·1인 랩 사이트 등 end-user UI 영역. shadcn(admin 강함)과 정반대 영역을 채웁니다.",
+              defaultOpen: true,
+            },
+            {
+              question: "shadcn과 함께 쓸 수 있나요?",
+              answer: "가능합니다. admin 영역은 shadcn, end-user 영역은 anti-card 권장.",
+            },
+            {
+              question: "AI Skill은 무엇인가요?",
+              answer: "Layer 1 — Claude/Cursor가 anti-card 톤으로 코드를 생성하도록 안내하는 system prompt. Layer 2(React lib)보다 더 본체.",
+            },
+          ]}
+        />
+      ),
+      prompt: `자주 묻는 질문 영역. JS 없이 native details/summary 사용 — 접근성·성능 모두 좋음.
+
+스타일:
+- dl + 각 항목 details/summary
+- 헤어라인 행 구분 (border-y, divide-y)
+- + → × 회전 (group-open + transition-transform rotate-45)
+- summary hover시 emerald
+
+defaultOpen: 특정 항목 기본 열림.`,
+      react: `<FAQ items={[
+  { question: "어디에 쓰나요?", answer: "..." },
+  { question: "AI Skill은?", answer: "...", defaultOpen: true },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "FAQItem[]", desc: "{question, answer, defaultOpen?}[]" },
+  ],
+};
+
+const PRICING_TABLE_DEF: ComponentDef = {
+  id: "pricing-table",
+  ko: "가격 표",
+  en: "PricingTable",
+  desc: "가격 plan 비교. 카드 박스 최소화 — 1px gap grid + highlighted plan만 살짝 강조.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "3 plan — Free / Pro / Team",
+      description: "highlighted plan(Pro)는 살짝 emerald bg + accent CTA 자동.",
+      preview: (
+        <PricingTable
+          plans={[
+            {
+              name: "Free",
+              price: "₩0",
+              priceHint: "영구 무료",
+              tagline: "개인 프로젝트 / 학습용.",
+              features: ["기본 컴포넌트 27개", "GitHub 이슈 지원"],
+              cta: { label: "시작하기", href: "#" },
+            },
+            {
+              name: "Pro",
+              price: "₩9,900",
+              priceHint: "월 / VAT 별도",
+              tagline: "1인 팀·프리랜서.",
+              features: ["모든 컴포넌트", "AI Skill 사용권", "이메일 지원"],
+              highlighted: true,
+              cta: { label: "Pro 시작하기", href: "#", tone: "accent" },
+            },
+            {
+              name: "Team",
+              price: "Custom",
+              priceHint: "월 / 협의",
+              tagline: "팀·기업.",
+              features: ["모든 Pro 기능", "전용 채널 지원", "커스텀 컨설팅"],
+              cta: { label: "Talk", href: "#" },
+            },
+          ]}
+        />
+      ),
+      prompt: `가격 plan 비교 표. 일반적 카드 그리드 영역이지만 anti-card에서는 박스 최소화.
+
+스타일:
+- 1px gap grid (모바일 1열, 데스크톱 3열)
+- highlighted plan: 살짝 emerald bg + accent name
+- features: ✓ + 텍스트 행
+- CTA: LinkRow (href) 또는 Button (onClick)
+
+shadow / 둥근 큰 모서리 / 그라데이션 거부. 본질만.`,
+      react: `<PricingTable plans={[
+  { name: "Free", price: "₩0", features: [...] },
+  { name: "Pro", price: "₩9,900", features: [...], highlighted: true,
+    cta: { label: "시작", href: "/signup", tone: "accent" } },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "plans", type: "PricingPlan[]", desc: "{name, price, priceHint?, tagline?, features, cta?, highlighted?}[]" },
+  ],
+};
+
+const PRICING_PATTERN_DEF: ComponentDef = {
+  id: "pricing-pattern",
+  ko: "가격 페이지",
+  en: "PricingPattern",
+  desc: "가격 페이지 통째로 — Hero(center) + PricingTable + FAQ + CTASection 조합.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — Hero + Table + FAQ + CTA",
+      description: "가격 페이지의 표준 4섹션 레이아웃.",
+      preview: (
+        <PricingPattern
+          eyebrow="Pricing"
+          title="간단한 가격."
+          lead="시작은 무료. 필요할 때만 업그레이드."
+          plans={[
+            {
+              name: "Free",
+              price: "₩0",
+              features: ["기본 컴포넌트", "GitHub 지원"],
+              cta: { label: "시작", href: "#" },
+            },
+            {
+              name: "Pro",
+              price: "₩9,900",
+              features: ["모든 컴포넌트", "AI Skill", "이메일 지원"],
+              highlighted: true,
+              cta: { label: "Pro 시작", href: "#", tone: "accent" },
+            },
+            {
+              name: "Team",
+              price: "Custom",
+              features: ["전용 채널", "컨설팅"],
+              cta: { label: "Talk", href: "#" },
+            },
+          ]}
+          faq={[
+            { question: "환불 가능한가요?", answer: "결제 후 7일 내 100% 환불." },
+            { question: "팀 단위 결제는?", answer: "Talk으로 별도 협의." },
+          ]}
+          cta={{
+            eyebrow: "Talk",
+            title: "더 궁금한 점이 있으면 직접 알려주세요.",
+            actions: [{ label: "Talk 페이지로", href: "#", tone: "accent" }],
+          }}
+        />
+      ),
+      prompt: `가격 페이지 전체를 한 번에. HeroPattern(center align) + PricingTable + FAQ + CTASection 조합.
+
+각 섹션 사이 헤어라인 자동. 박스 최소화 톤 유지.`,
+      react: `<PricingPattern
+  title="간단한 가격."
+  lead="시작은 무료."
+  plans={[...]}
+  faq={[...]}
+  cta={{ title: "...", actions: [...] }}
+/>`,
+    },
+  ],
+  props: [
+    { name: "eyebrow / title / lead", type: "ReactNode", desc: "Hero 영역" },
+    { name: "plans", type: "PricingPlan[]", desc: "PricingTable에 전달" },
+    { name: "faq", type: "FAQItem[]", desc: "FAQ 섹션 (선택)" },
+    { name: "cta", type: "{eyebrow?, title, lead?, actions?}", desc: "하단 CTA (선택)" },
+  ],
+};
+
+const STEPS_DEF: ComponentDef = {
+  id: "steps",
+  ko: "단계 (3·4단계)",
+  en: "Steps",
+  desc: "절차 단계. 자동 번호(01/02/03) + 제목 + 설명. vertical / horizontal layout.",
+  examples: [
+    {
+      index: "01",
+      badge: "vertical",
+      title: "vertical — 좌측 번호 + 우측 본문",
+      description: "FeatureRow numbered와 비슷하지만 '프로세스' 의미.",
+      preview: (
+        <Steps
+          items={[
+            {
+              title: "프로젝트 정리",
+              description: "Plan 문서 + 우선순위 + 마일스톤 컴포넌트 set.",
+            },
+            {
+              title: "구현",
+              description: "P0~P5 순서로 컴포넌트 + dogfooding.",
+            },
+            {
+              title: "검증",
+              description: "Check 단계 — 사용자 피드백 + 시각 검증.",
+            },
+          ]}
+        />
+      ),
+      prompt: `프로세스 단계를 수직으로 나열. 각 단계 자동 번호.
+
+스타일:
+- ol + divide-y border-y
+- grid [60px 번호 / 1fr 본문]
+- 번호: font-mono 12px tabular-nums zinc-400
+- 제목: 17px font-semibold
+- 설명: 14.5px leading-relaxed
+
+FeatureRow numbered와 시각 비슷하지만 의미 다름 — Steps는 "이 순서로 한다", FeatureRow는 "이런 특징들".`,
+      react: `<Steps items={[
+  { title: "Plan", description: "..." },
+  { title: "Do", description: "..." },
+  { title: "Check", description: "..." },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "horizontal",
+      title: "horizontal — 가로 grid",
+      description: "3·4단계를 한 줄에. 위 헤어라인 2px + 아래 본문.",
+      preview: (
+        <Steps
+          layout="horizontal"
+          items={[
+            { title: "관찰", description: "사용자가 어떻게 쓰는지." },
+            { title: "분석", description: "어디서 막히는지." },
+            { title: "결정", description: "무엇을 바꿀지." },
+            { title: "적용", description: "최소 단위로 시도." },
+          ]}
+        />
+      ),
+      prompt: `3·4단계를 한 화면에 가로로. layout="horizontal".
+- 위 border-t-2 (단계 시그널) + 번호 + 제목 + 설명 수직 stack
+- 모바일은 1열, 태블릿 2열, 데스크톱 3·4열`,
+      react: `<Steps layout="horizontal" items={[
+  { title: "관찰", description: "..." },
+  { title: "분석", description: "..." },
+  { title: "결정", description: "..." },
+  { title: "적용", description: "..." },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "StepItem[]", desc: "{title, description?}[]" },
+    { name: "layout", type: '"vertical" | "horizontal"', default: '"vertical"', desc: "수직 / 가로 grid" },
+  ],
+};
+
+const COMPARE_TABLE_DEF: ComponentDef = {
+  id: "compare-table",
+  ko: "비교 표",
+  en: "CompareTable",
+  desc: "기능·플랜 비교 표. 박스 거부 — 헤어라인 only. boolean 값 ✓/− 자동.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 3 컬럼 비교",
+      description: "highlighted 컬럼은 emerald 헤더 + 진한 본문.",
+      preview: (
+        <CompareTable
+          columns={[
+            { name: "Free" },
+            { name: "Pro", highlighted: true },
+            { name: "Team" },
+          ]}
+          rows={[
+            { feature: "API 호출 / 월", values: ["1,000", "100,000", "Unlimited"] },
+            { feature: "팀 멤버", values: [false, "5", "Unlimited"] },
+            {
+              feature: "전용 지원",
+              hint: "이메일 응답 시간",
+              values: ["GitHub Issues", "24시간 내", "전용 채널"],
+            },
+            { feature: "커스텀 컨설팅", values: [false, false, true] },
+          ]}
+        />
+      ),
+      prompt: `기능·플랜 비교 표. 박스 거부 — table + 헤어라인 only.
+
+스타일:
+- table w-full text-[14px]
+- thead: 12px uppercase smallcaps + border-y
+- tbody: divide-y zinc-200 dark:white/[0.06]
+- highlighted 컬럼: emerald 헤더 + 진한 본문
+
+값 처리:
+- string/ReactNode: 그대로 표시
+- true: ✓ (emerald)
+- false: − (zinc 흐림)
+
+PricingTable과 함께 사용 — Table에 못 들어가는 디테일을 CompareTable로.`,
+      react: `<CompareTable
+  columns={[
+    { name: "Free" },
+    { name: "Pro", highlighted: true },
+  ]}
+  rows={[
+    { feature: "API", values: ["1,000", "100,000"] },
+    { feature: "팀", values: [false, "5"] },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "columns", type: "CompareColumn[]", desc: "{name, highlighted?}[]" },
+    { name: "rows", type: "CompareRow[]", desc: "{feature, hint?, values: (ReactNode | boolean)[]}[]" },
   ],
 };

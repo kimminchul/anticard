@@ -119,6 +119,28 @@ export type { ScrollProgressProps } from "./components/scroll-progress";
 export { Marquee } from "./components/marquee";
 export type { MarqueeProps } from "./components/marquee";
 
+export { Callout } from "./components/callout";
+export type { CalloutProps } from "./components/callout";
+
+export { FAQ } from "./components/faq";
+export type { FAQProps, FAQItem } from "./components/faq";
+
+export { PricingTable } from "./components/pricing-table";
+export type { PricingTableProps, PricingPlan } from "./components/pricing-table";
+
+export { PricingPattern } from "./components/pricing-pattern";
+export type { PricingPatternProps } from "./components/pricing-pattern";
+
+export { Steps } from "./components/steps";
+export type { StepsProps, StepItem } from "./components/steps";
+
+export { CompareTable } from "./components/compare-table";
+export type {
+  CompareTableProps,
+  CompareColumn,
+  CompareRow,
+} from "./components/compare-table";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

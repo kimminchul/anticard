@@ -1,0 +1,62 @@
+---
+title: CompareTable
+description: 기능·플랜 비교 표. 박스 거부 — 헤어라인 only. boolean ✓/− 자동.
+group: components
+order: 42
+published: true
+updated: 2026-05-08
+---
+
+`<CompareTable>`은 기능·플랜을 가로 비교하는 표입니다.
+
+```tsx
+import { CompareTable } from "@freeive/anti-card";
+
+<CompareTable
+  columns={[
+    { name: "Free" },
+    { name: "Pro", highlighted: true },
+    { name: "Team" },
+  ]}
+  rows={[
+    { feature: "API 호출 / 월", values: ["1,000", "100,000", "Unlimited"] },
+    { feature: "팀 멤버", values: [false, "5", "Unlimited"] },
+    { feature: "전용 지원", hint: "응답 시간", values: ["GitHub", "24h", "전용"] },
+    { feature: "커스텀 컨설팅", values: [false, false, true] },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `columns` | `CompareColumn[]` | `{name, highlighted?}[]` |
+| `rows` | `CompareRow[]` | `{feature, hint?, values: (ReactNode \| boolean)[]}[]` |
+
+## 값 자동 처리
+
+| 값 | 표시 |
+|---|---|
+| string / ReactNode | 그대로 |
+| `true` | ✓ (emerald-600 dark:400) |
+| `false` | − (zinc-300 dark:600 — 흐림) |
+
+## 디자인
+
+- table w-full text-[14px]
+- thead: 12px uppercase smallcaps + border-y
+- tbody: divide-y zinc-200 dark:white/[0.06]
+- highlighted 컬럼: emerald 헤더 + 진한 본문 색
+- overflow-x-auto (모바일에서 가로 스크롤)
+
+## PricingTable과의 차이
+
+- `PricingTable`: plan 카드 형태 (가격 + features 리스트 + CTA)
+- `CompareTable`: 기능별 행 비교 (가격은 안 들어감)
+
+함께 사용 — Table로 plan 소개 + CompareTable로 디테일.
+
+## 관련
+
+- [PricingTable](/anti-card/pricing-table) — plan 카드
