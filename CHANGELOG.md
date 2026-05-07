@@ -5,6 +5,25 @@
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-05-08
+
+### Added
+- **GridSystem + GridCol** — 12 column grid system (Bootstrap·Material 표준 톤):
+  - `GridSystem` — columns(6/8/12/16/24) × gap × as
+  - `GridCol` — span(1~12) × start(offset) × as(div/section/article/aside)
+- `Grid` examples 1개 → **4개 확장**:
+  - 3 cols default / 2 cols loose (Problem-Solution) / 4 cols tight (logos) / mobileColumns=2 (StatList 패턴)
+- docs/grid-system.mdx 신규 + docs/grid.mdx에 GridSystem 참조 추가
+
+### Fixed
+- **Select** 옵션 다크 모드 가독성 — bg-transparent → bg-white / dark:bg-zinc-950 명시 (native option dropdown 상속)
+- **Checkbox / Radio** 체크 표시 안 나옴 — 깨진 SVG data URL 제거 → `accent-color` CSS로 단순화 (native ✓ 사용)
+- **Testimonial** size="large" 22~32px → 18~22px (헤딩급 → 본문 강조 톤)
+
+### Changed
+- Grid description 갱신 — "단순 grid wrapper" → "균등 grid wrapper (1~6), 자유 layout은 GridSystem"
+- 누적: **51개 컴포넌트** (49 + GridSystem + GridCol)
+
 ## [0.8.0] — 2026-05-08
 
 ### Added

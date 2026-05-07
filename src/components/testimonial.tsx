@@ -56,7 +56,7 @@ export function Testimonial({
           "border-l-2 border-zinc-300 pl-6 dark:border-white/[0.12]",
           size === "default" && typography.lead,
           size === "large" &&
-            "text-[clamp(1.375rem,2.5vw,2rem)] font-medium leading-snug tracking-[-0.01em] text-zinc-700 dark:text-zinc-200"
+            "text-[clamp(1.125rem,1.75vw,1.375rem)] font-medium leading-snug tracking-[-0.005em] text-zinc-700 dark:text-zinc-200"
         )}
         {...props}
       >

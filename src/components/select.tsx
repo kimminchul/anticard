@@ -71,11 +71,12 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           id={selectId}
           aria-invalid={Boolean(error) || undefined}
           className={cn(
-            "appearance-none rounded-md border bg-transparent bg-no-repeat px-3 py-2 pr-8 text-[14px] outline-none transition-colors",
-            "border-zinc-300 text-zinc-900",
+            "appearance-none rounded-md border bg-no-repeat px-3 py-2 pr-8 text-[14px] outline-none transition-colors",
+            // 명시적 배경/색 — native option dropdown이 상속 (다크 모드 가독성)
+            "border-zinc-300 bg-white text-zinc-900",
             "focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20",
             "disabled:cursor-not-allowed disabled:opacity-50",
-            "dark:border-white/[0.12] dark:text-zinc-100",
+            "dark:border-white/[0.12] dark:bg-zinc-950 dark:text-zinc-100",
             "dark:focus:border-emerald-400 dark:focus:ring-emerald-400/20",
             error &&
               "border-rose-500 focus:border-rose-500 focus:ring-rose-500/20 dark:border-rose-400 dark:focus:border-rose-400",
@@ -89,13 +90,22 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           {...props}
         >
           {placeholder && (
-            <option value="" disabled>
+            <option
+              value=""
+              disabled
+              className="bg-white text-zinc-400 dark:bg-zinc-950 dark:text-zinc-500"
+            >
               {placeholder}
             </option>
           )}
           {options
             ? options.map((opt) => (
-                <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                  className="bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100"
+                >
                   {opt.label}
                 </option>
               ))

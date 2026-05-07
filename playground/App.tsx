@@ -46,6 +46,8 @@ import {
   Steps,
   CompareTable,
   Grid,
+  GridSystem,
+  GridCol,
   Input,
   Textarea,
   Select,
@@ -86,6 +88,7 @@ const NAV: NavGroup[] = [
       { id: "section-frame", ko: "섹션 프레임", en: "SectionFrame", status: "ready" },
       { id: "hairline", ko: "헤어라인 구분선", en: "Hairline", status: "ready" },
       { id: "grid-columns", ko: "그리드·컬럼", en: "Grid", status: "ready" },
+      { id: "grid-system", ko: "그리드 시스템 (12 col)", en: "Grid System", status: "ready" },
     ],
   },
   {
@@ -271,6 +274,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   steps: () => <ComponentPage def={STEPS_DEF} />,
   "compare-table": () => <ComponentPage def={COMPARE_TABLE_DEF} />,
   "grid-columns": () => <ComponentPage def={GRID_DEF} />,
+  "grid-system": () => <ComponentPage def={GRID_SYSTEM_DEF} />,
   input: () => <ComponentPage def={INPUT_DEF} />,
   textarea: () => <ComponentPage def={TEXTAREA_DEF} />,
   select: () => <ComponentPage def={SELECT_DEF} />,
@@ -3614,8 +3618,8 @@ const TESTIMONIAL_DEF: ComponentDef = {
     {
       index: "02",
       badge: "large",
-      title: "large — 섹션 강조 후기",
-      description: "랜딩 페이지 핵심 후기 (22~32px). 글당 1회.",
+      title: "large — 강조 후기",
+      description: "랜딩 핵심 후기 (18~22px). default(15px)에서 한 단계만. 글당 1~2회.",
       preview: (
         <Testimonial
           size="large"
@@ -3625,8 +3629,11 @@ const TESTIMONIAL_DEF: ComponentDef = {
           이젠 다른 사이트로 못 돌아가요.”
         </Testimonial>
       ),
-      prompt: `랜딩 페이지 핵심 영역에 들어가는 강조 후기. size="large".
-크기는 큰데 굵기는 medium 유지 (heavy bold 거부).`,
+      prompt: `랜딩 페이지 핵심 후기. size="large".
+
+크기는 18~22px — default(15px)에서 한 단계만 키운 차분 톤.
+heading(24+)으로 가지 않음 — 본문 인용은 본문 영역 안에 머물러야 함.
+굵기는 font-medium. heavy bold 거부.`,
       react: `<Testimonial size="large" author={{ name: "박OO", title: "디자인 리드", company: "라이나" }}>
   안티 카드 톤이 우리 브랜드의 톤을 대체했습니다.
 </Testimonial>`,
@@ -4527,12 +4534,12 @@ const GRID_DEF: ComponentDef = {
   id: "grid-columns",
   ko: "그리드·컬럼",
   en: "Grid",
-  desc: "단순 grid wrapper. '카드 그리드'가 아닌 정렬용 — gap만 있고 박스 X.",
+  desc: "균등 grid wrapper (1~6 columns). 자유 layout(좌측 3, 우측 9 등)은 GridSystem 사용.",
   examples: [
     {
       index: "01",
-      badge: "default",
-      title: "기본 — 3열",
+      badge: "3 cols · default",
+      title: "기본 — 3열 + default gap",
       description: "모바일 1열 → md:3열 자동.",
       preview: (
         <Grid columns={3}>
@@ -4546,19 +4553,265 @@ const GRID_DEF: ComponentDef = {
           ))}
         </Grid>
       ),
-      prompt: `단순 grid 레이아웃 wrapper. 모바일 1열 → 데스크톱 columns 자동.
-gap: tight(12) / default(24~32) / loose(40~56). Image 배열 등 정렬에 사용.`,
+      prompt: `균등 grid wrapper. 모바일 1열 → 데스크톱 columns 자동.
+
+스타일:
+- grid grid-cols-1 md:grid-cols-{columns}
+- gap: tight(12) / default(24~32) / loose(40~56)
+
+Image 배열·작은 카드·통계 등 균등 정렬에 사용.
+자유 layout(좌측 3 + 우측 9 같은)은 GridSystem.`,
+      html: `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+  <div>...</div>
+</div>`,
       react: `<Grid columns={3}>
-  <Image src="/1.jpg" />
-  <Image src="/2.jpg" />
+  <div>...</div>
+</Grid>`,
+    },
+    {
+      index: "02",
+      badge: "2 cols · loose",
+      title: "2열 — 좌우 분할",
+      description: "Problem/Solution 같은 대비. loose gap으로 충분한 여백.",
+      preview: (
+        <Grid columns={2} gap="loose">
+          <div className="border-l-2 border-zinc-300 pl-5 dark:border-white/[0.12]">
+            <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              Problem
+            </p>
+            <p className="mt-3 text-[14.5px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+              기존 흐름이 모바일에서 단절. 진척도 동기화 안 됨.
+            </p>
+          </div>
+          <div className="border-l-2 border-emerald-500/50 pl-5 dark:border-emerald-400/40">
+            <p className="text-[12px] uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">
+              Solution
+            </p>
+            <p className="mt-3 text-[14.5px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+              단일 SPA + 진척도 동기화. PWA 패턴.
+            </p>
+          </div>
+        </Grid>
+      ),
+      prompt: `좌우 비교 / Before-After. columns=2 + gap="loose"(40~56px).
+CaseStudy 컴포넌트가 이 패턴 사용.`,
+      react: `<Grid columns={2} gap="loose">
+  <section>Problem</section>
+  <section>Solution</section>
+</Grid>`,
+    },
+    {
+      index: "03",
+      badge: "4 cols · tight",
+      title: "4열 — 작은 항목 다수",
+      description: "로고·아이콘처럼 항목이 많을 때. tight gap.",
+      preview: (
+        <Grid columns={4} gap="tight">
+          {["EBS", "라이나", "롯데", "SKT", "KT", "LG U+", "EBS+", "freeive"].map((name) => (
+            <div
+              key={name}
+              className="border border-zinc-200 py-4 text-center text-[12.5px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.06] dark:text-zinc-400"
+            >
+              {name}
+            </div>
+          ))}
+        </Grid>
+      ),
+      prompt: `로고·아이콘·썸네일 다수. columns=4 + gap="tight"(12px).
+모바일도 답답하면 mobileColumns=2.`,
+      react: `<Grid columns={4} gap="tight" mobileColumns={2}>
+  {logos.map((l) => <img src={l.src} />)}
+</Grid>`,
+    },
+    {
+      index: "04",
+      badge: "mobileColumns=2",
+      title: "모바일 2열",
+      description: "모바일 1열도 답답할 때 (StatList 등).",
+      preview: (
+        <Grid columns={3} mobileColumns={2} gap="default">
+          {[
+            { v: "10+", l: "Years" },
+            { v: "30+", l: "Clients" },
+            { v: "150+", l: "Projects" },
+          ].map((s) => (
+            <div key={s.l} className="border-y border-zinc-200 py-6 dark:border-white/[0.06]">
+              <p className="text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-none tracking-tight text-zinc-900 dark:text-zinc-50">
+                {s.v}
+              </p>
+              <p className="mt-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                {s.l}
+              </p>
+            </div>
+          ))}
+        </Grid>
+      ),
+      prompt: `모바일 1열이 답답한 영역. mobileColumns=2 → 모바일 2열 / 데스크톱 columns 그대로.
+StatList의 모바일 패턴.`,
+      react: `<Grid columns={3} mobileColumns={2}>
+  <Stat ... />
 </Grid>`,
     },
   ],
   props: [
-    { name: "columns", type: "1~6", default: "3", desc: "데스크톱 컬럼" },
-    { name: "mobileColumns", type: "1 | 2", default: "1", desc: "모바일 컬럼" },
-    { name: "gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격" },
+    { name: "columns", type: "1 | 2 | 3 | 4 | 5 | 6", default: "3", desc: "데스크톱 컬럼 수 (균등)" },
+    { name: "mobileColumns", type: "1 | 2", default: "1", desc: "모바일(sm 이하) 컬럼" },
+    { name: "gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격 (12 / 24~32 / 40~56)" },
     { name: "as", type: '"div" | "ul" | "section"', default: '"div"', desc: "시맨틱" },
+  ],
+};
+
+const GRID_SYSTEM_DEF: ComponentDef = {
+  id: "grid-system",
+  ko: "그리드 시스템 (12 col)",
+  en: "GridSystem / GridCol",
+  desc: "12 column grid system. Bootstrap·Material 표준 — 자식이 자유롭게 col-span 지정.",
+  examples: [
+    {
+      index: "01",
+      badge: "3+9",
+      title: "사이드바 + 본문 — 3/9",
+      description: "Heritage 페이지 sectors 패턴. 좌측 라벨 + 우측 본문.",
+      preview: (
+        <GridSystem>
+          <GridCol span={3} className="border-y border-zinc-200 py-4 dark:border-white/[0.06]">
+            <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              Telecom
+            </p>
+            <p className="mt-2 text-[12.5px] text-zinc-500 dark:text-zinc-500">
+              3 projects
+            </p>
+          </GridCol>
+          <GridCol span={9} className="border-y border-zinc-200 py-4 dark:border-white/[0.06]">
+            <p className="text-[15.5px] font-medium text-zinc-900 dark:text-zinc-100">
+              라이나생명 디지털채널 재구축
+            </p>
+            <p className="mt-1.5 text-[13.5px] text-zinc-600 dark:text-zinc-400">
+              본문 영역에 ListRow 또는 자유 마크업.
+            </p>
+          </GridCol>
+        </GridSystem>
+      ),
+      prompt: `좌측 라벨(3) + 우측 본문(9) 분할. Heritage 섹터별 프로젝트 리스트가 이 패턴.
+
+스타일:
+- GridSystem: grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8
+- GridCol span={3}: md:col-span-3
+- GridCol span={9}: md:col-span-9
+
+모바일은 자동 1열 stack (좌측 위 → 우측 아래).`,
+      html: `<div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+  <div class="md:col-span-3">좌측 라벨</div>
+  <div class="md:col-span-9">본문</div>
+</div>`,
+      react: `<GridSystem>
+  <GridCol span={3}>좌측 라벨</GridCol>
+  <GridCol span={9}>본문</GridCol>
+</GridSystem>`,
+    },
+    {
+      index: "02",
+      badge: "4+4+4",
+      title: "균등 — 4/4/4",
+      description: "Grid columns=3과 시각 동일. 12 system 안에서 명시.",
+      preview: (
+        <GridSystem>
+          {["A", "B", "C"].map((label) => (
+            <GridCol
+              key={label}
+              span={4}
+              className="border-y border-zinc-200/60 py-6 text-center text-[14px] dark:border-white/[0.06]"
+            >
+              span={4} · {label}
+            </GridCol>
+          ))}
+        </GridSystem>
+      ),
+      prompt: `균등 3열을 12 system 안에서. Grid={3}과 시각 동일하지만 GridSystem은 자유 layout 의도 표현.
+
+원칙:
+- 균등이면 Grid (단순)
+- 자유(3+9 / 8+4 등)면 GridSystem`,
+      react: `<GridSystem>
+  <GridCol span={4}>A</GridCol>
+  <GridCol span={4}>B</GridCol>
+  <GridCol span={4}>C</GridCol>
+</GridSystem>`,
+    },
+    {
+      index: "03",
+      badge: "asymmetric",
+      title: "비대칭 — 8+4 (article + aside)",
+      description: "블로그 글 페이지: 본문 8 + 사이드바 4.",
+      preview: (
+        <GridSystem gap="loose">
+          <GridCol
+            span={8}
+            className="border-l-2 border-zinc-300 pl-5 dark:border-white/[0.12]"
+            as="article"
+          >
+            <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              Article (span 8)
+            </p>
+            <p className="mt-3 text-[14.5px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+              블로그 본문이 더 넓어야 하는 페이지. 우측에는 메타·태그.
+            </p>
+          </GridCol>
+          <GridCol
+            span={4}
+            className="border-l-2 border-zinc-200 pl-5 dark:border-white/[0.06]"
+            as="aside"
+          >
+            <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              Aside (span 4)
+            </p>
+            <ul className="mt-3 space-y-2 text-[13px] text-zinc-600 dark:text-zinc-400">
+              <li>관련 글</li>
+              <li>태그</li>
+              <li>저자 메타</li>
+            </ul>
+          </GridCol>
+        </GridSystem>
+      ),
+      prompt: `블로그 / 문서 페이지: 본문(8) + 사이드(4) 비대칭.
+GridCol as="article" / as="aside" — 시맨틱 명시.`,
+      react: `<GridSystem gap="loose">
+  <GridCol span={8} as="article">본문</GridCol>
+  <GridCol span={4} as="aside">사이드</GridCol>
+</GridSystem>`,
+    },
+    {
+      index: "04",
+      badge: "start (offset)",
+      title: "오프셋 — 가운데 정렬",
+      description: "span={6} start={4} → 4번 컬럼부터 6칸 (가운데 영역).",
+      preview: (
+        <GridSystem>
+          <GridCol
+            span={6}
+            start={4}
+            className="border-y border-zinc-200 py-6 text-center dark:border-white/[0.06]"
+          >
+            <p className="text-[13px] text-zinc-700 dark:text-zinc-300">
+              span={6} start={4} — 4번 컬럼부터 6칸 (4~9 위치, 가운데 1/2)
+            </p>
+          </GridCol>
+        </GridSystem>
+      ),
+      prompt: `오프셋 — col-start로 시작 위치 강제. 가운데 정렬 영역에.
+span=6, start=4 → 4번 컬럼부터 6칸 (= 4,5,6,7,8,9). 12 컬럼의 가운데 1/2.`,
+      react: `<GridSystem>
+  <GridCol span={6} start={4}>가운데 영역</GridCol>
+</GridSystem>`,
+    },
+  ],
+  props: [
+    { name: "GridSystem.columns", type: "6 | 8 | 12 | 16 | 24", default: "12", desc: "전체 컬럼 수" },
+    { name: "GridSystem.gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격" },
+    { name: "GridSystem.as", type: '"div" | "section"', default: '"div"', desc: "시맨틱" },
+    { name: "GridCol.span", type: "1~12", default: "12", desc: "데스크톱 col-span" },
+    { name: "GridCol.start", type: "1~12", desc: "시작 컬럼 (offset)" },
+    { name: "GridCol.as", type: '"div" | "section" | "article" | "aside"', default: '"div"', desc: "시맨틱" },
   ],
 };
 

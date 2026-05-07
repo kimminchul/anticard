@@ -41,6 +41,16 @@ import { Grid } from "@freeive/anti-card";
 `<Grid>`는 **정렬**만 제공 — 박스 / border / bg / shadow 없음. "카드 그리드"는 안티 카드 정체성에 위배.
 정보 나열은 `<ListRow>` 또는 `<ul>` + 헤어라인 권장. Grid는 **이미지 / FeatureRow 등 본질이 grid**인 경우만.
 
+## Grid vs GridSystem
+
+| | Grid | GridSystem |
+|---|---|---|
+| 분할 | 균등만 | 자유 (3+9, 8+4 등) |
+| 용도 | 이미지·작은 카드 균등 | 사이드바+본문, asymmetric |
+
+자유 layout이 필요하면 [GridSystem](/anti-card/grid-system) 사용.
+
 ## 관련
 
+- [GridSystem](/anti-card/grid-system) — 12 column system (자유 layout)
 - [Gallery](/anti-card/gallery) — Grid 기반 이미지 갤러리

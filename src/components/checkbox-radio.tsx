@@ -18,8 +18,8 @@ export type RadioProps = CheckboxProps;
 /**
  * Checkbox — 체크박스 + 라벨 + 설명.
  *
- * native input + custom 시각. 박스 거부 톤은 폼에서 어려우니 살짝 둥근 사각.
- * focus / checked 시 emerald.
+ * native input + accent-color로 색만 emerald. native ✓ 표시 그대로 사용.
+ * 커스텀 시각 거부 — 접근성·모바일 OS·브라우저 기본 모두 안정.
  *
  * @example
  *   <Checkbox
@@ -51,14 +51,8 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           type="checkbox"
           data-anti-card="checkbox"
           className={cn(
-            "mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-[3px] border border-zinc-300 bg-transparent appearance-none",
-            "transition-colors",
-            "checked:border-emerald-500 checked:bg-emerald-500",
+            "mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-emerald-500 dark:accent-emerald-400",
             "focus-visible:outline-2 focus-visible:outline-emerald-500/40 focus-visible:outline-offset-2",
-            "dark:border-white/[0.15] dark:checked:border-emerald-400 dark:checked:bg-emerald-400",
-            // checkmark via background-image
-            "checked:bg-[url(\"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%2012'%20fill='none'%20stroke='white'%20stroke-width='2'%3E%3Cpath%20d='M2.5%206.5L5%209L9.5%204'/%3E%3C/svg%3E\")] checked:bg-no-repeat checked:bg-center checked:bg-[length:80%]",
-            "dark:checked:bg-[url(\"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%2012'%20fill='none'%20stroke='%2309090b'%20stroke-width='2'%3E%3Cpath%20d='M2.5%206.5L5%209L9.5%204'/%3E%3C/svg%3E\")]",
             className
           )}
           {...props}
@@ -81,7 +75,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 /**
  * Radio — 라디오 + 라벨 + 설명.
  *
- * Checkbox와 동일 패턴, type="radio" + rounded-full + 내부 dot.
+ * native input + accent-color. checkbox와 동일 정신.
  *
  * @example
  *   <fieldset>
@@ -111,11 +105,8 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
           type="radio"
           data-anti-card="radio"
           className={cn(
-            "mt-0.5 h-4 w-4 shrink-0 cursor-pointer appearance-none rounded-full border border-zinc-300 bg-transparent",
-            "transition-colors",
-            "checked:border-[5px] checked:border-emerald-500 checked:bg-white",
+            "mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-emerald-500 dark:accent-emerald-400",
             "focus-visible:outline-2 focus-visible:outline-emerald-500/40 focus-visible:outline-offset-2",
-            "dark:border-white/[0.15] dark:checked:border-emerald-400 dark:checked:bg-zinc-950",
             className
           )}
           {...props}

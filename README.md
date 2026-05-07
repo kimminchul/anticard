@@ -3,6 +3,9 @@
 > **End-user UI를 위한 라이브러리 + AI Skill.**
 > 시장에는 admin lib가 20개고, end-user lib는 0개다. 그 빈 자리.
 
+**현재 버전: 0.9.1** · 51 컴포넌트 · 12 타이포 토큰
+🎯 **[Playground 보기 → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
+
 ---
 
 ## 시장의 진짜 그림
@@ -37,11 +40,11 @@ Claude · Cursor 같은 AI 코딩 도구에 **플러그인 스킬로 설치**.
 AI가 화면을 만들 때 안티 카드 원칙·패턴·HTML 레퍼런스를 참조합니다.
 
 ```bash
-# 0.0.x: 수동 셋업
+# 0.0.x ~ 0.9.x: 수동 셋업
 cat node_modules/@freeive/anti-card/skill/CLAUDE.md > CLAUDE.md
 cat node_modules/@freeive/anti-card/skill/cursorrules > .cursorrules
 
-# 0.1.0 이후 (예정): claude skill install @freeive/anti-card
+# 1.0.0 이후 (예정): claude skill install @freeive/anti-card
 ```
 
 코드 0줄도 가능. React/Vue/Svelte/순수 HTML 어디든 같은 톤.
@@ -49,35 +52,51 @@ cat node_modules/@freeive/anti-card/skill/cursorrules > .cursorrules
 
 자세히: [AI Skill](https://freeive.com/anti-card/ai-skill)
 
-### Layer 2 — React 컴포넌트 (보조)
+### Layer 2 — React 컴포넌트 (51개)
 
 ```bash
 npm install @freeive/anti-card
 ```
 
 ```tsx
-import { SectionFrame, ListRow, Eyebrow } from "@freeive/anti-card";
+import {
+  HeroPattern, SectionFrame, ListRow, Eyebrow, StatList, ClientLogos
+} from "@freeive/anti-card";
 
-<SectionFrame
+<HeroPattern
+  size="hero"
   eyebrow="Heritage · 2016 — Now"
   title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
->
-  <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-    <ListRow meta="2024" trailing="EBS">EBS 온라인 클래스 재구조화</ListRow>
-    <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
-  </ul>
-</SectionFrame>
+  ctas={[{ label: "Talk", href: "/talk", tone: "accent" }]}
+/>
+
+<StatList items={[
+  { value: "10+", label: "Years" },
+  { value: "30+", label: "Clients" },
+  { value: "150+", label: "Projects" },
+]} />
 ```
 
-| Component | 역할 | 5원칙 |
-|---|---|---|
-| `<Eyebrow>` | 섹션 카테고리 라벨 | smallcaps |
-| `<SectionFrame>` | 카드 없이 섹션 짜기 | 공간 / 헤어라인 / 라벨 |
-| `<ListRow>` | 카드 그리드 대신 행 | 리스트의 행 |
-| `cn()` | clsx + tailwind-merge | 유틸 |
+#### 카테고리별 51 컴포넌트
+
+| 카테고리 | 컴포넌트 |
+|---|---|
+| **레이아웃** (7) | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
+| **타이포그래피** (6) | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
+| **리스트** (5) | ListRow · DefList · StatList · Timeline · CompareTable |
+| **액션** (4) | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
+| **콘텐츠 블록** (5) | Callout · FAQ · PricingTable · Steps · FeatureRow |
+| **신뢰·증거** (4) | ClientLogos · Testimonial · StatBlock · CaseStudy |
+| **미디어** (3) | Image · Video · Gallery |
+| **인터랙션** (5) | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
+| **폼** (6) | Input · Textarea · Select · Checkbox · Radio · Pill |
+| **페이지 패턴** (5) | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
+| **유틸** | `cn()` · `typography` 토큰 (12개) |
+
+각 컴포넌트의 props·사용법은 **[Playground](https://kimminchul.github.io/anticard/)** 에서 시각 미리보기 + 6 탭(디자인 / 프롬프트 / HTML / CSS / JS / React)으로 확인.
 
 > 시장에 없던 것은 Layer 1(AI 디자인 가이드)입니다.
-> Layer 2 컴포넌트 라이브러리 자체는 너무 많아요.
+> Layer 2 컴포넌트 라이브러리 자체는 너무 많아요. anti-card는 톤(5원칙)으로 차별.
 
 ## 안티 카드 5원칙
 
@@ -91,24 +110,14 @@ import { SectionFrame, ListRow, Eyebrow } from "@freeive/anti-card";
 
 자세히: [Manifesto](https://freeive.com/anti-card/manifesto) · [Why not cards](https://freeive.com/anti-card/why-not-cards)
 
-## ⚠️ Status
-
-**0.0.x 시드.** API는 0.1.0 전까지 변경될 수 있습니다.
-프로덕션 사용은 0.1.0 이후 권장.
-
-## 활용사례
-
-- **[freeive.com](https://freeive.com)** — 사이트 자체가 첫 활용사례
-- 자세히: `freeive.com/anti-card`
-
 ## Playground
 
-49개 컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
+51 컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
 
-- **공개 URL**: [kimminchul.github.io/anticard](https://kimminchul.github.io/anticard) (GitHub Pages, main push 시 자동 배포)
+- **공개 URL**: **[kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)** (GitHub Pages, main push 시 자동 배포)
 - **로컬**: `npm run dev:play` → http://localhost:5174
 
-각 컴포넌트 페이지에 AI 프롬프트 포함 — Claude/Cursor에 복사해서 동일 톤으로 코드 생성 가능.
+각 컴포넌트 페이지에 **AI 프롬프트** 포함 — Claude/Cursor에 복사해서 동일 톤으로 코드 생성 가능.
 
 GitHub Pages 빌드 (로컬 테스트):
 
@@ -119,6 +128,45 @@ GH_PAGES=1 npm run build:play && npm run preview:play
 # PowerShell
 $env:GH_PAGES="1"; npm run build:play; npm run preview:play
 ```
+
+## What's New (0.9.1, 2026-05-08)
+
+**0.0.3 → 0.9.1, 하루 만에 51 컴포넌트 + 토큰 시스템 완성.**
+
+| 마일스톤 | 버전 | 추가 |
+|---|---|---|
+| P0 — freeive 골격 | 0.1.0 | Container · Hairline · HeroHeading · SectionHeading · Lead · LinkRow · Header · Footer (8) |
+| 토큰 patch | 0.1.1 | typography.displayLg + HeroHeading size prop |
+| P1 — 콘텐츠 톤 | 0.2.0 | Quote · Highlight · Image · Video · DefList · StatList · Timeline · Pill (8) |
+| P2 — 패턴 + 액션 | 0.3.0 | HeroPattern · SectorsPattern · TalkPattern · EmptyState · CTASection · Banner · Button · FeatureRow (8) |
+| P3 — 신뢰·증거 | 0.4.0 | ClientLogos · Testimonial · StatBlock · CaseStudy (4) |
+| P4 — 인터랙션 | 0.5.0 | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee (5) |
+| P5 — 콘텐츠 블록 | 0.6.0 | Callout · FAQ · PricingTable · PricingPattern · Steps · CompareTable (6) |
+| P6+P7 — 폼·갤러리 | 0.8.0 | Grid · Input · Textarea · Select · Checkbox · Radio · Gallery (6) |
+| Grid 시스템 | 0.9.0 | **GridSystem · GridCol** (12 col) + Grid examples 4 + Select/Checkbox/Radio fix |
+| 차분 톤 patch | 0.9.1 | typography.display 30~48 → 26~40px (일반 페이지 hero 차분) |
+
+**타이포 토큰 시스템 (0.1.1)**
+12개 토큰 (`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
+모든 컴포넌트가 토큰 참조 — 단일 변경점으로 전체 톤 조정 가능.
+
+**5 원칙 일관 적용**
+모든 51 컴포넌트가 박스 거부 + 헤어라인 + smallcaps + 공간 + 행 5원칙을 자체 검증.
+
+**dogfooding** — [freeive.com](https://freeive.com) 사이트 자체가 살아있는 증거:
+- 메인 — `HeroPattern` + `ListRow` (4축 카드 그리드 거부)
+- Heritage — `StatList` + `ClientLogos` + `WaveCard` + `ListRow`
+- Talk — `TalkPattern` (받음/안받음 체크리스트)
+
+## ⚠️ Status
+
+**0.9.x 베타.** 51 컴포넌트 시각·기능 안정화 단계.
+1.0.0에서 API 동결, npm publish 예정.
+
+## 활용사례
+
+- **[freeive.com](https://freeive.com)** — 사이트 자체가 첫 활용사례 (4 페이지 모두 anti-card)
+- 자세히: `freeive.com/anti-card`
 
 ## 개발 (contributors)
 
@@ -139,9 +187,10 @@ npm run sync
 
 ## Roadmap
 
-- **v0.1.0** — Tailwind preset, AI Skill 정식 install 명령, `Pill`/`Stat`/`Hero` 컴포넌트
-- **v0.2.0** — Headless 모드 (Tailwind 없이도)
-- **v1.0.0** — 안정 API, 더 많은 end-user 패턴 (Footer / Marquee / Showcase)
+- **v0.9.x (현재)** — 51 컴포넌트 + 토큰 시스템 + Playground GitHub Pages
+- **v1.0.0** — API 동결, npm publish, 1인 랩 정체성 콘텐츠 + 첫 외부 사용 사례
+- **v1.1.0+** — Tailwind preset 패키지화, Headless 모드 (Tailwind 없이도)
+- **v2.0.0+** — AI Skill 정식 install 명령 (`claude skill install`), Vue/Svelte 포트
 
 ## 라이선스
 

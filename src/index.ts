@@ -144,6 +144,9 @@ export type {
 export { Grid } from "./components/grid";
 export type { GridProps } from "./components/grid";
 
+export { GridSystem, GridCol } from "./components/grid-system";
+export type { GridSystemProps, GridColProps } from "./components/grid-system";
+
 export { Input } from "./components/input";
 export type { InputProps } from "./components/input";
 
