@@ -1,0 +1,83 @@
+---
+title: HeroHeading
+description: 페이지 첫 화면의 큰 제목. clamp로 모바일~데스크톱 자동 스케일.
+group: components
+order: 6
+published: true
+updated: 2026-05-07
+---
+
+`<HeroHeading>`은 페이지 첫 화면의 **큰 제목**입니다. 두 단계 위계로 메인 / 일반 페이지를 구분합니다.
+
+```tsx
+import { HeroHeading } from "@freeive/anti-card";
+
+// 사이트 메인 — size="hero" (40~64px, 1회)
+<HeroHeading size="hero">1인 운영자의 무기를 만드는 1인 랩.</HeroHeading>
+
+// 일반 페이지 (Lab / Heritage / Blog) — default (30~48px)
+<HeroHeading>큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.</HeroHeading>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `"h1" \| "div"` | `"h1"` | 페이지당 h1 1개 원칙 |
+| `size` | `"page" \| "hero"` | `"page"` | page=일반 페이지(30~48px) / hero=메인(40~64px) |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 |
+| `width` | `"default" \| "wide" \| "full"` | `"default"` | 너비 제한 (20ch / 32ch / 무제한) |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+| `...rest` | `HTMLAttributes<HTMLHeadingElement>` | — | 표준 헤딩 속성 |
+
+## size 위계
+
+| size | 토큰 | 사이즈 | 사용처 |
+|---|---|---|---|
+| `hero` | typography.displayLg | clamp(2.5rem, 5vw, 4rem) — 40~64px | 사이트 메인 (1회) |
+| `page` (default) | typography.display | clamp(1.875rem, 4vw, 3rem) — 30~48px | 일반 페이지 (Lab/Heritage/Blog) |
+
+**원칙**: `size="hero"`는 사이트당 1번만. 모든 페이지 hero를 hero size로 하면 위계가 평탄해진다.
+
+## 디자인
+
+공통:
+- font-semibold
+- 색: `text-zinc-900 dark:text-zinc-50`
+- 너비: 기본 20ch
+- **1인 랩 차분 톤** — shadcn식 거대 hero(64~80px+) 거부
+
+차이:
+- `hero`: tracking-[-0.025em], leading-[1.05] (더 압축)
+- `page`: tracking-[-0.02em], leading-[1.1]
+
+## 가운데 정렬은 페이지당 1번만
+
+```tsx
+<HeroHeading align="center" width="wide">
+  AI 동질화에 대한 답변.
+</HeroHeading>
+```
+
+가운데 정렬은 강한 시그널입니다. 사이트 전반은 좌측 정렬이 일관성 측면에서 권장됩니다.
+
+## HTML 레퍼런스
+
+```html
+<!-- 일반 페이지 타이틀 (default, 30~48px) -->
+<h1 class="font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-50
+           text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] max-w-[20ch]">
+  큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.
+</h1>
+
+<!-- 사이트 메인 hero (size="hero", 40~64px) -->
+<h1 class="font-semibold tracking-[-0.025em] text-zinc-900 dark:text-zinc-50
+           text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] max-w-[20ch]">
+  1인 운영자의 무기를 만드는 1인 랩.
+</h1>
+```
+
+## 관련
+
+- [SectionHeading](/anti-card/section-heading) — h2/h3 위계
+- [Lead](/anti-card/lead) — 히어로 직후 보조 카피

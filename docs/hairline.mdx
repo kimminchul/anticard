@@ -1,0 +1,52 @@
+---
+title: Hairline
+description: 박스 거부 영역 분리. border 1px 한 줄로 영역의 시작/끝을 표시한다.
+group: components
+order: 5
+published: true
+updated: 2026-05-07
+---
+
+`<Hairline>`은 안티 카드 5원칙 중 **"헤어라인"** — 박스 없이 1px 한 줄로 영역을 나누는 가장 가벼운 구분 신호입니다.
+
+```tsx
+import { Hairline } from "@freeive/anti-card";
+
+<SectionA />
+<Hairline />
+<SectionB />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `spacing` | `"none" \| "tight" \| "default" \| "loose"` | `"default"` | 위아래 여백 |
+| `tone` | `"default" \| "subtle"` | `"default"` | 선의 흐림 정도 |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+| `...rest` | `HTMLAttributes<HTMLHRElement>` | — | 표준 hr 속성 |
+
+## spacing
+
+| spacing | margin | 용도 |
+|---|---|---|
+| `none` | 0 | 여백 따로 관리 |
+| `tight` | my-6 | 본문 안 단락 분리 |
+| `default` | my-12 md:my-16 | 섹션과 섹션 사이 |
+| `loose` | my-20 md:my-28 | 페이지 큰 영역 분리 |
+
+## tone
+
+- **default**: `border-zinc-200/60 dark:border-white/[0.06]` — 표준
+- **subtle**: `border-zinc-200/40 dark:border-white/[0.04]` — 푸터 안 등 시선 끌면 안 되는 영역
+
+## HTML 레퍼런스
+
+```html
+<hr class="border-0 border-t border-zinc-200/60 dark:border-white/[0.06] my-12 md:my-16" />
+```
+
+## 관련
+
+- [SectionFrame](/anti-card/section-frame) — 섹션 자체에 헤어라인 내장
+- [Footer](/anti-card/footer) — 상단 헤어라인 자동

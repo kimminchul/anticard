@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../utils/cn";
 import { Eyebrow } from "./eyebrow";
+import { typography } from "../tokens/typography";
 
 export interface SectionFrameProps
   extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
@@ -60,10 +61,10 @@ export function SectionFrame({
         <Heading
           data-anti-card="section-title"
           className={cn(
-            "max-w-[20ch] font-semibold tracking-tight text-zinc-900 dark:text-zinc-50",
-            as === "h1" && "mt-5 text-[clamp(2rem,5vw,4rem)] leading-[1.05]",
-            as === "h2" && "mt-3 text-2xl md:text-3xl",
-            as === "h3" && "mt-2 text-xl md:text-2xl"
+            "max-w-[20ch]",
+            as === "h1" && cn("mt-5", typography.display),
+            as === "h2" && cn("mt-3", typography.h2),
+            as === "h3" && cn("mt-2", typography.h3)
           )}
         >
           {title}
@@ -72,7 +73,7 @@ export function SectionFrame({
       {description && (
         <p
           data-anti-card="section-description"
-          className="mt-6 max-w-[58ch] text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300"
+          className={cn("mt-6 max-w-[58ch]", typography.lead)}
         >
           {description}
         </p>

@@ -1,0 +1,70 @@
+---
+title: Header
+description: 사이트 상단. 박스 거부, 헤어라인 1px 하단만. 브랜드 + 메뉴 + 단일 CTA.
+group: components
+order: 10
+published: true
+updated: 2026-05-07
+---
+
+`<Header>`는 사이트 상단의 표준 헤더입니다. 카드 박스로 가두지 않고 **하단 헤어라인 1px만**으로 영역을 표시합니다.
+
+```tsx
+import { Header } from "@freeive/anti-card";
+
+<Header
+  brand="Freeive"
+  links={[
+    { label: "안티 카드", href: "/anti-card" },
+    { label: "Lab", href: "/lab" },
+    { label: "Heritage", href: "/heritage" },
+    { label: "Blog", href: "/blog" },
+  ]}
+  cta={{ label: "Talk", href: "/talk" }}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `brand` | `ReactNode` | — | 좌측 브랜드 (필수) |
+| `brandHref` | `string` | `"/"` | 브랜드 클릭 시 링크 |
+| `links` | `HeaderLink[]` | `[]` | 메뉴 항목 |
+| `cta` | `{ label, href, external? }` | — | 우측 강조 CTA (1개) |
+| `sticky` | `boolean` | `false` | sticky top-0 z-40 |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+
+```ts
+type HeaderLink = {
+  label: ReactNode;
+  href: string;
+  external?: boolean;
+  active?: boolean;  // 현재 경로 표시
+};
+```
+
+## 디자인
+
+- 배경: `bg-white/80 dark:bg-zinc-950/80 backdrop-blur` — 스크롤 시 본문 살짝 비침
+- 하단 헤어라인: `border-b border-zinc-200/60 dark:border-white/[0.06]`
+- 컨테이너: `max-w-[1200px] mx-auto px-6 md:px-10 py-4`
+
+메뉴 항목 색:
+- 비활성: `text-zinc-500 dark:text-zinc-400`
+- hover/활성: `text-zinc-900 dark:text-zinc-50`
+
+CTA: `LinkRow`와 동일한 톤 (한 줄 텍스트 + 화살표).
+
+## sticky
+
+`sticky=true`면 `sticky top-0 z-40` 적용. 콘텐츠 사이트는 보통 sticky 사용 안 함이 자연스럽습니다 (스크롤하면 사라지는 게 본문 시야 확보에 좋음).
+
+## 모바일
+
+`md:flex`로 메뉴는 데스크톱에서만 표시. 모바일은 brand + cta만. (모바일 햄버거는 별도 컴포넌트로 분리 — TODO)
+
+## 관련
+
+- [Footer](/anti-card/footer) — 사이트 하단 짝
+- [LinkRow](/anti-card/link-row) — 동일한 CTA 톤

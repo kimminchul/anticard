@@ -1,6 +1,20 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
-import { Eyebrow, SectionFrame, ListRow } from "@freeive/anti-card";
+import {
+  Eyebrow,
+  SectionFrame,
+  ListRow,
+  Container,
+  Hairline,
+  HeroHeading,
+  SectionHeading,
+  Lead,
+  LinkRow,
+  Header as ACHeader,
+  Footer as ACFooter,
+  typography,
+  type TypographyToken,
+} from "@freeive/anti-card";
 
 /**
  * anti-card 컴포넌트 격리 dev. 각 Example이 자체 6탭(디자인/프롬프트/HTML/CSS/JS/React).
@@ -28,11 +42,11 @@ const NAV: NavGroup[] = [
     group: "레이아웃",
     desc: "페이지 골격을 짜는 큰 단위",
     items: [
-      { id: "header", ko: "헤더", en: "Header", status: "soon" },
-      { id: "footer", ko: "푸터", en: "Footer", status: "soon" },
-      { id: "container", ko: "컨테이너", en: "Container", status: "soon" },
+      { id: "header", ko: "헤더", en: "Header", status: "ready" },
+      { id: "footer", ko: "푸터", en: "Footer", status: "ready" },
+      { id: "container", ko: "컨테이너", en: "Container", status: "ready" },
       { id: "section-frame", ko: "섹션 프레임", en: "SectionFrame", status: "ready" },
-      { id: "hairline", ko: "헤어라인 구분선", en: "Hairline", status: "soon" },
+      { id: "hairline", ko: "헤어라인 구분선", en: "Hairline", status: "ready" },
       { id: "grid-columns", ko: "그리드·컬럼", en: "Grid", status: "soon" },
     ],
   },
@@ -40,10 +54,11 @@ const NAV: NavGroup[] = [
     group: "타이포그래피",
     desc: "글로 위계를 만드는 모든 것",
     items: [
+      { id: "typography-tokens", ko: "타이포 토큰", en: "Typography Tokens", status: "ready" },
       { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", status: "ready" },
-      { id: "hero-heading", ko: "히어로 큰 제목", en: "Hero Heading", status: "soon" },
-      { id: "section-heading", ko: "섹션 제목", en: "Section Heading", status: "soon" },
-      { id: "lead", ko: "리드 카피", en: "Lead", status: "soon" },
+      { id: "hero-heading", ko: "히어로 큰 제목", en: "Hero Heading", status: "ready" },
+      { id: "section-heading", ko: "섹션 제목", en: "Section Heading", status: "ready" },
+      { id: "lead", ko: "리드 카피", en: "Lead", status: "ready" },
       { id: "quote", ko: "인용구", en: "Quote", status: "soon" },
       { id: "highlight", ko: "강조 문장", en: "Highlight", status: "soon" },
     ],
@@ -65,7 +80,7 @@ const NAV: NavGroup[] = [
     items: [
       { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "soon" },
       { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary)", status: "soon" },
-      { id: "link-row", ko: "링크 행", en: "Link Row", status: "soon" },
+      { id: "link-row", ko: "링크 행", en: "Link Row", status: "ready" },
       { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "soon" },
       { id: "banner", ko: "알림 배너", en: "Banner", status: "soon" },
     ],
@@ -173,9 +188,18 @@ interface ComponentDef {
 
 const READY_SECTIONS: Record<string, () => JSX.Element> = {
   intro: Intro,
+  "typography-tokens": TypographyTokens,
   eyebrow: () => <ComponentPage def={EYEBROW_DEF} />,
   "section-frame": () => <ComponentPage def={SECTION_FRAME_DEF} />,
   "list-row": () => <ComponentPage def={LIST_ROW_DEF} />,
+  container: () => <ComponentPage def={CONTAINER_DEF} />,
+  hairline: () => <ComponentPage def={HAIRLINE_DEF} />,
+  "hero-heading": () => <ComponentPage def={HERO_HEADING_DEF} />,
+  "section-heading": () => <ComponentPage def={SECTION_HEADING_DEF} />,
+  lead: () => <ComponentPage def={LEAD_DEF} />,
+  "link-row": () => <ComponentPage def={LINK_ROW_DEF} />,
+  header: () => <ComponentPage def={HEADER_DEF} />,
+  footer: () => <ComponentPage def={FOOTER_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -387,6 +411,282 @@ function Intro() {
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ================ Typography tokens reference ================ */
+
+interface TokenRow {
+  token: TypographyToken;
+  label: string;
+  sample: ReactNode;
+}
+
+const HEADING_ROWS: TokenRow[] = [
+  {
+    token: "displayLg",
+    label: 'HeroHeading size="hero" · 메인 hero · 40~64px · 사이트당 1회',
+    sample: "1인 운영자의 무기를 만드는 1인 랩.",
+  },
+  {
+    token: "display",
+    label: 'HeroHeading default · 페이지 타이틀 · 30~48px',
+    sample: "큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.",
+  },
+  {
+    token: "h2",
+    label: "SectionHeading h2 · 24~30px",
+    sample: "네 개의 축으로 운영합니다.",
+  },
+  {
+    token: "h3",
+    label: "SectionHeading h3 · 20~24px",
+    sample: "서브섹션 제목",
+  },
+  {
+    token: "h4",
+    label: "블로그 단락 제목 · 18px",
+    sample: "블로그 글의 단락 제목",
+  },
+];
+
+const BODY_ROWS: TokenRow[] = [
+  {
+    token: "body",
+    label: "본문 기본 · 15px · 1.65",
+    sample:
+      "긴 글이 한 줄에 65~75자일 때 가장 읽기 좋다는 Bringhurst 원칙. body는 본문 텍스트의 표준 톤이다. zinc-700 / dark:zinc-300.",
+  },
+  {
+    token: "lead",
+    label: "Lead 인트로 · 15px · 한 단계 흐림",
+    sample: "헤딩 직후의 보조 카피. 본문보다 한 단계 흐린 회색으로 위계를 만든다.",
+  },
+  {
+    token: "leadLarge",
+    label: "Lead Large · 18~20px · 히어로 직후",
+    sample: "AI가 만들면 다 비슷해진다고 누가 정했나.",
+  },
+  {
+    token: "small",
+    label: "보조 본문·meta · 13.5px",
+    sample: "마지막 업데이트: 2026-05-07 · 작성자 김민철",
+  },
+];
+
+const LABEL_ROWS: TokenRow[] = [
+  {
+    token: "eyebrow",
+    label: "Eyebrow 기본 · 12px uppercase · zinc-500",
+    sample: "HERITAGE · 2016 — NOW",
+  },
+  {
+    token: "eyebrowAccent",
+    label: "Eyebrow accent · emerald-600 / 400",
+    sample: "LIVE · 진행 중",
+  },
+];
+
+function TokenList({ rows }: { rows: TokenRow[] }) {
+  return (
+    <ul className="mt-6 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
+      {rows.map((r) => (
+        <li
+          key={r.token}
+          className="grid grid-cols-1 gap-3 py-7 md:grid-cols-[200px_1fr] md:gap-10 md:py-9"
+        >
+          <div>
+            <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              {r.token}
+            </p>
+            <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">
+              {r.label}
+            </p>
+          </div>
+          <div className="min-w-0">
+            <div className={typography[r.token]}>{r.sample}</div>
+            <code className="mt-3 inline-block font-mono text-[11.5px] text-zinc-500 dark:text-zinc-500">
+              typography.{r.token}
+            </code>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function TypographyTokens() {
+  return (
+    <section>
+      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">
+        Tokens · Layer 0
+      </p>
+      <h2 className="mt-3 text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-tight tracking-tight text-zinc-900 dark:text-zinc-50">
+        타이포 토큰
+      </h2>
+      <p className="mt-5 max-w-[58ch] text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+        anti-card 라이브러리 전체가 참조하는{" "}
+        <strong className="text-zinc-900 dark:text-zinc-200">
+          단일 진실 원천
+        </strong>
+        . 모든 컴포넌트의 크기·굵기·색·자간이 여기서 결정됩니다. 외부에서도{" "}
+        <code className="font-mono text-[13px] text-emerald-700 dark:text-emerald-400">
+          {`import { typography }`}
+        </code>{" "}
+        해서 자유 글에서도 동일한 톤을 유지하세요.
+      </p>
+
+      {/* Headings */}
+      <div className="mt-14">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Headings
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          큰 타입은 negative tracking + 좁은 leading. 자간이 크기에 반비례하게
+          조정됨 (display -0.02em → h4 0).
+        </p>
+        <TokenList rows={HEADING_ROWS} />
+      </div>
+
+      {/* Body / Lead */}
+      <div className="mt-16">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Body / Lead
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          본문 색은 zinc-700 / 600. 회색 한 단계 차이가 위계를 만든다 (body →
+          lead → small).
+        </p>
+        <TokenList rows={BODY_ROWS} />
+      </div>
+
+      {/* Smallcaps labels */}
+      <div className="mt-16">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Smallcaps Labels
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          12px uppercase + 자간 0.08em. 5원칙 중 "smallcaps 라벨" — 카드 없이
+          영역을 구분하는 가장 가벼운 신호.
+        </p>
+        <TokenList rows={LABEL_ROWS} />
+      </div>
+
+      {/* Code */}
+      <div className="mt-16">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Code (Inline)
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          본문에 자연스럽게 섞이는 인라인 코드. 0.92em 상대 크기 + mono. 박스로
+          감싸지 않는다.
+        </p>
+        <ul className="mt-6 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
+          <li className="grid grid-cols-1 gap-3 py-7 md:grid-cols-[200px_1fr] md:gap-10 md:py-9">
+            <div>
+              <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                code
+              </p>
+              <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">
+                인라인 코드 · 0.92em
+              </p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+                패키지 진입점은{" "}
+                <code className={typography.code}>{`import { typography } from "@freeive/anti-card"`}</code>{" "}
+                한 줄이면 끝입니다.
+              </p>
+              <code className="mt-3 inline-block font-mono text-[11.5px] text-zinc-500 dark:text-zinc-500">
+                typography.code
+              </code>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      {/* 5 design rules */}
+      <div className="mt-20 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Design Rules
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          토큰을 추가·수정할 때 지켜야 할 5가지.
+        </p>
+        <ol className="mt-8 space-y-6">
+          {[
+            {
+              n: "01",
+              t: "굵기 3단계만",
+              d: "400 (regular) / 500 (medium) / 600 (semibold). bold(700)·black(900) 사용 금지. 두꺼움이 아니라 색·크기로 위계.",
+            },
+            {
+              n: "02",
+              t: "색 7단계만",
+              d: "zinc-900 / 700 / 600 / 500 / 400 / 300 / 50. 그 외 색은 액센트(emerald)를 제외하면 사용 X.",
+            },
+            {
+              n: "03",
+              t: "자간은 크기 반비례",
+              d: "display -0.02em → h4 0 → smallcaps +0.08em. 큰 타입은 좁게, smallcaps만 넓게.",
+            },
+            {
+              n: "04",
+              t: "줄간격은 크기 반비례",
+              d: "display 1.1 / h2 1.2 / h3 1.3 / h4 1.4 / body 1.65. 본문이 가장 여유롭게.",
+            },
+            {
+              n: "05",
+              t: "폰트는 호스트가 결정",
+              d: "라이브러리는 family를 강제하지 않음. 호스트가 :root에 --anti-card-font-sans / --anti-card-font-mono CSS 변수로 override 가능.",
+            },
+          ].map((r) => (
+            <li
+              key={r.n}
+              className="grid grid-cols-1 gap-3 md:grid-cols-[60px_180px_1fr] md:gap-8"
+            >
+              <span className="font-mono text-[12px] text-zinc-400 dark:text-zinc-500">
+                {r.n}
+              </span>
+              <p className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100">
+                {r.t}
+              </p>
+              <p className="max-w-[58ch] text-[14px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {r.d}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* Usage */}
+      <div className="mt-20 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+          Usage
+        </p>
+        <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+          토큰은 className 문자열입니다. 자유 글이나 외부 컴포넌트에서 직접 사용
+          가능.
+        </p>
+        <pre className="mt-6 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50/60 p-4 text-[13px] leading-relaxed text-zinc-800 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-zinc-300">
+          <code className="font-mono">{`import { typography, cn } from "@freeive/anti-card";
+
+// 그대로 사용
+<p className={typography.body}>본문 텍스트</p>
+<code className={typography.code}>inline code</code>
+
+// 다른 클래스와 합치기
+<p className={cn(typography.lead, "max-w-[58ch] mt-6")}>
+  헤딩 직후 인트로 카피.
+</p>
+
+// 부분 override (twMerge가 충돌 자동 해결)
+<h2 className={cn(typography.h2, "text-emerald-600 dark:text-emerald-400")}>
+  강조 섹션 제목
+</h2>`}</code>
+        </pre>
       </div>
     </section>
   );
@@ -708,11 +1008,20 @@ const EYEBROW_DEF: ComponentDef = {
       title: "기본 톤 (neutral)",
       description: "본문 텍스트보다 한 단계 어두운 회색.",
       preview: <Eyebrow>Heritage · 2016 — Now</Eyebrow>,
-      prompt: `섹션 위에 작은 카테고리 라벨(eyebrow)을 만들어줘.
-- 12px 크기, 대문자, 자간 0.08em, font-medium
-- 색은 zinc-500 (어두운 회색)
-- shadcn 카드 헤더 같은 게 아니라 정말 작은 한 줄 라벨
-- 박스로 감싸지 말고, 단순한 <p> 한 줄`,
+      prompt: `end-user 화면(랜딩·콘텐츠 사이트)의 섹션 위에 들어가는 작은 카테고리 라벨이 필요해.
+shadcn CardHeader처럼 박스에 감싸진 헤더가 아니라, 더 가볍게 본문 위에 얹는 한 줄 텍스트.
+
+용도: 헤딩 위에서 "이 영역이 무슨 카테고리"인지 한 번에 알리는 정도.
+"Heritage · 2016 — Now", "Pillars", "Section · Label" 같은 짧고 분류적인 텍스트.
+
+스타일:
+- 12px uppercase, 자간 0.08em (smallcaps 톤)
+- font-medium (너무 가늘지 않게)
+- 색: 본문보다 한 단계 차분한 회색 (zinc-500/600 — 라이트/다크 양쪽 자연스럽게)
+
+박스로 감싸지 말고 단순한 <p> 한 줄. margin은 헤딩이 처리.
+
+이게 안티 카드 5원칙 중 "smallcaps 라벨" — 카드 없이 영역을 구분하는 가장 가벼운 신호.`,
       html: `<p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
   Heritage · 2016 — Now
 </p>`,
@@ -740,9 +1049,16 @@ const EYEBROW_DEF: ComponentDef = {
           <Eyebrow tone="accent">In progress</Eyebrow>
         </div>
       ),
-      prompt: `진행 중 / 라이브 상태를 표시하는 작은 라벨을 만들어줘.
-기본 eyebrow와 동일한 사이즈·자간·굵기.
-색만 emerald-400 (#34d399) 으로 강조.`,
+      prompt: `기본 eyebrow의 강조 변형이 필요해. "진행 중", "Live", "신규" 같은 상태를 짧게 표시.
+
+용도: Heritage·Lab 페이지의 "현재 진행 중" 섹션, 새 콘텐츠 배지 등.
+주위에 다른 정보가 많은 상황에서 한 영역만 살짝 강조하고 싶을 때.
+
+스타일: 기본 eyebrow와 사이즈·자간·굵기 동일. 색만 액센트 컬러로.
+- 색: emerald-600 dark:emerald-400 (라이트에선 더 진하게, 다크에선 밝게)
+- 다른 액센트가 필요하면 className으로 yellow-400/rose-400 등 오버라이드
+
+여전히 <p> 한 줄. 박스 X. "한 줄 텍스트의 색만 바뀐 것"이라는 가벼움 유지.`,
       html: `<p class="text-[12px] uppercase tracking-[0.08em] text-emerald-400 font-medium">
   Live · 진행 중
 </p>`,
@@ -768,11 +1084,17 @@ const EYEBROW_DEF: ComponentDef = {
           </p>
         </div>
       ),
-      prompt: `섹션 헤더를 만들어줘.
-- 작은 eyebrow 라벨 (12px uppercase smallcaps)
-- 그 아래 큰 헤딩 (text-2xl font-semibold tracking-tight)
-- 그 아래 서브 카피 (max-w-40ch text-[14px] text-zinc-400)
-- 카드 박스 없이`,
+      prompt: `end-user 화면의 섹션 헤더 묶음을 만들어줘. 안티 카드 톤.
+
+구조: 작은 라벨 → 큰 헤딩 → 서브 카피 (3줄 묶음).
+- 라벨(eyebrow): 12px uppercase smallcaps, zinc-500/600
+- 헤딩(h2): text-2xl font-semibold tracking-tight, 본문보다 진한 색 (zinc-900 dark:zinc-50)
+- 서브 카피(p): text-[14px] leading-relaxed, max-w-40ch, zinc-600 dark:zinc-400
+
+카드 박스 X. 그릇 X. 위 3줄 사이의 간격(mt-3)이 묶음 자체.
+
+이게 SectionFrame 안에서 자동으로 만들어지는 구조이기도 함.
+end-user 화면에서 가장 자주 등장하는 패턴.`,
       html: `<section>
   <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
     Pillars
@@ -805,10 +1127,18 @@ const EYEBROW_DEF: ComponentDef = {
           <Eyebrow className="text-rose-400">danger zone</Eyebrow>
         </div>
       ),
-      prompt: `eyebrow와 같은 톤이지만 색이 다른 라벨이 필요해.
-- 경고: yellow-400
-- 위험: rose-400
-className으로 색만 덮어쓰면 됨.`,
+      prompt: `Eyebrow의 사전 정의 두 톤(neutral/accent) 외 다른 색이 필요한 경우.
+경고·위험·정보 등 의미 있는 색 변경.
+
+원칙: 사이즈·자간·굵기는 절대 건드리지 말고, 색(text-*)만 변경.
+className으로 오버라이드하면 twMerge가 기존 색 클래스를 자동으로 무효화.
+
+예시:
+- env not set / warning: text-yellow-500 dark:text-yellow-400
+- danger / 위험: text-rose-500 dark:text-rose-400
+- info / 정보: text-sky-500 dark:text-sky-400
+
+color 변형이 늘어나도 사이즈·자간은 일관 유지 → 시스템 안정성.`,
       html: `<p class="text-[12px] uppercase tracking-[0.08em] text-yellow-400 font-medium">
   env not set
 </p>
@@ -844,12 +1174,20 @@ const SECTION_FRAME_DEF: ComponentDef = {
           description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
         />
       ),
-      prompt: `섹션 프레임을 만들어줘. 카드 박스 없이.
-- 위쪽에 1px 헤어라인 (border-t border-white/[0.06])
-- 위·아래 패딩 py-16 md:py-20
+      prompt: `end-user 화면(랜딩 페이지 등)의 한 섹션을 만들어줘. 카드 박스 절대 사용 금지.
+
+안티 카드 5원칙 중 "공간(여백) + 헤어라인 + smallcaps 라벨" 세 가지를 조합:
+- 위쪽 1px 헤어라인 (border-t border-zinc-200 dark:border-white/[0.06])
+- 위·아래 큰 패딩 py-16 md:py-20 (안티 카드는 큰 호흡)
 - eyebrow 라벨 (12px uppercase smallcaps)
-- 그 아래 큰 헤딩 (text-2xl md:text-3xl font-semibold tracking-tight)
-- 그 아래 서브 카피 (text-[15px] text-zinc-300)`,
+- 그 아래 큰 헤딩 (text-2xl md:text-3xl font-semibold tracking-tight, max-w-20ch)
+- 그 아래 서브 카피 (text-[15px] leading-relaxed, max-w-58ch, zinc-700 dark:zinc-300)
+
+카드 박스로 감싸면 정보가 그릇에 갇혀 보임. 이 패턴은 그릇 없이 헤어라인과 여백만으로
+영역을 만든다 → 화면이 "콘텐츠가 곧 형태"인 느낌.
+
+다른 섹션이 위에 있으면 위쪽 헤어라인이 자연스러운 구분자 역할.
+연속된 섹션을 이 프레임으로 쌓으면 페이지 리듬이 만들어짐.`,
       html: `<section class="border-t border-white/[0.06] py-16 md:py-20">
   <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
     Pillars
@@ -892,8 +1230,17 @@ const SECTION_FRAME_DEF: ComponentDef = {
           description="페이지 시작부에는 위쪽 라인이 어색하니 끕니다."
         />
       ),
-      prompt: `페이지 첫 섹션 (Hero)이라 위쪽 헤어라인은 빼줘.
-나머지는 기본 SectionFrame과 동일.`,
+      prompt: `페이지의 첫 섹션이라 위쪽 헤어라인을 빼야 자연스러워.
+
+이유: 페이지 시작부 위에는 아무것도 없는데 헤어라인만 보이면 "잘린 섹션"처럼 보임.
+첫 섹션은 헤어라인 없이 시작 → 페이지 자체가 그 섹션을 안고 있는 느낌.
+
+구조는 기본 SectionFrame과 동일 (라벨 + 헤딩 + 서브 카피).
+다만 padding을 더 크게 가도 OK — Hero라면 py-24 md:py-32.
+헤딩도 더 크게 — text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] (h1 권장).
+
+뒤따라오는 두 번째 섹션부터는 기본 SectionFrame (헤어라인 ON).
+이 둘이 만나면 페이지의 시작과 본문 영역이 자연스럽게 분리됨.`,
       html: `<section class="py-16 md:py-20">
   <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">Hero</p>
   <h2 class="mt-3 text-2xl md:text-3xl font-semibold tracking-tight text-zinc-50">
@@ -923,9 +1270,22 @@ const SECTION_FRAME_DEF: ComponentDef = {
           </ul>
         </SectionFrame>
       ),
-      prompt: `섹션 헤더 + 그 아래 행 리스트 (ListRow) 패턴.
-SectionFrame children에 <ul divide-y border-y> 안에 ListRow 들 넣어줘.
-이게 Heritage 페이지의 표준 구조.`,
+      prompt: `섹션 헤더 + 그 아래 행 리스트 — end-user 화면에서 가장 자주 등장하는 조합.
+Heritage·Sectors·Pricing·FAQ 등 정보 나열이 필요한 모든 섹션의 표준 패턴.
+
+구조:
+1) SectionFrame (라벨 + 헤딩 + 설명)
+2) children 영역에 <ul> + ListRow들
+
+ul 클래스: divide-y divide-zinc-200 border-y border-zinc-200
+          dark:divide-white/[0.06] dark:border-white/[0.06]
+- divide-y: 행 사이 1px 가로선 (구분자)
+- border-y: ul 위·아래 1px 가로선 (영역 경계)
+- 색: 라이트/다크 양쪽 — 라이트에선 zinc-200 (옅은 회색), 다크에선 white 6% 알파
+
+카드 그리드 절대 X. 카드 그리드는 모든 항목을 균등하게 보여줘 위계가 사라지고,
+50개 카드는 답답해짐. 행 레이아웃은 위계가 본문 크기·meta로 만들어지고,
+한 화면에 자연스럽게 더 많은 정보 나열 가능.`,
       html: `<section class="py-16 md:py-20">
   <p class="text-[12px] uppercase tracking-[0.08em] text-zinc-500 font-medium">
     Heritage · Education
@@ -981,12 +1341,26 @@ const LIST_ROW_DEF: ComponentDef = {
           <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
         </ul>
       ),
-      prompt: `행 리스트 만들어줘. 카드 그리드 말고.
-- ul: divide-y border-y (헤어라인으로 행 구분)
-- 각 li: grid-cols-[140px_1fr] (좌측 meta 140px / 본문 flex)
-- meta: 12px uppercase smallcaps zinc-500
-- 본문: 15.5px font-medium zinc-100
-- 모바일은 grid-cols-1 stack`,
+      prompt: `end-user 화면에서 정보 나열이 필요해. 카드 그리드 말고 행 레이아웃.
+
+왜 행이냐: 카드 그리드는 50개 항목을 보면 답답해지고, 모든 항목이 균등 → 위계가 사라짐.
+행은 한 화면에 자연스럽게 펼쳐지고, 위계는 본문 크기·meta로 만든다.
+shadcn 카드 그리드 패턴을 안 쓰는 안티 카드 영역의 핵심.
+
+구조:
+- ul: divide-y divide-zinc-200 border-y border-zinc-200
+      dark:divide-white/[0.06] dark:border-white/[0.06]
+  → 행 구분 + ul 영역 경계
+- li: grid-cols-1 md:grid-cols-[140px_1fr] gap-3 md:gap-8 py-6
+  → 데스크톱 2컬럼 (meta 140px 고정 / 본문 flex), 모바일 stack
+
+각 컬럼:
+- meta (좌): text-[12px] uppercase tracking-[0.08em] zinc-500 (smallcaps 톤)
+  연도·카테고리·번호 등 분류 정보. eyebrow와 같은 톤.
+- 본문 (우): text-[15.5px] font-medium leading-snug, zinc-900 dark:zinc-100
+  가장 두드러지는 텍스트 — 제목·핵심.
+
+trailing(우측 보조)이 필요하면 grid-cols-[140px_1fr_auto]로 확장 (다음 패턴).`,
       html: `<ul class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
   <li class="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-3 md:gap-8 py-6">
     <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
@@ -1014,10 +1388,24 @@ const LIST_ROW_DEF: ComponentDef = {
           <ListRow meta="2022" trailing="라이나생명">대고객 디지털채널 재구축</ListRow>
         </ul>
       ),
-      prompt: `Example 01과 같지만 우측에 trailing 보조 정보 추가.
-- grid-cols-[140px_1fr_auto] (좌측 meta / 본문 flex / 우측 trailing auto)
-- trailing: 12.5px text-zinc-400
-이게 Heritage 페이지에서 가장 자주 쓰는 패턴.`,
+      prompt: `정보 행에 우측 보조 라벨이 더 필요해. Heritage 페이지의 표준 패턴.
+
+상황: 각 프로젝트 행에 [연도, 제목, 클라이언트] 세 가지 정보가 필요.
+연도(meta)·제목(본문)·클라이언트(trailing)를 한 행에 균형 있게 배치.
+
+구조: Example 01의 2컬럼을 3컬럼으로 확장.
+- grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6
+  → 좌측 meta 140px / 본문 1fr / 우측 trailing auto-width
+
+각 컬럼:
+- meta (좌, 140px): 연도·카테고리. text-[12px] uppercase tracking-[0.08em] zinc-500
+- 본문 (가운데, flex): 제목. text-[15.5px] font-medium zinc-900 dark:zinc-100
+- trailing (우, auto): 보조 정보 (클라이언트, 산업, 태그). text-[12.5px] zinc-500 dark:zinc-400
+
+세 정보가 균형 있게 — 본문이 가장 강하고, meta·trailing은 보조 톤.
+모바일은 단일 컬럼 stack (gap-3로 세 줄로 쌓임).
+
+end-user 화면의 "표준 행" 형태. 한 페이지에 50개 나열해도 답답하지 않다.`,
       html: `<ul class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
   <li class="grid grid-cols-1 md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 py-6">
     <span class="text-[12px] uppercase tracking-[0.08em] text-zinc-500">2024</span>
@@ -1083,11 +1471,22 @@ const LIST_ROW_DEF: ComponentDef = {
           <ListRow meta="2023" trailing="롯데카드" href="#">mydata 수집 및 admin 개발 (클릭 가능)</ListRow>
         </ul>
       ),
-      prompt: `Example 02와 같지만 각 행이 링크.
-- li 자체가 hover 시 background 살짝 (white/0.02)
-- 안에 a 태그로 감쌈
-- hover 시 본문 색이 emerald-400으로 전환
-- 부드러운 transition`,
+      prompt: `정보 행이 클릭 가능한 링크여야 함. 각 행을 클릭하면 상세 페이지로 이동.
+
+상황: Heritage 행 리스트에서 클릭 시 케이스 스터디 페이지로 이동, 또는
+블로그 목록에서 글 상세로. 행 전체가 클릭 영역이어야 사용성이 좋음.
+
+구조: Example 02 (trailing 패턴)을 그대로 사용하되, li 안을 a 태그로 감쌈.
+- li: group transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.02]
+- a: block px-1, group-hover:text-emerald-700 dark:group-hover:text-emerald-400
+- 내부 div는 기존 grid 구조 유지 (140px 1fr auto)
+
+hover 효과:
+- li 배경 살짝 (zinc-50 라이트 / white 2% 알파 다크) — 클릭 가능 시그널
+- 본문 텍스트 색이 액센트 컬러로 부드럽게 (transition-colors)
+- meta·trailing은 색 그대로 → 본문만 도드라짐
+
+전체 행이 클릭 영역이라 hit target 크고, 부드러운 transition이 인터랙션 인상을 만듦.`,
       html: `<ul class="divide-y divide-white/[0.06] border-y border-white/[0.06]">
   <li class="group transition-colors hover:bg-white/[0.02]">
     <a href="/heritage/ebs" class="block px-1 group-hover:text-emerald-400">
@@ -1124,5 +1523,894 @@ const LIST_ROW_DEF: ComponentDef = {
     { name: "trailing", type: "ReactNode", desc: "우측 보조 라벨" },
     { name: "children", type: "ReactNode", desc: "본문 (제목)" },
     { name: "href", type: "string", desc: "있으면 a 태그로 감싸지고 hover 시 액센트" },
+  ],
+};
+
+const CONTAINER_DEF: ComponentDef = {
+  id: "container",
+  ko: "컨테이너",
+  en: "Container",
+  desc: "페이지 본문 너비 통일. 카드로 영역을 가두지 않는 대신 너비로 영역을 정의한다. 안티 카드 5원칙 중 '공간(여백)'.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 (1200px) — 사이트 표준",
+      description: "랜딩·Heritage·Lab 등 일반 페이지 본문. 좌우 패딩 자동.",
+      preview: (
+        <div className="w-full">
+          <Container size="default">
+            <div className="border-y border-zinc-300 py-6 dark:border-zinc-700">
+              <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                max-w-[1200px]
+              </p>
+              <p className="mt-2 text-[14px] text-zinc-700 dark:text-zinc-300">
+                사이트 본문 영역 — 좌우 패딩 px-6 md:px-10 자동.
+              </p>
+            </div>
+          </Container>
+        </div>
+      ),
+      prompt: `end-user 사이트 본문 너비를 통일하는 컨테이너가 필요해. 카드로 가두지 않고 너비로만 영역을 정의.
+
+용도: 모든 페이지 본문(랜딩·Heritage·Lab·블로그)이 동일한 max-width를 가지게.
+중앙 정렬 + 좌우 패딩 표준화.
+
+스타일:
+- 기본 너비: max-w-[1200px] — 사이트 표준
+- 좌우 패딩: px-6 md:px-10 (모바일 24px, 데스크톱 40px)
+- 중앙 정렬: mx-auto w-full
+- 배경·border 없음 (라이트/다크 모두 투명)
+
+박스가 아니라 너비 제약. shadcn Card 같은 박스 컴포넌트와 정반대 방향 — "그릇"이 아니라 "여백 규칙".
+
+이게 안티 카드 5원칙 중 "공간(여백)" — 본문을 화면 끝까지 늘리지 않고 적절한 너비로 가독성을 유지.`,
+      html: `<div class="mx-auto w-full max-w-[1200px] px-6 md:px-10">
+  <!-- 본문 -->
+</div>`,
+      css: `.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 1200px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+@media (min-width: 768px) {
+  .container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}`,
+      cssHtml: `<div class="container"><!-- 본문 --></div>`,
+      react: `import { Container } from "@freeive/anti-card";
+
+<Container>
+  <SectionFrame title="..." />
+</Container>`,
+    },
+    {
+      index: "02",
+      badge: "narrow",
+      title: "narrow (640px) — 긴 글",
+      description: "블로그 본문, 학습 일지처럼 글 가독성이 중요한 영역.",
+      preview: (
+        <div className="w-full">
+          <Container size="narrow">
+            <div className="border-y border-zinc-300 py-6 dark:border-zinc-700">
+              <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                max-w-[640px]
+              </p>
+              <p className="mt-2 text-[14px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+                긴 글은 한 줄이 65~75자 정도일 때 가장 읽기 좋다.
+                640px가 그 황금 너비.
+              </p>
+            </div>
+          </Container>
+        </div>
+      ),
+      prompt: `블로그 글이나 긴 학습 일지처럼 본문 가독성이 핵심인 페이지에 쓰는 narrow 컨테이너.
+
+상황: 1200px 너비로 본문을 펼치면 한 줄이 너무 길어서 시선 이동이 피곤하다.
+긴 글은 한 줄이 65~75자(약 640px)일 때 가장 읽기 좋다 (Bringhurst 원칙).
+
+스타일: default와 모든 게 동일하고 max-width만 변경.
+- max-w-[640px] (default 1200px의 약 절반)
+- 좌우 패딩 동일 (px-6 md:px-10)
+
+언제 쓰는가:
+- 블로그 글 본문
+- 학습 일지·에세이
+- About / 정책 페이지
+
+언제 안 쓰는가:
+- Heritage 같은 ListRow 다수 (1200px 권장 — 행 정보가 충분히 펼쳐져야)
+- 갤러리·이미지 그리드`,
+      html: `<article class="mx-auto w-full max-w-[640px] px-6 md:px-10">
+  <h1>제목</h1>
+  <p>긴 본문…</p>
+</article>`,
+      react: `<Container size="narrow" as="article">
+  <h1>제목</h1>
+  <p>긴 본문…</p>
+</Container>`,
+    },
+    {
+      index: "03",
+      badge: "wide",
+      title: "wide (1440px) — 와이드 레이아웃",
+      description: "이미지·갤러리·미디어 헤비 페이지에. 1200px이 좁게 느껴질 때.",
+      preview: (
+        <div className="w-full">
+          <Container size="wide">
+            <div className="border-y border-zinc-300 py-6 dark:border-zinc-700">
+              <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                max-w-[1440px]
+              </p>
+              <p className="mt-2 text-[14px] text-zinc-700 dark:text-zinc-300">
+                Lab·갤러리처럼 시각 요소가 큰 페이지의 와이드 모드.
+              </p>
+            </div>
+          </Container>
+        </div>
+      ),
+      prompt: `Lab 페이지 카메라 데모처럼 시각 요소가 크고 1200px이 좁게 느껴지는 페이지를 위한 wide 변형.
+
+상황: 카메라 캔버스, 인터랙션 데모, 큰 이미지 갤러리 등 비주얼이 메인인 영역.
+글 가독성보다 시각 임팩트가 중요할 때.
+
+스타일: default와 동일하고 max-width만 1440px로.
+- max-w-[1440px]
+- 좌우 패딩 px-6 md:px-10 동일
+
+쓸 때 유의:
+- 본문 텍스트는 안에서 다시 narrow로 한 번 더 가두는 게 좋다.
+  (시각 영역만 wide, 본문은 640px)
+- 데스크톱 대형 모니터에서 의미 있음 (모바일은 어차피 풀폭)
+
+대부분의 일반 페이지는 default(1200px)로 충분하다 — wide는 의식적으로 선택.`,
+      html: `<section class="mx-auto w-full max-w-[1440px] px-6 md:px-10">
+  <!-- 갤러리·캔버스 -->
+</section>`,
+      react: `<Container size="wide" as="section">
+  <Gallery />
+</Container>`,
+    },
+    {
+      index: "04",
+      badge: "semantic",
+      title: "as — 시맨틱 태그",
+      description: "main, article, section 등 의미 있는 태그로 변경. div가 기본.",
+      preview: (
+        <div className="w-full">
+          <Container size="default" as="main">
+            <div className="border-y border-zinc-300 py-6 dark:border-zinc-700">
+              <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                {"<main> · max-w-[1200px]"}
+              </p>
+              <p className="mt-2 text-[14px] text-zinc-700 dark:text-zinc-300">
+                페이지 메인 영역은 main 태그로. 접근성·SEO에 유리.
+              </p>
+            </div>
+          </Container>
+        </div>
+      ),
+      prompt: `Container의 시맨틱 태그를 div가 아니라 main, article, section으로 바꾸고 싶다.
+
+상황:
+- 페이지 메인 영역 → <main>
+- 블로그 글 단위 → <article>
+- 페이지 안의 의미 있는 구획 → <section>
+
+div보다 시맨틱 태그를 쓰면 스크린 리더 내비게이션·SEO 모두에 유리.
+대부분의 페이지에서 최상위 컨테이너는 <main>이 맞다.
+
+스타일·동작은 div와 완전히 동일. as prop만 바꾸면 됨.
+
+기본은 div를 유지 (가장 중립). 의미가 명확할 때만 변경.`,
+      html: `<main class="mx-auto w-full max-w-[1200px] px-6 md:px-10">
+  <!-- 페이지 본문 -->
+</main>
+
+<article class="mx-auto w-full max-w-[640px] px-6 md:px-10">
+  <!-- 블로그 글 -->
+</article>`,
+      react: `<Container as="main">
+  <Hero />
+  <SectionFrame ... />
+</Container>
+
+<Container size="narrow" as="article">
+  <BlogPost />
+</Container>`,
+    },
+  ],
+  props: [
+    {
+      name: "size",
+      type: '"narrow" | "default" | "wide" | "full"',
+      default: '"default"',
+      desc: "max-width 변형. narrow=640px, default=1200px, wide=1440px, full=제한없음",
+    },
+    {
+      name: "as",
+      type: '"div" | "main" | "article" | "section"',
+      default: '"div"',
+      desc: "시맨틱 태그 변경. 페이지 메인 영역은 main 권장",
+    },
+    {
+      name: "className",
+      type: "string",
+      desc: "Tailwind 클래스 추가 (twMerge로 충돌 해결)",
+    },
+    {
+      name: "...rest",
+      type: "HTMLAttributes<HTMLElement>",
+      desc: "표준 HTML 속성",
+    },
+  ],
+};
+
+const HAIRLINE_DEF: ComponentDef = {
+  id: "hairline",
+  ko: "헤어라인 구분선",
+  en: "Hairline",
+  desc: "박스 거부 영역 분리. border 1px 한 줄로 영역의 시작/끝을 표시. 안티 카드 5원칙 중 '헤어라인'.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 영역 분리",
+      description: "섹션과 섹션 사이 표준 구분선. my-12 md:my-16 자동 여백.",
+      preview: (
+        <div>
+          <p className="text-zinc-700 dark:text-zinc-300">위 섹션 내용</p>
+          <Hairline />
+          <p className="text-zinc-700 dark:text-zinc-300">아래 섹션 내용</p>
+        </div>
+      ),
+      prompt: `섹션과 섹션 사이를 카드 박스 없이 분리하고 싶다. 헤어라인 1px 한 줄.
+
+상황: 페이지에 여러 섹션이 있고, 각 영역의 시작/끝을 시각적으로 구분해야 하는데
+shadcn Card처럼 박스로 가두지 않으면서 영역을 나누는 가장 가벼운 방법이 필요.
+
+스타일:
+- border-top 1px (border-zinc-200/60 dark:border-white/[0.06])
+- 위아래 충분한 여백 (my-12 md:my-16) — 헤어라인 자체가 영역 분리 신호
+- 색은 본문보다 훨씬 흐림 — 시선을 끌지 않고 위계만 만든다
+
+이게 안티 카드 5원칙 중 "헤어라인" — 박스 없이 1px 한 줄로 영역의 위계.`,
+      html: `<hr class="border-0 border-t border-zinc-200/60 dark:border-white/[0.06] my-12 md:my-16" />`,
+      react: `<Hairline />`,
+    },
+    {
+      index: "02",
+      badge: "tight",
+      title: "tight — 가까운 단락 분리",
+      description: "본문 내 단락 단위 가벼운 분리. my-6.",
+      preview: (
+        <div>
+          <p className="text-zinc-700 dark:text-zinc-300">단락 1</p>
+          <Hairline spacing="tight" />
+          <p className="text-zinc-700 dark:text-zinc-300">단락 2</p>
+        </div>
+      ),
+      prompt: `본문 안의 단락 사이에 작은 분리선이 필요한 경우.
+default(my-12)는 영역 단위인데, tight(my-6)는 더 가까운 단락 단위.
+
+용도: 블로그 글 내부의 큰 주제 전환, 정의 리스트 사이 등.
+default보다 가까이 붙어 있어 "같은 섹션 안의 다른 단락" 신호.`,
+      html: `<hr class="border-0 border-t border-zinc-200/60 dark:border-white/[0.06] my-6" />`,
+      react: `<Hairline spacing="tight" />`,
+    },
+    {
+      index: "03",
+      badge: "subtle",
+      title: "subtle — 더 흐릿한 톤",
+      description: "푸터 안 등 시선 끌면 안 되는 분리. tone='subtle'.",
+      preview: (
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+            © 2026 Freeive
+          </p>
+          <Hairline spacing="tight" tone="subtle" />
+          <p className="text-[12px] text-zinc-500 dark:text-zinc-400">정책 · 약관</p>
+        </div>
+      ),
+      prompt: `푸터 영역 안 같이, 분리는 필요한데 시선이 가면 안 되는 경우의 더 흐릿한 톤.
+
+스타일: 색만 한 단계 더 흐림.
+- default: border-zinc-200/60 dark:border-white/[0.06]
+- subtle:  border-zinc-200/40 dark:border-white/[0.04]
+
+푸터·메타 영역 등 정보 위계가 낮은 곳에 사용.`,
+      html: `<hr class="border-0 border-t border-zinc-200/40 dark:border-white/[0.04] my-6" />`,
+      react: `<Hairline spacing="tight" tone="subtle" />`,
+    },
+  ],
+  props: [
+    {
+      name: "spacing",
+      type: '"none" | "tight" | "default" | "loose"',
+      default: '"default"',
+      desc: "위아래 여백",
+    },
+    {
+      name: "tone",
+      type: '"default" | "subtle"',
+      default: '"default"',
+      desc: "선의 흐림 정도",
+    },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+    { name: "...rest", type: "HTMLAttributes<HTMLHRElement>", desc: "표준 hr 속성" },
+  ],
+};
+
+const HERO_HEADING_DEF: ComponentDef = {
+  id: "hero-heading",
+  ko: "히어로 큰 제목",
+  en: "HeroHeading",
+  desc: "페이지 첫 화면의 큰 제목. 두 단계 위계 — size='hero'(40~64px, 메인 1회) / default(30~48px, 일반 페이지).",
+  examples: [
+    {
+      index: "01",
+      badge: "default · page",
+      title: "기본 — 일반 페이지 타이틀 (30~48px)",
+      description: "Lab / Heritage / Blog 등 일반 페이지의 첫 화면. typography.display 토큰.",
+      preview: (
+        <HeroHeading>큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.</HeroHeading>
+      ),
+      prompt: `일반 페이지(Lab / Heritage / Blog)의 첫 화면 큰 제목이 필요해. 사이트 메인이 아닌 페이지 단위 hero.
+
+용도: 페이지의 정체성을 한 줄로 알리는 큰 제목. 카드 박스 없이 큰 타입과 공간 자체가 영역 시그널.
+
+스타일 (typography.display 토큰):
+- 크기: clamp(1.875rem, 4vw, 3rem) — 30~48px
+- font-semibold tracking-[-0.02em] (자간 살짝 negative)
+- 색: text-zinc-900 dark:text-zinc-50
+- 너비: max-w-[20ch] — 자연스러운 줄바꿈
+- 줄간격: leading-[1.1]
+- 1인 랩 차분 톤 — shadcn식 거대 hero(64~80px+) 거부.
+
+사이트 메인의 최상위 hero가 필요하면 size="hero" (다음 example 참조).`,
+      html: `<h1 class="font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-50 text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] max-w-[20ch]">
+  큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.
+</h1>`,
+      react: `<HeroHeading>큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.</HeroHeading>`,
+    },
+    {
+      index: "02",
+      badge: "size · hero",
+      title: "size='hero' — 사이트 메인 (40~64px)",
+      description: "사이트 최상위 hero. typography.displayLg 토큰. 사이트당 1번만.",
+      preview: (
+        <HeroHeading size="hero">1인 운영자의 무기를 만드는 1인 랩.</HeroHeading>
+      ),
+      prompt: `사이트 메인 페이지의 가장 큰 hero가 필요해. 페이지 단위 hero(default, 30~48px)보다 한 단계 큰 위계.
+
+용도: 사이트 첫 화면 단 1번. "이 사이트가 무엇인가"를 가장 강하게 알리는 위치.
+
+스타일 (typography.displayLg 토큰):
+- 크기: clamp(2.5rem, 5vw, 4rem) — 40~64px
+- font-semibold tracking-[-0.025em] (default보다 한 단계 더 negative)
+- 색: text-zinc-900 dark:text-zinc-50
+- 줄간격: leading-[1.05] (더 좁게)
+- 너비: max-w-[20ch] (변경 없음)
+
+원칙: size="hero"는 사이트당 1번만. 모든 페이지 첫 화면을 size="hero"로 하면 위계가 사라진다. 메인=hero, 그 외=default.
+
+이게 1인 랩 사이트의 표준 위계 — 메인 1번 강조 + 나머지는 차분.`,
+      html: `<h1 class="font-semibold tracking-[-0.025em] text-zinc-900 dark:text-zinc-50 text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] max-w-[20ch]">
+  1인 운영자의 무기를 만드는 1인 랩.
+</h1>`,
+      react: `<HeroHeading size="hero">
+  1인 운영자의 무기를 만드는 1인 랩.
+</HeroHeading>`,
+    },
+    {
+      index: "03",
+      badge: "center",
+      title: "가운데 정렬",
+      description: "랜딩 메인 첫 화면이나 캠페인 페이지에.",
+      preview: (
+        <HeroHeading align="center" width="wide">
+          AI 동질화에 대한 답변.
+        </HeroHeading>
+      ),
+      prompt: `히어로 제목을 가운데 정렬하고 싶다. 캠페인·랜딩 페이지 톤.
+
+스타일: 기본과 동일하고 정렬만 변경.
+- text-center mx-auto
+
+가운데 정렬은 강한 시그널이라 페이지당 1번만. 사이트 전반은 좌측이 일관성 측면에서 권장.`,
+      html: `<h1 class="font-semibold tracking-tight text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] max-w-[32ch] mx-auto text-center text-zinc-900 dark:text-zinc-50">
+  AI 동질화에 대한 답변.
+</h1>`,
+      react: `<HeroHeading align="center" width="wide">
+  AI 동질화에 대한 답변.
+</HeroHeading>`,
+    },
+    {
+      index: "04",
+      badge: "wide",
+      title: "wide — 긴 카피",
+      description: "한 줄에 더 많은 글자가 들어가야 하는 긴 카피용. 32ch.",
+      preview: (
+        <HeroHeading width="wide">
+          AI가 만들면 다 비슷해진다고 누가 정했나.
+        </HeroHeading>
+      ),
+      prompt: `긴 카피를 히어로로 쓸 때 기본 20ch가 너무 좁아 줄바꿈이 어색한 경우 wide(32ch).
+
+원칙: 너비를 넓혀도 한 줄당 글자 수 제한은 유지. full(제한 없음)은 큰 타입에서 거의 안 쓴다 (한 줄이 너무 길면 가독성 폭락).`,
+      html: `<h1 class="font-semibold tracking-tight text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] max-w-[32ch] text-zinc-900 dark:text-zinc-50">
+  AI가 만들면 다 비슷해진다고 누가 정했나.
+</h1>`,
+      react: `<HeroHeading width="wide">
+  AI가 만들면 다 비슷해진다고 누가 정했나.
+</HeroHeading>`,
+    },
+  ],
+  props: [
+    { name: "as", type: '"h1" | "div"', default: '"h1"', desc: "페이지당 h1 1개 원칙. 다른 곳 큰 타입은 div" },
+    { name: "size", type: '"page" | "hero"', default: '"page"', desc: "page=일반 페이지 타이틀(30~48px) / hero=사이트 메인(40~64px, 1회)" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
+    { name: "width", type: '"default" | "wide" | "full"', default: '"default"', desc: "너비 제한 (20ch / 32ch / 무제한)" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+    { name: "...rest", type: "HTMLAttributes<HTMLHeadingElement>", desc: "표준 헤딩 속성" },
+  ],
+};
+
+const SECTION_HEADING_DEF: ComponentDef = {
+  id: "section-heading",
+  ko: "섹션 제목",
+  en: "SectionHeading",
+  desc: "섹션 제목. SectionFrame 내부에서 쓰는 그 톤을 외부에서도 사용. h2: 2xl md:3xl, h3: xl md:2xl.",
+  examples: [
+    {
+      index: "01",
+      badge: "h2",
+      title: "h2 — 표준 섹션 제목",
+      description: "기본. 페이지 안의 큰 영역 제목.",
+      preview: (
+        <SectionHeading>네 개의 축으로 운영합니다.</SectionHeading>
+      ),
+      prompt: `페이지 안의 섹션 제목이 필요해. h1보다 한 단계 작은 위계.
+
+용도: 메인 페이지 안의 각 섹션, Heritage 페이지의 섹터별 제목 등.
+
+스타일:
+- font-semibold tracking-tight
+- 크기: text-2xl md:text-3xl (모바일 24px, 데스크톱 30px)
+- 색: text-zinc-900 dark:text-zinc-50
+- 너비: max-w-[20ch]
+
+SectionFrame 컴포넌트가 내부적으로 만드는 그 제목 톤. 외부에서 직접 쓸 때 동일한 시각.`,
+      html: `<h2 class="font-semibold tracking-tight text-2xl md:text-3xl max-w-[20ch] text-zinc-900 dark:text-zinc-50">
+  네 개의 축으로 운영합니다.
+</h2>`,
+      react: `<SectionHeading>네 개의 축으로 운영합니다.</SectionHeading>`,
+    },
+    {
+      index: "02",
+      badge: "h3",
+      title: "h3 — 더 작은 위계",
+      description: "섹션 안의 서브섹션 제목. 한 단계 작음.",
+      preview: <SectionHeading as="h3">서브섹션 제목</SectionHeading>,
+      prompt: `섹션 안의 서브섹션 제목. h2보다 한 단계 작게.
+
+스타일: text-xl md:text-2xl (모바일 20px, 데스크톱 24px). 나머지 동일.`,
+      html: `<h3 class="font-semibold tracking-tight text-xl md:text-2xl max-w-[20ch] text-zinc-900 dark:text-zinc-50">
+  서브섹션 제목
+</h3>`,
+      react: `<SectionHeading as="h3">서브섹션 제목</SectionHeading>`,
+    },
+    {
+      index: "03",
+      badge: "center",
+      title: "가운데 정렬 (랜딩)",
+      description: "랜딩 페이지의 가운데 정렬 섹션 제목.",
+      preview: (
+        <SectionHeading align="center" width="wide">
+          시장의 빈 자리를 짚는 컴포넌트.
+        </SectionHeading>
+      ),
+      prompt: `랜딩 페이지에서 가운데 정렬 섹션 제목이 필요할 때. 너비도 좀 더 넓게.`,
+      html: `<h2 class="font-semibold tracking-tight text-2xl md:text-3xl max-w-[32ch] mx-auto text-center text-zinc-900 dark:text-zinc-50">
+  시장의 빈 자리를 짚는 컴포넌트.
+</h2>`,
+      react: `<SectionHeading align="center" width="wide">
+  시장의 빈 자리를 짚는 컴포넌트.
+</SectionHeading>`,
+    },
+  ],
+  props: [
+    { name: "as", type: '"h2" | "h3"', default: '"h2"', desc: "헤딩 레벨" },
+    { name: "width", type: '"default" | "wide" | "full"', default: '"default"', desc: "너비 제한" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+    { name: "...rest", type: "HTMLAttributes<HTMLHeadingElement>", desc: "표준 헤딩 속성" },
+  ],
+};
+
+const LEAD_DEF: ComponentDef = {
+  id: "lead",
+  ko: "리드 카피",
+  en: "Lead",
+  desc: "헤딩 직후의 보조 카피. 본문보다 살짝 흐린 회색으로 위계가 자연스럽게 만들어진다.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 인트로 본문",
+      description: "헤딩 직후의 한두 문단. 15px / 58ch.",
+      preview: (
+        <div>
+          <SectionHeading>네 개의 축으로 운영합니다.</SectionHeading>
+          <div className="mt-4">
+            <Lead>
+              만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
+              모청에서 출발해 자체 제품과 라이브러리로 확장.
+            </Lead>
+          </div>
+        </div>
+      ),
+      prompt: `헤딩 다음에 들어가는 인트로 본문이 필요해. 본문보다 살짝 흐린 회색.
+
+용도: 모든 섹션 헤딩 직후의 한두 문단 보조 카피.
+
+스타일:
+- text-[15px] leading-relaxed
+- 색: text-zinc-600 dark:text-zinc-300 (본문보다 한 단계 흐림)
+- 너비: max-w-[58ch] (글 한 줄 65~75자 황금 너비)
+
+이 회색이 위계를 만든다 — 헤딩(zinc-900)과 본문 회색의 차이로 시선이 자연스럽게 흐름.`,
+      html: `<p class="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300 max-w-[58ch]">
+  만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.
+</p>`,
+      react: `<Lead>만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축.</Lead>`,
+    },
+    {
+      index: "02",
+      badge: "large",
+      title: "large — 히어로 직후",
+      description: "HeroHeading 다음의 큰 인트로. 18~20px.",
+      preview: (
+        <Lead size="large">
+          AI가 만들면 다 비슷해진다고 누가 정했나.
+        </Lead>
+      ),
+      prompt: `HeroHeading 직후의 인트로 카피는 일반 Lead보다 좀 더 크게. 18~20px.
+
+상황: 메인 페이지 첫 화면에서 큰 제목 다음에 한 문단의 강한 카피.
+일반 lead(15px)는 너무 작게 느껴짐.`,
+      html: `<p class="text-[18px] md:text-[20px] leading-relaxed text-zinc-600 dark:text-zinc-300 max-w-[58ch]">
+  AI가 만들면 다 비슷해진다고 누가 정했나.
+</p>`,
+      react: `<Lead size="large">AI가 만들면 다 비슷해진다고 누가 정했나.</Lead>`,
+    },
+    {
+      index: "03",
+      badge: "narrow",
+      title: "narrow — 좁은 너비",
+      description: "사이드 카피, 푸터 description처럼 좁은 영역.",
+      preview: (
+        <Lead width="narrow">
+          1인 랩의 실험 기록. 작게, 자주, 솔직하게.
+        </Lead>
+      ),
+      prompt: `사이드 영역 / 푸터 description처럼 좁은 너비의 보조 카피. max-w-[44ch].`,
+      html: `<p class="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300 max-w-[44ch]">
+  1인 랩의 실험 기록. 작게, 자주, 솔직하게.
+</p>`,
+      react: `<Lead width="narrow">1인 랩의 실험 기록. 작게, 자주, 솔직하게.</Lead>`,
+    },
+  ],
+  props: [
+    { name: "size", type: '"default" | "large"', default: '"default"', desc: "15px 또는 18~20px" },
+    { name: "width", type: '"narrow" | "default" | "wide" | "full"', default: '"default"', desc: "너비 제한 (44ch / 58ch / 72ch / 무제한)" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+    { name: "...rest", type: "HTMLAttributes<HTMLParagraphElement>", desc: "표준 p 속성" },
+  ],
+};
+
+const LINK_ROW_DEF: ComponentDef = {
+  id: "link-row",
+  ko: "링크 행",
+  en: "LinkRow",
+  desc: "박스 거부형 CTA 링크. 한 줄 텍스트 + 화살표 + hover 시 emerald. '버튼 박스' 대안.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 표준 CTA",
+      description: "본문 톤 + hover 시 emerald + 화살표 살짝 이동.",
+      preview: (
+        <LinkRow href="#">전체 Heritage 보기</LinkRow>
+      ),
+      prompt: `버튼 박스 대신 한 줄 텍스트 CTA가 필요해. shadcn Button처럼 채워진 박스 거부.
+
+용도: 섹션 끝의 "전체 보기 →", 페이지 하단 "다음 단계로 →", 푸터 외부 링크.
+
+스타일:
+- 한 줄 텍스트 + 화살표 (→)
+- 기본 색: text-zinc-900 dark:text-zinc-100 (본문 톤)
+- hover: text-emerald-600 dark:text-emerald-400 + 화살표 살짝 우측 이동(translate-x-0.5)
+- 텍스트 아래 얇은 밑줄 (border-current/30 → hover시 border-current 진해짐)
+
+박스 X. 패딩 X. 채움 X. "한 줄 텍스트의 색이 살짝 바뀐다"는 가벼움이 핵심.
+
+이게 안티 카드의 표준 CTA 톤.`,
+      html: `<a href="#" class="group inline-flex items-baseline gap-2 text-[15.5px] text-zinc-900 dark:text-zinc-100 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+  <span class="border-b border-current/30 group-hover:border-current">전체 Heritage 보기</span>
+  <span aria-hidden class="transition-transform group-hover:translate-x-0.5">→</span>
+</a>`,
+      react: `<LinkRow href="/heritage">전체 Heritage 보기</LinkRow>`,
+    },
+    {
+      index: "02",
+      badge: "accent",
+      title: "accent — 항상 emerald",
+      description: "강조가 필요한 CTA. 처음부터 emerald 색.",
+      preview: (
+        <LinkRow href="#" tone="accent">Talk · 의뢰·문의</LinkRow>
+      ),
+      prompt: `Talk·메인 CTA처럼 처음부터 강조해야 하는 링크. 호버 안 해도 emerald.
+
+기본 default와 동일하지만 색만 항상 emerald-600 (라이트) / emerald-400 (다크).
+사용 빈도는 default 70% / accent 30% 정도가 자연스러움. accent 남발 X.`,
+      html: `<a href="#" class="group inline-flex items-baseline gap-2 text-[15.5px] text-emerald-600 dark:text-emerald-400">
+  <span class="border-b border-current/30 group-hover:border-current">Talk · 의뢰·문의</span>
+  <span aria-hidden class="transition-transform group-hover:translate-x-0.5">→</span>
+</a>`,
+      react: `<LinkRow href="/talk" tone="accent">Talk · 의뢰·문의</LinkRow>`,
+    },
+    {
+      index: "03",
+      badge: "external",
+      title: "external — 외부 링크",
+      description: "external prop으로 자동 target/rel + trailing 라벨.",
+      preview: (
+        <LinkRow href="https://github.com/freeive" external trailing="외부">
+          GitHub
+        </LinkRow>
+      ),
+      prompt: `외부 사이트 링크. external=true면 target="_blank" + rel="noopener noreferrer" 자동.
+
+trailing prop으로 우측에 작은 라벨 (예: "외부", "PDF", "→ 새창") 추가 가능.
+trailing은 12px uppercase smallcaps 톤 — eyebrow와 동일.`,
+      html: `<a href="https://github.com/freeive" target="_blank" rel="noopener noreferrer" class="group inline-flex items-baseline gap-2 text-[15.5px] text-zinc-900 dark:text-zinc-100 hover:text-emerald-600 dark:hover:text-emerald-400">
+  <span class="border-b border-current/30 group-hover:border-current">GitHub</span>
+  <span aria-hidden>→</span>
+  <span class="ml-2 text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">외부</span>
+</a>`,
+      react: `<LinkRow href="https://github.com/freeive" external trailing="외부">
+  GitHub
+</LinkRow>`,
+    },
+  ],
+  props: [
+    { name: "href", type: "string", desc: "링크 경로 (필수)" },
+    { name: "external", type: "boolean", desc: "true면 target='_blank' + rel 자동" },
+    { name: "trailing", type: "ReactNode", desc: "우측 보조 라벨 (smallcaps)" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "default=hover시 emerald / accent=항상 emerald" },
+    { name: "size", type: '"default" | "large"', default: '"default"', desc: "15.5px / 18~20px" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const HEADER_DEF: ComponentDef = {
+  id: "header",
+  ko: "헤더",
+  en: "Header",
+  desc: "사이트 상단. 박스 거부, 헤어라인 1px 하단만. 브랜드 + 메뉴 + 단일 CTA의 표준 구성.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 4축 + Talk CTA",
+      description: "Freeive 사이트 표준 구성. brand + 4 links + Talk.",
+      preview: (
+        <div className="-mx-6 md:-mx-8">
+          <ACHeader
+            brand="Freeive"
+            brandHref="#"
+            links={[
+              { label: "안티 카드", href: "#" },
+              { label: "Lab", href: "#" },
+              { label: "Heritage", href: "#" },
+              { label: "Blog", href: "#" },
+            ]}
+            cta={{ label: "Talk", href: "#" }}
+          />
+        </div>
+      ),
+      prompt: `사이트 상단 헤더가 필요해. 박스 X, 카드 X, 헤어라인 1px 하단만.
+
+구성: 좌측 brand · 가운데 메뉴 · 우측 CTA.
+
+스타일:
+- 배경: bg-white/80 dark:bg-zinc-950/80 + backdrop-blur (스크롤 시 본문이 살짝 비침)
+- 하단 헤어라인: border-b border-zinc-200/60 dark:border-white/[0.06]
+- 패딩: py-4 px-6 md:px-10, max-w-[1200px] mx-auto
+
+브랜드(좌):
+- text-[15.5px] font-semibold tracking-tight zinc-900 dark:zinc-50
+
+메뉴(가운데):
+- gap-6, text-[14px]
+- 비활성: text-zinc-500 dark:text-zinc-400
+- hover/활성: text-zinc-900 dark:text-zinc-50
+
+CTA(우, 자동 ml-auto):
+- text-[14px] font-medium
+- "한 줄 텍스트 + 화살표" 형태 (LinkRow와 동일 톤)
+- hover시 emerald
+
+이게 안티 카드 표준 헤더 — sticky가 필요하면 sticky=true.`,
+      html: `<header class="border-b border-zinc-200/60 dark:border-white/[0.06] bg-white/80 dark:bg-zinc-950/80 backdrop-blur">
+  <div class="mx-auto flex w-full max-w-[1200px] items-center gap-8 px-6 py-4 md:px-10">
+    <a href="/" class="text-[15.5px] font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+      Freeive
+    </a>
+    <nav class="hidden flex-1 items-center gap-6 md:flex">
+      <a href="/anti-card" class="text-[14px] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">안티 카드</a>
+      <a href="/lab" class="text-[14px] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">Lab</a>
+      <a href="/heritage" class="text-[14px] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">Heritage</a>
+      <a href="/blog" class="text-[14px] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50">Blog</a>
+    </nav>
+    <a href="/talk" class="ml-auto inline-flex items-baseline gap-1.5 text-[14px] font-medium text-zinc-900 dark:text-zinc-50 hover:text-emerald-600 dark:hover:text-emerald-400">
+      <span class="border-b border-current/40">Talk</span>
+      <span aria-hidden>→</span>
+    </a>
+  </div>
+</header>`,
+      react: `<Header
+  brand="Freeive"
+  links={[
+    { label: "안티 카드", href: "/anti-card" },
+    { label: "Lab", href: "/lab" },
+    { label: "Heritage", href: "/heritage" },
+    { label: "Blog", href: "/blog" },
+  ]}
+  cta={{ label: "Talk", href: "/talk" }}
+/>`,
+    },
+    {
+      index: "02",
+      badge: "minimal",
+      title: "minimal — brand + cta only",
+      description: "랜딩 페이지처럼 메뉴 없이 brand + CTA만.",
+      preview: (
+        <div className="-mx-6 md:-mx-8">
+          <ACHeader
+            brand="Freeive"
+            brandHref="#"
+            cta={{ label: "Talk", href: "#" }}
+          />
+        </div>
+      ),
+      prompt: `랜딩·캠페인 페이지처럼 메뉴를 두지 않고 brand + 단일 CTA만 두는 구성.
+links 없이 brand + cta props만 사용. 나머지는 동일.`,
+      react: `<Header brand="Freeive" cta={{ label: "Talk", href: "/talk" }} />`,
+    },
+  ],
+  props: [
+    { name: "brand", type: "ReactNode", desc: "좌측 브랜드 (필수)" },
+    { name: "brandHref", type: "string", default: '"/"', desc: "브랜드 클릭 시 링크" },
+    { name: "links", type: "HeaderLink[]", desc: "메뉴 항목 배열 ({label, href, external?, active?})" },
+    { name: "cta", type: "{ label, href, external? }", desc: "우측 강조 CTA (1개)" },
+    { name: "sticky", type: "boolean", default: "false", desc: "sticky top-0 z-40 적용" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
+  ],
+};
+
+const FOOTER_DEF: ComponentDef = {
+  id: "footer",
+  ko: "푸터",
+  en: "Footer",
+  desc: "사이트 하단. 헤어라인 1px 상단 + 충분한 공간. 컬럼 단위 정보 + smallcaps 헤딩.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — brand + 4 columns",
+      description: "Freeive 표준 푸터.",
+      preview: (
+        <div className="-mx-6 md:-mx-8">
+          <ACFooter
+            brand="Freeive"
+            description="1인 랩. 안티 카드 톤으로 만든 사이트와 라이브러리."
+            columns={[
+              {
+                heading: "Pillars",
+                links: [
+                  { label: "안티 카드", href: "#" },
+                  { label: "Lab", href: "#" },
+                  { label: "Heritage", href: "#" },
+                  { label: "Blog", href: "#" },
+                ],
+              },
+              {
+                heading: "Talk",
+                links: [
+                  { label: "의뢰·문의", href: "#" },
+                  { label: "이메일", href: "#" },
+                ],
+              },
+              {
+                heading: "Open",
+                links: [
+                  { label: "GitHub", href: "#", external: true },
+                  { label: "npm", href: "#", external: true },
+                ],
+              },
+              {
+                heading: "Policies",
+                links: [
+                  { label: "개인정보", href: "#" },
+                  { label: "약관", href: "#" },
+                ],
+              },
+            ]}
+            copyright="© 2026 Freeive · kmc8301@gmail.com"
+          />
+        </div>
+      ),
+      prompt: `사이트 하단 푸터. 카드 박스 X, 헤어라인 1px 상단만. 정보는 컬럼으로 펼친다.
+
+구성:
+- 상단 헤어라인 (border-t border-zinc-200/60 dark:border-white/[0.06])
+- 충분한 공간 (py-16 md:py-20)
+- 좌측: brand + description (1.5fr)
+- 우측: 4 컬럼 grid (3fr) — 각 컬럼 = smallcaps 헤딩 + 링크 리스트
+- 하단: 카피라이트 (border-t + smallcaps)
+
+각 컬럼 헤딩:
+- text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400
+- (Eyebrow와 동일 톤)
+
+각 링크:
+- text-[13.5px] text-zinc-600 dark:text-zinc-300
+- hover: text-emerald-600 dark:text-emerald-400
+
+박스 거부, 시선 끌지 않고, 정보는 컬럼으로 충분히 펼친다.`,
+      react: `<Footer
+  brand="Freeive"
+  description="1인 랩."
+  columns={[
+    { heading: "Pillars", links: [...] },
+    { heading: "Talk", links: [...] },
+    { heading: "Open", links: [...] },
+    { heading: "Policies", links: [...] },
+  ]}
+  copyright="© 2026 Freeive"
+/>`,
+    },
+    {
+      index: "02",
+      badge: "minimal",
+      title: "minimal — brand + copyright",
+      description: "단순한 페이지의 미니멀 푸터.",
+      preview: (
+        <div className="-mx-6 md:-mx-8">
+          <ACFooter
+            brand="Freeive"
+            description="1인 랩."
+            copyright="© 2026 Freeive"
+          />
+        </div>
+      ),
+      prompt: `1페이지 랜딩이나 단순한 사이트의 미니멀 푸터.
+columns 생략하고 brand + description + copyright만. 동일한 헤어라인 + 공간 톤은 유지.`,
+      react: `<Footer brand="Freeive" description="1인 랩." copyright="© 2026 Freeive" />`,
+    },
+  ],
+  props: [
+    { name: "brand", type: "ReactNode", desc: "좌측 브랜드" },
+    { name: "description", type: "ReactNode", desc: "브랜드 아래 짧은 카피" },
+    { name: "columns", type: "FooterColumn[]", desc: "{heading, links: [{label, href, external?}]}[]" },
+    { name: "copyright", type: "ReactNode", desc: "하단 카피라이트" },
+    { name: "className", type: "string", desc: "Tailwind 클래스 추가" },
   ],
 };

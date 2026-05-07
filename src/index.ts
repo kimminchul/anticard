@@ -12,4 +12,31 @@ export type { SectionFrameProps } from "./components/section-frame";
 export { ListRow } from "./components/list-row";
 export type { ListRowProps } from "./components/list-row";
 
+export { Container } from "./components/container";
+export type { ContainerProps } from "./components/container";
+
+export { Hairline } from "./components/hairline";
+export type { HairlineProps } from "./components/hairline";
+
+export { HeroHeading } from "./components/hero-heading";
+export type { HeroHeadingProps } from "./components/hero-heading";
+
+export { SectionHeading } from "./components/section-heading";
+export type { SectionHeadingProps } from "./components/section-heading";
+
+export { Lead } from "./components/lead";
+export type { LeadProps } from "./components/lead";
+
+export { LinkRow } from "./components/link-row";
+export type { LinkRowProps } from "./components/link-row";
+
+export { Header } from "./components/header";
+export type { HeaderProps, HeaderLink } from "./components/header";
+
+export { Footer } from "./components/footer";
+export type { FooterProps, FooterColumn } from "./components/footer";
+
 export { cn } from "./utils/cn";
+
+export { typography } from "./tokens/typography";
+export type { TypographyToken } from "./tokens/typography";

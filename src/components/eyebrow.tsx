@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../utils/cn";
+import { typography } from "../tokens/typography";
 
 export interface EyebrowProps extends React.HTMLAttributes<HTMLParagraphElement> {
   /** Tone variants. Default = neutral muted. */
@@ -26,9 +27,8 @@ export function Eyebrow({
     <p
       data-anti-card="eyebrow"
       className={cn(
-        "uppercase tracking-[0.08em] text-[12px] leading-tight font-medium",
-        tone === "neutral" && "text-zinc-500 dark:text-zinc-400",
-        tone === "accent" && "text-emerald-500 dark:text-emerald-400",
+        tone === "neutral" && typography.eyebrow,
+        tone === "accent" && typography.eyebrowAccent,
         className
       )}
       {...props}

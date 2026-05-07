@@ -5,6 +5,39 @@
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-05-07
+
+### Added
+- `typography.displayLg` 토큰 — 사이트 메인 hero 전용 (40~64px, clamp(2.5rem, 5vw, 4rem))
+- `HeroHeading` 컴포넌트에 `size` prop (`"page"` default / `"hero"`)
+  - `size="hero"`: displayLg 토큰, 사이트당 1번 (메인 페이지)
+  - `size="page"`: display 토큰, 일반 페이지 타이틀 (Lab/Heritage/Blog)
+
+### Why
+freeive dogfooding 결과 — 메인 hero와 일반 페이지 타이틀의 위계 구분 필요. 모두 동일한 display(30~48px)는 사이트 위계가 평탄해 보임.
+
+## [0.1.0] — 2026-05-07
+
+### Added
+- **P0 마일스톤** — freeive 사이트 골격 컴포넌트 8개 추가:
+  - `Container` — 페이지 본문 너비 통일 (narrow/default/wide/full)
+  - `Hairline` — 박스 거부 영역 분리 (spacing × tone)
+  - `HeroHeading` — 페이지 첫 화면 큰 제목 (clamp 자동 스케일)
+  - `SectionHeading` — 섹션 제목 (h2/h3)
+  - `Lead` — 헤딩 직후 인트로 본문 (default/large × narrow/default/wide)
+  - `LinkRow` — 박스 거부형 CTA 링크 (default/accent × external)
+  - `Header` — 사이트 헤더 (brand + links + cta)
+  - `Footer` — 사이트 푸터 (brand + columns + copyright)
+- 각 컴포넌트 docs/{name}.mdx 추가 (총 11개 컴포넌트 문서 완성)
+- playground (`localhost:5174`)에 8개 컴포넌트 ComponentDef 추가 (각 2~3 Example)
+
+### Changed
+- `version`: 0.0.3 → 0.1.0 (P0 마일스톤 도달, framework 호명 가능 단계)
+
+### Notes
+- 0.1.0은 freeive 사이트 골격에 즉시 사용 가능한 부품 set
+- 다음 마일스톤(0.2.0)은 P1 블로그·콘텐츠 톤 8개 (quote / image / timeline 등)
+
 ## [0.0.3] — 2026-05-07
 
 ### Added

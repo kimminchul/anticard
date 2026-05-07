@@ -1,0 +1,44 @@
+---
+title: SectionHeading
+description: 섹션 제목. SectionFrame 내부에서 쓰는 그 톤을 외부에서도 사용.
+group: components
+order: 7
+published: true
+updated: 2026-05-07
+---
+
+`<SectionHeading>`은 페이지 안의 섹션 제목입니다. h1보다 한 단계 작은 위계로, `<SectionFrame>` 내부가 만드는 그 제목 톤을 외부에서 직접 쓸 때 동일한 시각을 보장합니다.
+
+```tsx
+import { SectionHeading } from "@freeive/anti-card";
+
+<SectionHeading>네 개의 축으로 운영합니다.</SectionHeading>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `as` | `"h2" \| "h3"` | `"h2"` | 헤딩 레벨 |
+| `width` | `"default" \| "wide" \| "full"` | `"default"` | 너비 제한 |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+
+## 크기
+
+- `as="h2"` — `text-2xl md:text-3xl` (24/30px) · 표준 섹션 제목
+- `as="h3"` — `text-xl md:text-2xl` (20/24px) · 서브섹션 제목
+
+## HTML 레퍼런스
+
+```html
+<h2 class="font-semibold tracking-tight text-2xl md:text-3xl
+           max-w-[20ch] text-zinc-900 dark:text-zinc-50">
+  네 개의 축으로 운영합니다.
+</h2>
+```
+
+## 관련
+
+- [SectionFrame](/anti-card/section-frame) — 헤딩 + 라벨 + 설명 묶음
+- [HeroHeading](/anti-card/hero-heading) — 페이지 첫 화면 큰 제목

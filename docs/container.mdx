@@ -1,0 +1,132 @@
+---
+title: Container
+description: 페이지 본문 너비를 통일하는 레이아웃 컨테이너. 카드로 가두지 않고 너비로 영역을 정의한다.
+group: components
+order: 4
+published: true
+updated: 2026-05-07
+---
+
+`<Container>`는 페이지 본문 **너비를 통일**하는 가장 기초 부품입니다.
+중앙 정렬 + 좌우 패딩 + max-width 한 가지를 책임지며, 배경·border 없이 투명합니다.
+
+```tsx
+import { Container } from "@freeive/anti-card";
+
+<Container>
+  <SectionFrame title="..." />
+</Container>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `"narrow" \| "default" \| "wide" \| "full"` | `"default"` | max-width 변형 |
+| `as` | `"div" \| "main" \| "article" \| "section"` | `"div"` | 시맨틱 태그 변경 |
+| `className` | `string` | — | Tailwind 클래스 추가 |
+| `...rest` | `HTMLAttributes<HTMLElement>` | — | 표준 HTML 속성 |
+
+## size 변형
+
+| size | max-width | 용도 |
+|---|---|---|
+| `narrow` | 640px | 블로그 글, 학습 일지, 정책 페이지 — 읽기 가독성 우선 |
+| `default` | 1200px | 일반 페이지 본문 (랜딩·Heritage·Lab) |
+| `wide` | 1440px | 갤러리·미디어 헤비 페이지 |
+| `full` | 제한 없음 | 풀폭 영역 (헤어라인 띠, marquee 등) |
+
+좌우 패딩(`px-6 md:px-10`)은 모든 size에서 동일.
+
+## 시맨틱 태그
+
+페이지 최상위 본문은 `<main>`이 맞습니다. 의미가 명확할 때만 `as`를 변경하세요.
+
+```tsx
+<Container as="main">
+  <Hero />
+  <SectionFrame title="..." />
+</Container>
+
+<Container size="narrow" as="article">
+  <BlogPost />
+</Container>
+```
+
+## 디자인 메모
+
+- **배경 없음**: 라이트/다크 모두 투명 — 카드처럼 영역을 가두는 시각 신호 X
+- **너비 = 영역 정의**: shadcn Card 같은 박스 컴포넌트와 정반대 방향
+- **패딩 분리 X**: 좌우 패딩이 컨테이너 책임이라 자식이 다시 패딩을 줄 필요 없음
+- `data-anti-card="container"` + `data-size={size}` attribute로 외부 스타일 타겟팅 가능
+
+## 활용 사례
+
+`freeive.com`의 모든 페이지 최상위 본문이 Container로 감싸져 있습니다.
+블로그 글 페이지는 `size="narrow"`, Heritage 메인은 `size="default"`, Lab 데모 페이지는 `size="wide"`.
+
+## HTML 레퍼런스 (framework-free)
+
+React 안 쓰는 환경에서 같은 톤:
+
+```html
+<!-- default 1200px -->
+<div class="mx-auto w-full max-w-[1200px] px-6 md:px-10">
+  <!-- 본문 -->
+</div>
+
+<!-- narrow 640px (긴 글) -->
+<article class="mx-auto w-full max-w-[640px] px-6 md:px-10">
+  <h1>제목</h1>
+  <p>긴 본문…</p>
+</article>
+
+<!-- wide 1440px (갤러리) -->
+<section class="mx-auto w-full max-w-[1440px] px-6 md:px-10">
+  <!-- 갤러리 -->
+</section>
+```
+
+순수 CSS:
+
+```css
+.container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1200px;
+  padding-inline: 24px;
+}
+@media (min-width: 768px) {
+  .container { padding-inline: 40px; }
+}
+.container[data-size="narrow"] { max-width: 640px; }
+.container[data-size="wide"]   { max-width: 1440px; }
+.container[data-size="full"]   { max-width: none; }
+```
+
+## 안티 패턴 (이렇게 만들지 마세요)
+
+본문 너비를 매 컴포넌트마다 다르게 잡거나, 카드 박스로 영역을 가두면 다음과 같이 됩니다:
+
+```html
+<!-- ❌ 컴포넌트마다 max-width 제각각 -->
+<section class="max-w-7xl mx-auto px-4">…</section>
+<section class="max-w-6xl mx-auto px-8">…</section>
+<section class="max-w-5xl mx-auto px-6">…</section>
+
+<!-- ❌ 카드 박스로 영역 가두기 -->
+<div class="border rounded-2xl bg-white shadow p-8 max-w-4xl mx-auto">
+  본문…
+</div>
+```
+
+문제:
+- 페이지마다 본문 너비가 들쑥날쑥 → 시각 일관성 X
+- 카드 박스 안에 본문 → "그릇" 강조, 정보 자체는 약해짐
+
+→ Container는 **너비 규칙 1개**로 모든 페이지를 통일하고, 박스 없이 공간만으로 영역을 정의합니다.
+
+## 관련
+
+- [SectionFrame](/anti-card/section-frame) — Container 안에서 섹션을 짤 때
+- [Manifesto](/anti-card/manifesto) — 안티 카드 5원칙 중 "공간(여백)"

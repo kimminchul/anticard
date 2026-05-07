@@ -1,0 +1,74 @@
+---
+title: Footer
+description: 사이트 하단. 헤어라인 1px 상단 + 충분한 공간. 컬럼 단위 정보 + smallcaps 헤딩.
+group: components
+order: 11
+published: true
+updated: 2026-05-07
+---
+
+`<Footer>`는 사이트 하단의 표준 푸터입니다. 카드 박스로 가두지 않고 **상단 헤어라인 1px + 충분한 공간**으로 영역을 정의합니다.
+
+```tsx
+import { Footer } from "@freeive/anti-card";
+
+<Footer
+  brand="Freeive"
+  description="1인 랩."
+  columns={[
+    { heading: "Pillars", links: [{label: "안티 카드", href: "/anti-card"}, ...] },
+    { heading: "Talk", links: [{label: "의뢰·문의", href: "/talk"}] },
+    { heading: "Open", links: [{label: "GitHub", href: "...", external: true}] },
+    { heading: "Policies", links: [{label: "개인정보", href: "/policies/privacy"}] },
+  ]}
+  copyright="© 2026 Freeive · kmc8301@gmail.com"
+/>
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `brand` | `ReactNode` | 좌측 브랜드 |
+| `description` | `ReactNode` | 브랜드 아래 짧은 카피 |
+| `columns` | `FooterColumn[]` | 링크 컬럼 그룹 |
+| `copyright` | `ReactNode` | 하단 카피라이트 |
+| `className` | `string` | Tailwind 클래스 추가 |
+
+```ts
+type FooterColumn = {
+  heading: ReactNode;
+  links: Array<{ label: ReactNode; href: string; external?: boolean }>;
+};
+```
+
+## 디자인
+
+- 상단 헤어라인: `border-t border-zinc-200/60 dark:border-white/[0.06]`
+- 패딩: `py-16 md:py-20`
+- 그리드: 좌측 brand 1.5fr / 우측 columns 3fr
+
+각 컬럼 헤딩:
+- `text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400`
+- (Eyebrow와 동일 톤)
+
+각 링크:
+- `text-[13.5px] text-zinc-600 dark:text-zinc-300`
+- hover: `text-emerald-600 dark:text-emerald-400`
+
+카피라이트:
+- 컬럼 영역과 분리 (border-t pt-6)
+- smallcaps 톤 (12px uppercase)
+
+## minimal 모드
+
+`columns` 생략하면 brand + description + copyright만으로 미니멀 푸터.
+
+```tsx
+<Footer brand="Freeive" description="1인 랩." copyright="© 2026 Freeive" />
+```
+
+## 관련
+
+- [Header](/anti-card/header) — 사이트 상단 짝
+- [Eyebrow](/anti-card/eyebrow) — 컬럼 헤딩과 동일 톤
