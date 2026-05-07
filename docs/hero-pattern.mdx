@@ -1,0 +1,65 @@
+---
+title: HeroPattern
+description: 페이지 첫 화면 hero 영역 통째로. Eyebrow + HeroHeading + Lead + LinkRow×N 조합.
+group: components
+order: 20
+published: true
+updated: 2026-05-08
+---
+
+`<HeroPattern>`은 **페이지 첫 화면을 한 번에 만드는 조합 컴포넌트**입니다. Eyebrow + HeroHeading + Lead + LinkRow를 안티 카드 표준 톤으로 자동 배치.
+
+```tsx
+import { HeroPattern } from "@freeive/anti-card";
+
+// 메인 페이지
+<HeroPattern
+  size="hero"
+  eyebrow="Freeive — Solo lab, est. 2016"
+  title="1인 운영자의 무기를 만드는 1인 랩."
+  lead="외주 에이전시가 아닙니다."
+  ctas={[
+    { label: "안티 카드", href: "/anti-card", tone: "accent" },
+    { label: "Talk", href: "/talk" },
+  ]}
+/>
+
+// 일반 페이지 (Lab/Heritage/Blog)
+<HeroPattern
+  eyebrow="Heritage · 2016 — Now"
+  title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
+  lead="..."
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `eyebrow` | `ReactNode` | — | smallcaps 라벨 |
+| `title` | `ReactNode` | — | 큰 제목 (필수) |
+| `lead` | `ReactNode` | — | 인트로 본문 |
+| `ctas` | `HeroPatternCTA[]` | `[]` | 0~3개. 첫 번째 자동 accent |
+| `size` | `"page" \| "hero"` | `"page"` | page=일반(30~48px) / hero=메인(40~64px, 1회) |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 |
+| `padding` | `"default" \| "tight" \| "loose"` | `"default"` | 상하 패딩 |
+
+```ts
+type HeroPatternCTA = {
+  label: ReactNode;
+  href: string;
+  tone?: "default" | "accent";
+  external?: boolean;
+};
+```
+
+## 자동 처리
+
+- `ctas[0]`은 자동 `tone="accent"` (명시 override 가능)
+- `size="hero"`이면 lead가 자동 `size="large"`
+- align="center"면 CTA들도 가운데 정렬
+
+## 관련
+
+- [HeroHeading](/anti-card/hero-heading) — 내부 사용
+- [Lead](/anti-card/lead) / [Eyebrow](/anti-card/eyebrow) / [LinkRow](/anti-card/link-row)

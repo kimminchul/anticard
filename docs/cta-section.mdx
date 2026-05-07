@@ -1,0 +1,51 @@
+---
+title: CTASection
+description: 페이지 하단 CTA. 헤어라인 + h2 + Lead + LinkRow 묶음.
+group: components
+order: 24
+published: true
+updated: 2026-05-08
+---
+
+`<CTASection>`은 페이지 하단의 자연스러운 액션 유도 영역입니다. 박스 거부 — 헤어라인 위 + h2 제목 + Lead + LinkRow.
+
+```tsx
+import { CTASection } from "@freeive/anti-card";
+
+<CTASection
+  eyebrow="Talk"
+  title="이기는 싸움이 있다면 알려주세요."
+  lead="간단한 의뢰 메모로 충분합니다."
+  actions={[
+    { label: "Talk 페이지로", href: "/talk", tone: "accent" },
+    { label: "이메일", href: "mailto:..." },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `eyebrow` | `ReactNode` | — | smallcaps |
+| `title` | `ReactNode` | — | h2 톤 (필수) |
+| `lead` | `ReactNode` | — | 보조 카피 |
+| `actions` | `CTASectionAction[]` | `[]` | 1~2개 권장 |
+| `divider` | `boolean` | `true` | 위쪽 헤어라인 |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 |
+
+## 디자인
+
+- divider=true (default): 위쪽 헤어라인 — 페이지 자연스러운 마무리
+- 패딩: py-16 md:py-20
+- 제목: SectionHeading h2 토큰
+- LinkRow: 첫 번째 자동 accent
+
+## 위치
+
+CTASection은 보통 **페이지 마지막 섹션**으로 배치합니다. Footer 직전, 모든 콘텐츠를 본 뒤 자연스러운 액션.
+
+## 관련
+
+- [LinkRow](/anti-card/link-row) / [Eyebrow](/anti-card/eyebrow)
+- [SectionHeading](/anti-card/section-heading) — 제목 톤

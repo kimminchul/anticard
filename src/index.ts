@@ -60,6 +60,34 @@ export type { TimelineProps, TimelineItem } from "./components/timeline";
 export { Pill } from "./components/pill";
 export type { PillProps } from "./components/pill";
 
+export { HeroPattern } from "./components/hero-pattern";
+export type { HeroPatternProps, HeroPatternCTA } from "./components/hero-pattern";
+
+export { SectorsPattern } from "./components/sectors-pattern";
+export type {
+  SectorsPatternProps,
+  SectorsPatternSector,
+  SectorsPatternProject,
+} from "./components/sectors-pattern";
+
+export { TalkPattern } from "./components/talk-pattern";
+export type { TalkPatternProps } from "./components/talk-pattern";
+
+export { EmptyState } from "./components/empty-state";
+export type { EmptyStateProps } from "./components/empty-state";
+
+export { CTASection } from "./components/cta-section";
+export type { CTASectionProps, CTASectionAction } from "./components/cta-section";
+
+export { Banner } from "./components/banner";
+export type { BannerProps } from "./components/banner";
+
+export { Button } from "./components/button";
+export type { ButtonProps } from "./components/button";
+
+export { FeatureRow } from "./components/feature-row";
+export type { FeatureRowProps, FeatureRowItem } from "./components/feature-row";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

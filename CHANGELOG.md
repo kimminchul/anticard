@@ -5,6 +5,27 @@
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-05-08
+
+### Added
+- **P2 마일스톤** — 페이지 패턴 + 액션 컴포넌트 8개 (NAV에선 9 항목 — Button variant=primary/secondary):
+  - `HeroPattern` — Eyebrow + HeroHeading + Lead + LinkRow×N 조합 (size hero/page)
+  - `SectorsPattern` — Heritage 섹터별 프로젝트 리스트 페이지 패턴
+  - `TalkPattern` — Talk·Contact 페이지 (Hero + 받음/안받음 체크리스트 + 채널)
+  - `EmptyState` — 404·빈 상태·error (큰 code + 메시지 + LinkRow)
+  - `CTASection` — 페이지 하단 CTA (헤어라인 + h2 + Lead + LinkRow)
+  - `Banner` — 작은 알림 띠 (info/accent/warning/danger × dismissible)
+  - `Button` — 진짜 button 액션 (primary/secondary × small/default/large × default/accent)
+  - `FeatureRow` — 특징 나열 행 (label / numbered layout)
+- 각 컴포넌트 docs (button.mdx는 primary/secondary 통합)
+- playground 9개 ComponentDef + NAV status ready
+
+### Notes
+- 0.3.0 = 페이지 1개를 통째로 만들 수 있는 단위 (Hero·Sectors·Talk·Empty 패턴)
+- Button은 진짜 form/dialog 전용 — 일반 페이지 CTA는 LinkRow 권장
+- 누적: 27개 컴포넌트 (3 + P0 8 + P1 8 + P2 8)
+- 다음 마일스톤(0.4.0) = P3 신뢰·증거 (Client Logos / Testimonial / Stat Block / Case Study)
+
 ## [0.2.0] — 2026-05-08
 
 ### Added

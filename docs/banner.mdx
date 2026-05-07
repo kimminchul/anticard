@@ -1,0 +1,50 @@
+---
+title: Banner
+description: 작은 알림 띠. 페이지 상단 또는 본문 사이. shadcn Alert 거부.
+group: components
+order: 25
+published: true
+updated: 2026-05-08
+---
+
+`<Banner>`는 작은 알림 띠입니다. shadcn Alert처럼 큰 박스 X — **띠 형태로 본문 흐름 거의 안 막음**.
+
+```tsx
+import { Banner } from "@freeive/anti-card";
+
+<Banner label="공지">새 마일스톤 작업 중.</Banner>
+<Banner tone="accent" label="Live">anti-card 0.2.0 출시.</Banner>
+<Banner tone="warning" label="알림">env not set.</Banner>
+<Banner tone="danger" label="에러" onDismiss={() => {}}>DB 연결 실패.</Banner>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tone` | `"info" \| "accent" \| "warning" \| "danger"` | `"info"` | 색 톤 |
+| `label` | `ReactNode` | — | 좌측 smallcaps |
+| `action` | `ReactNode` | — | 우측 액션 (예: LinkRow) |
+| `onDismiss` | `() => void` | — | 닫기 버튼 자동 |
+| `children` | `ReactNode` | — | 본문 메시지 |
+
+## 디자인
+
+- border-y (위 아래 헤어라인) + 살짝 톤 배경
+- 둥근 모서리 X (페이지 풀폭에 맞춤)
+- 패딩 작음 (py-2.5)
+- text-[13.5px] (본문보다 작음)
+
+## tone 가이드
+
+| tone | 용도 |
+|---|---|
+| `info` | 공지·일반 알림 (zinc) |
+| `accent` | 신규 출시·성공 (emerald) |
+| `warning` | env 미설정·주의 (yellow) |
+| `danger` | 에러·실패 (rose) |
+
+## 관련
+
+- [LinkRow](/anti-card/link-row) — action prop으로 활용
+- [Eyebrow](/anti-card/eyebrow) — label과 동일 톤

@@ -1,0 +1,65 @@
+---
+title: SectorsPattern
+description: 섹터별 프로젝트 리스트 페이지. Heritage 표준 — 좌측 섹터 + 우측 ListRow.
+group: components
+order: 21
+published: true
+updated: 2026-05-08
+---
+
+`<SectorsPattern>`은 산업/도메인 섹터별로 프로젝트를 나열하는 페이지 패턴입니다. **카드 그리드 거부**, 모든 정보를 행 레이아웃으로.
+
+```tsx
+import { SectorsPattern } from "@freeive/anti-card";
+
+<SectorsPattern sectors={[
+  {
+    name: "Telecom",
+    subtitle: "8 projects",
+    projects: [
+      { year: "2022", title: "라이나 디지털채널 재구축", client: "라이나" },
+      { year: "2020", title: "통신사 mydata", client: "롯데카드" },
+    ],
+  },
+  {
+    name: "Education",
+    subtitle: "5 projects",
+    projects: [
+      { year: "2021", title: "EBS 온라인 클래스", client: "EBS" },
+    ],
+  },
+]} />
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `sectors` | `SectorsPatternSector[]` | 섹터 배열 |
+
+```ts
+type SectorsPatternSector = {
+  name: ReactNode;       // smallcaps
+  subtitle?: ReactNode;  // 보조 (예: "8 projects")
+  projects: SectorsPatternProject[];
+};
+
+type SectorsPatternProject = {
+  year?: ReactNode;
+  title: ReactNode;
+  client?: ReactNode;
+  href?: string;
+};
+```
+
+## 디자인
+
+- 데스크톱: grid 12열 — 섹터 3 / 프로젝트 9
+- 모바일: stack
+- 각 섹터 사이 헤어라인
+- 프로젝트 행은 ListRow와 동일 톤
+
+## 관련
+
+- [ListRow](/anti-card/list-row) — 내부 사용
+- [Heritage 페이지](https://freeive.com/heritage) — 활용 사례

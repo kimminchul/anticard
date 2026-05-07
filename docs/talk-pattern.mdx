@@ -1,0 +1,54 @@
+---
+title: TalkPattern
+description: Talk·Contact 페이지. Hero + 받음/안받음 체크리스트 + 연락 채널.
+group: components
+order: 22
+published: true
+updated: 2026-05-08
+---
+
+`<TalkPattern>`은 1인 랩의 **"이기는 싸움만 받습니다"** 정체성을 표현하는 Talk·Contact 페이지 패턴입니다. 일반 폼 페이지 거부 — 받는 일 / 안 받는 일을 명시.
+
+```tsx
+import { TalkPattern } from "@freeive/anti-card";
+
+<TalkPattern
+  eyebrow="Talk · 의뢰·문의"
+  title="이기는 싸움만 받습니다."
+  lead="외주 에이전시가 아닙니다. 단 1인 랩의 깊이가 필요한 일에만."
+  acceptList={[
+    "B2B 의뢰 (계약·법인 사업)",
+    "1인 랩과의 협업",
+    "AI UI / 안티 카드 톤 컨설팅",
+  ]}
+  declineList={[
+    "가격 경쟁 입찰",
+    "양산형 사이트",
+    "테스트성 PoC",
+  ]}
+  channels={[
+    { label: "Email", value: "ive@freeive.com", href: "mailto:ive@freeive.com" },
+    { label: "GitHub", value: "kimminchul/anticard", href: "https://github.com/kimminchul/anticard", external: true },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Description |
+|---|---|---|
+| `eyebrow / title / lead` | `ReactNode` | Hero 영역 (HeroPattern 내장) |
+| `acceptList` | `ReactNode[]` | 받는 일 (✓ emerald) |
+| `declineList` | `ReactNode[]` | 안 받는 일 (✕ zinc) |
+| `channels` | `Array<{label, value, href?, external?}>` | 연락 채널 (DefList 패턴) |
+
+## 정체성
+
+받는 일을 명시하는 것보다 **안 받는 일을 명시하는 것이 1인 랩 정체성에 더 강한 시그널**입니다.
+"이런 일은 받지 않음"을 분명히 하면 의사결정자가 자신의 의뢰가 적합한지 빠르게 판단 가능.
+
+## 관련
+
+- [HeroPattern](/anti-card/hero-pattern) — 내부 사용
+- [Eyebrow](/anti-card/eyebrow) — accept/decline 라벨
+- [LinkRow](/anti-card/link-row) — 채널 링크

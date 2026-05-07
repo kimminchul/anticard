@@ -1,0 +1,57 @@
+---
+title: FeatureRow
+description: 특징·장점 나열. 카드 그리드 거부, 좌측 라벨/번호 + 우측 본문.
+group: components
+order: 27
+published: true
+updated: 2026-05-08
+---
+
+`<FeatureRow>`는 **랜딩 페이지의 특징 3~5개를 행 레이아웃으로 나열**합니다. shadcn 카드 그리드 거부.
+
+```tsx
+import { FeatureRow } from "@freeive/anti-card";
+
+// 라벨 layout
+<FeatureRow items={[
+  { label: "Speed", title: "1인 랩의 속도", description: "결정자 직접 의사결정." },
+  { label: "Depth", title: "큰 싸움의 깊이", description: "150건+ 경험." },
+  { label: "Tone", title: "안티 카드 톤", description: "AI 동질화 거부." },
+]} />
+
+// 번호 layout (자동 01/02/03)
+<FeatureRow layout="numbered" items={[
+  { title: "정체성 정리", description: "..." },
+  { title: "사이트 골격", description: "..." },
+  { title: "콘텐츠 채우기", description: "..." },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `FeatureRowItem[]` | — | `{label?, title, description?}[]` |
+| `layout` | `"row" \| "numbered"` | `"row"` | label 사용 / 자동 번호 |
+
+## 디자인
+
+- ol: divide-y border-y zinc-200 dark:white/[0.06]
+- 각 li: grid `[120px label / 1fr 본문]` (모바일 stack)
+- title: 18px font-semibold
+- description: 14.5px leading-relaxed (max-w-[58ch])
+
+## ListRow와의 차이
+
+| | ListRow | FeatureRow |
+|---|---|---|
+| 본문 | 한 줄 강조 | 제목 + 설명 (긴 본문) |
+| 좌측 | meta (140px) | label / 번호 (120px) |
+| 용도 | 프로젝트 / 글 목록 | 특징 / 단계 / 장점 |
+
+ListRow는 "리스트형 정보", FeatureRow는 "강조형 특징".
+
+## 관련
+
+- [ListRow](/anti-card/list-row) — 더 가벼운 행
+- [Timeline](/anti-card/timeline) — 시간 축

@@ -1,0 +1,74 @@
+---
+title: Button
+description: 진짜 button 액션. 폼 submit, 모달 confirm 등. 일반 CTA는 LinkRow 권장.
+group: components
+order: 26
+published: true
+updated: 2026-05-08
+---
+
+`<Button>`은 **진짜 button이 필요한 곳**(폼 제출, 모달 confirm, 게시글 발행)에만 사용합니다. 일반 페이지 CTA는 [LinkRow](/anti-card/link-row) 권장 — 박스 거부형.
+
+```tsx
+import { Button } from "@freeive/anti-card";
+
+// 폼 제출
+<Button type="submit" tone="accent">발행하기</Button>
+
+// 모달 confirm/cancel 쌍
+<div className="flex justify-end gap-3">
+  <Button variant="secondary">취소</Button>
+  <Button variant="primary" tone="accent">확인</Button>
+</div>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `"primary" \| "secondary"` | `"primary"` | 채움 / 헤어라인 only |
+| `size` | `"small" \| "default" \| "large"` | `"default"` | 사이즈 |
+| `tone` | `"default" \| "accent"` | `"default"` | neutral / emerald (primary 전용) |
+| `leadingIcon` | `ReactNode` | — | 좌측 아이콘 |
+| `trailingIcon` | `ReactNode` | — | 우측 아이콘 |
+| `...rest` | `ButtonHTMLAttributes<HTMLButtonElement>` | — | type / onClick / disabled 등 |
+
+## variant × tone 매트릭스
+
+| variant | tone | 시각 | 용도 |
+|---|---|---|---|
+| `primary` | `default` | zinc-900 채움 / 다크에선 zinc-50 | 표준 폼 액션 |
+| `primary` | `accent` | emerald 채움 | 핵심 액션 (페이지당 1번) |
+| `secondary` | (무관) | border만, 투명 | 취소·뒤로가기 보조 |
+
+## size
+
+| size | 패딩 | 텍스트 |
+|---|---|---|
+| `small` | px-3 py-1.5 | 13px |
+| `default` | px-4 py-2 | 14px |
+| `large` | px-5 py-2.5 | 15px |
+
+## 페이지 CTA vs Button
+
+| 상황 | 컴포넌트 |
+|---|---|
+| 페이지 안 "더 보기 →", "Heritage 보기 →" | `LinkRow` |
+| 폼 제출, 모달 확인 | `Button type="submit"` |
+| 게시글 발행, 결제 | `Button tone="accent"` |
+| 에디터 도구 (저장, 삭제) | `Button variant="secondary"` |
+
+## 모달 풋터 패턴
+
+```tsx
+<div className="flex justify-end gap-3">
+  <Button variant="secondary" onClick={onCancel}>취소</Button>
+  <Button variant="primary" tone="accent" onClick={onConfirm}>확인</Button>
+</div>
+```
+
+원칙: secondary가 좌측, primary가 우측 (눈의 마지막 도착점이 primary 액션).
+
+## 관련
+
+- [LinkRow](/anti-card/link-row) — 페이지 CTA (박스 거부형)

@@ -15,13 +15,21 @@ import {
   typography,
   type TypographyToken,
   Quote,
-  Highlight,
+  Highlight as ACHighlight,
   Image as ACImage,
   Video,
   DefList,
   StatList,
   Timeline,
   Pill,
+  HeroPattern,
+  SectorsPattern,
+  TalkPattern,
+  EmptyState,
+  CTASection,
+  Banner,
+  Button,
+  FeatureRow,
 } from "@freeive/anti-card";
 
 /**
@@ -86,11 +94,11 @@ const NAV: NavGroup[] = [
     group: "액션",
     desc: "버튼·링크·전환",
     items: [
-      { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "soon" },
-      { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary)", status: "soon" },
+      { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "ready" },
+      { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary)", status: "ready" },
       { id: "link-row", ko: "링크 행", en: "Link Row", status: "ready" },
-      { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "soon" },
-      { id: "banner", ko: "알림 배너", en: "Banner", status: "soon" },
+      { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "ready" },
+      { id: "banner", ko: "알림 배너", en: "Banner", status: "ready" },
     ],
   },
   {
@@ -101,7 +109,7 @@ const NAV: NavGroup[] = [
       { id: "faq", ko: "FAQ 아코디언", en: "FAQ", status: "soon" },
       { id: "pricing-table", ko: "가격 표", en: "Pricing Table", status: "soon" },
       { id: "steps", ko: "단계 (3·4단계)", en: "Steps", status: "soon" },
-      { id: "feature-row", ko: "특징 나열 행", en: "Feature Row", status: "soon" },
+      { id: "feature-row", ko: "특징 나열 행", en: "Feature Row", status: "ready" },
     ],
   },
   {
@@ -150,11 +158,11 @@ const NAV: NavGroup[] = [
     group: "페이지 패턴",
     desc: "한 페이지 단위의 큰 조합",
     items: [
-      { id: "hero-pattern", ko: "히어로 (메인 첫 화면)", en: "Hero", status: "soon" },
-      { id: "sectors-pattern", ko: "섹터 리스트 페이지", en: "Sectors", status: "soon" },
+      { id: "hero-pattern", ko: "히어로 (메인 첫 화면)", en: "Hero", status: "ready" },
+      { id: "sectors-pattern", ko: "섹터 리스트 페이지", en: "Sectors", status: "ready" },
       { id: "pricing-pattern", ko: "가격 페이지", en: "Pricing", status: "soon" },
-      { id: "talk-pattern", ko: "Talk·Contact", en: "Talk / Contact", status: "soon" },
-      { id: "empty-error", ko: "빈 상태·404", en: "Empty / 404", status: "soon" },
+      { id: "talk-pattern", ko: "Talk·Contact", en: "Talk / Contact", status: "ready" },
+      { id: "empty-error", ko: "빈 상태·404", en: "Empty / 404", status: "ready" },
     ],
   },
 ];
@@ -216,6 +224,15 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "stat-list": () => <ComponentPage def={STAT_LIST_DEF} />,
   timeline: () => <ComponentPage def={TIMELINE_DEF} />,
   pill: () => <ComponentPage def={PILL_DEF} />,
+  "hero-pattern": () => <ComponentPage def={HERO_PATTERN_DEF} />,
+  "sectors-pattern": () => <ComponentPage def={SECTORS_PATTERN_DEF} />,
+  "talk-pattern": () => <ComponentPage def={TALK_PATTERN_DEF} />,
+  "empty-error": () => <ComponentPage def={EMPTY_STATE_DEF} />,
+  "cta-section": () => <ComponentPage def={CTA_SECTION_DEF} />,
+  banner: () => <ComponentPage def={BANNER_DEF} />,
+  "button-primary": () => <ComponentPage def={BUTTON_PRIMARY_DEF} />,
+  "button-secondary": () => <ComponentPage def={BUTTON_SECONDARY_DEF} />,
+  "feature-row": () => <ComponentPage def={FEATURE_ROW_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -2503,7 +2520,7 @@ const HIGHLIGHT_DEF: ComponentDef = {
       badge: "default",
       title: "기본 — 굵기만 변경",
       description: "본문 톤(15px) + font-medium + zinc-900. mark 태그 X.",
-      preview: <Highlight>이 한 줄이 핵심이다.</Highlight>,
+      preview: <ACHighlight>이 한 줄이 핵심이다.</ACHighlight>,
       prompt: `본문 안에서 한 줄 강조가 필요해. shadcn처럼 형광펜(<mark>) 노란 배경 거부.
 
 스타일:
@@ -2523,9 +2540,9 @@ const HIGHLIGHT_DEF: ComponentDef = {
       title: "accent + large — 섹션 강조",
       description: "섹션 안 큰 한 줄 강조. emerald 색 + 18~24px.",
       preview: (
-        <Highlight tone="accent" size="large">
+        <ACHighlight tone="accent" size="large">
           1인 랩의 가장 강력한 자산은 살아있는 사이트다.
-        </Highlight>
+        </ACHighlight>
       ),
       prompt: `섹션 안에서 가장 강한 한 줄 메시지. tone="accent" + size="large" 조합.
 
@@ -2931,5 +2948,527 @@ shadcn Badge처럼 화려한 색 거부. 본문에 자연스럽게 섞이는 가
     { name: "external", type: "boolean", desc: "외부 링크" },
     { name: "tone", type: '"default" | "accent" | "muted"', default: '"default"', desc: "색 톤" },
     { name: "active", type: "boolean", default: "false", desc: "활성 상태 (필터 선택)" },
+  ],
+};
+
+const HERO_PATTERN_DEF: ComponentDef = {
+  id: "hero-pattern",
+  ko: "히어로 (메인 첫 화면)",
+  en: "HeroPattern",
+  desc: "Eyebrow + HeroHeading + Lead + LinkRow×N 조합 패턴. 페이지 첫 화면을 한 번에.",
+  examples: [
+    {
+      index: "01",
+      badge: "size · hero",
+      title: "메인 페이지 hero (40~64px)",
+      description: "사이트 메인. size='hero' + accent CTA + default CTA.",
+      preview: (
+        <HeroPattern
+          size="hero"
+          eyebrow="Freeive — Solo lab, est. 2016"
+          title={
+            <>
+              1인 운영자의<br />
+              <span className="text-zinc-400 dark:text-zinc-400">무기를 만드는</span><br />
+              1인 랩.
+            </>
+          }
+          lead="외주 에이전시가 아닙니다. 자체 UI 프레임워크와 카메라 기반 공간 UI 연구."
+          ctas={[
+            { label: "안티 카드 살펴보기", href: "#", tone: "accent" },
+            { label: "Talk · 이기는 싸움만", href: "#" },
+          ]}
+        />
+      ),
+      prompt: `사이트 메인 페이지의 hero 영역 통째로. Eyebrow + HeroHeading(size='hero', 40~64px) + Lead(large) + LinkRow 2개.
+첫 LinkRow는 accent (강조), 두 번째는 default. 박스 거부 — 모든 요소가 한 줄 텍스트 + 큰 타입 + 공간으로만 구성.`,
+      react: `<HeroPattern
+  size="hero"
+  eyebrow="Freeive — Solo lab, est. 2016"
+  title="1인 운영자의 무기를 만드는 1인 랩."
+  lead="외주 에이전시가 아닙니다."
+  ctas={[
+    { label: "안티 카드", href: "/anti-card", tone: "accent" },
+    { label: "Talk", href: "/talk" },
+  ]}
+/>`,
+    },
+    {
+      index: "02",
+      badge: "size · page",
+      title: "일반 페이지 hero (30~48px)",
+      description: "Lab/Heritage/Blog 등 일반 페이지. size='page' default.",
+      preview: (
+        <HeroPattern
+          eyebrow="Heritage · 2016 — Now"
+          title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
+          lead="텔레콤·금융·교육·기업시스템·미디어의 큰 싸움을 거친 깊이."
+        />
+      ),
+      prompt: `일반 페이지(Lab/Heritage/Blog) 첫 화면. size 생략(default 'page'). HeroHeading 30~48px.
+ctas 생략하면 hero 영역에 CTA 없이 제목 + 본문만.`,
+      react: `<HeroPattern
+  eyebrow="Heritage · 2016 — Now"
+  title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
+  lead="..."
+/>`,
+    },
+  ],
+  props: [
+    { name: "eyebrow", type: "ReactNode", desc: "smallcaps 라벨" },
+    { name: "title", type: "ReactNode", desc: "큰 제목 (필수)" },
+    { name: "lead", type: "ReactNode", desc: "인트로 본문" },
+    { name: "ctas", type: "HeroPatternCTA[]", desc: "0~3개 권장. 첫 번째는 accent" },
+    { name: "size", type: '"page" | "hero"', default: '"page"', desc: "page 30~48 / hero 40~64 (메인 1회)" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
+    { name: "padding", type: '"default" | "tight" | "loose"', default: '"default"', desc: "상하 패딩" },
+  ],
+};
+
+const SECTORS_PATTERN_DEF: ComponentDef = {
+  id: "sectors-pattern",
+  ko: "섹터 리스트 페이지",
+  en: "SectorsPattern",
+  desc: "Heritage 표준 — 좌측 섹터(smallcaps) + 우측 ListRow 행. 카드 그리드 거부.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 섹터 + 프로젝트 리스트",
+      description: "데스크톱 12열 grid (섹터 3 / 프로젝트 9). 모바일 stack.",
+      preview: (
+        <SectorsPattern
+          sectors={[
+            {
+              name: "Telecom",
+              subtitle: "3 projects",
+              projects: [
+                { year: "2022", title: "라이나생명 디지털채널 재구축", client: "라이나" },
+                { year: "2020", title: "통신사 mydata 수집 admin", client: "롯데카드" },
+              ],
+            },
+            {
+              name: "Education",
+              subtitle: "2 projects",
+              projects: [
+                { year: "2021", title: "EBS 온라인 클래스 재구조화", client: "EBS" },
+                { year: "2019", title: "미니북 저작 퍼블리셔", client: "아이스크림" },
+              ],
+            },
+          ]}
+        />
+      ),
+      prompt: `Heritage 페이지처럼 산업/도메인 섹터별로 프로젝트를 나열. 좌측 섹터명 + 우측 프로젝트 행.
+
+스타일:
+- 컨테이너: divide-y border-y zinc-200 dark:white/[0.06]
+- 각 섹터: grid 12열 (md:col-span-3 + md:col-span-9)
+- 좌측: 섹터명 (smallcaps) + 보조 (projects count)
+- 우측: ListRow 행들 (year / title / client)
+
+shadcn 카드 그리드 거부. 모든 정보를 행으로.`,
+      react: `<SectorsPattern sectors={[
+  { name: "Telecom", subtitle: "3 projects", projects: [
+    { year: "2022", title: "...", client: "라이나" },
+  ]},
+]} />`,
+    },
+  ],
+  props: [
+    { name: "sectors", type: "SectorsPatternSector[]", desc: "{name, subtitle?, projects: [{year, title, client?, href?}]}[]" },
+  ],
+};
+
+const TALK_PATTERN_DEF: ComponentDef = {
+  id: "talk-pattern",
+  ko: "Talk·Contact",
+  en: "TalkPattern",
+  desc: "Talk 페이지 — Hero + 받음/안받음 체크리스트 + 연락 채널.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "Talk 페이지 표준",
+      description: "이기는 싸움만 받음. 의뢰 가능성을 명시적으로 분리.",
+      preview: (
+        <TalkPattern
+          eyebrow="Talk · 의뢰·문의"
+          title="이기는 싸움만 받습니다."
+          lead="외주 에이전시가 아닙니다. 단 1인 랩의 깊이가 필요한 일에만."
+          acceptList={[
+            "B2B 의뢰 (계약·법인 사업)",
+            "1인 랩과의 협업 / 공동 프로젝트",
+            "AI UI / 안티 카드 톤 컨설팅",
+          ]}
+          declineList={[
+            "가격 경쟁 입찰",
+            "양산형 사이트 / 템플릿 작업",
+            "테스트성 PoC 의뢰",
+          ]}
+          channels={[
+            { label: "Email", value: "ive@freeive.com", href: "mailto:ive@freeive.com" },
+            { label: "GitHub", value: "kimminchul/anticard", href: "https://github.com/kimminchul/anticard", external: true },
+          ]}
+        />
+      ),
+      prompt: `Talk·Contact 페이지를 안티 카드 톤으로 한 번에. 일반 폼 페이지 거부 — "받는 일 / 안 받는 일"을 명시.
+
+구성:
+- HeroPattern (eyebrow + 큰 제목 + lead)
+- 받음(accept) / 안 받음(decline) 2열 체크리스트 (받음=emerald ✓, 안받음=zinc ✕)
+- 연락 채널 (Email, GitHub 등) DefList 패턴
+
+1인 랩 정체성 — "이기는 싸움만"을 의사결정자에게 직접 알리는 페이지.`,
+      react: `<TalkPattern
+  title="이기는 싸움만 받습니다."
+  acceptList={["B2B 의뢰", "1인 랩 협업"]}
+  declineList={["가격 경쟁", "양산형 사이트"]}
+  channels={[{ label: "Email", value: "ive@...", href: "mailto:..." }]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "eyebrow / title / lead", type: "ReactNode", desc: "Hero 영역 (HeroPattern 내장)" },
+    { name: "acceptList", type: "ReactNode[]", desc: "받는 일 (✓ emerald)" },
+    { name: "declineList", type: "ReactNode[]", desc: "안 받는 일 (✕ zinc)" },
+    { name: "channels", type: "[{label, value, href?, external?}]", desc: "연락 채널 DefList" },
+  ],
+};
+
+const EMPTY_STATE_DEF: ComponentDef = {
+  id: "empty-error",
+  ko: "빈 상태 / 404",
+  en: "EmptyState",
+  desc: "빈 상태·404·error 페이지. 큰 code(숫자) + 짧은 메시지 + LinkRow 액션.",
+  examples: [
+    {
+      index: "01",
+      badge: "404",
+      title: "404 — 가운데 정렬",
+      description: "큰 코드 + smallcaps + 제목 + 설명 + 홈으로 LinkRow.",
+      preview: (
+        <EmptyState
+          code="404"
+          eyebrow="Not found"
+          title="찾으시는 페이지가 없습니다."
+          description="이미 옮겨졌거나 잘못된 경로일 수 있어요. 홈에서 다시 시작해 주세요."
+          actions={[
+            { label: "홈으로 돌아가기", href: "#", tone: "accent" },
+            { label: "Talk · 직접 알리기", href: "#" },
+          ]}
+          align="center"
+        />
+      ),
+      prompt: `404 / 빈 상태 페이지. 카드 박스 거부. 큰 code(숫자) + smallcaps + 큰 제목 + 설명 + LinkRow.
+align="center"가 기본 권장 (404은 시각 임팩트).`,
+      react: `<EmptyState
+  code="404"
+  eyebrow="Not found"
+  title="찾으시는 페이지가 없습니다."
+  actions={[{ label: "홈으로", href: "/" }]}
+  align="center"
+/>`,
+    },
+    {
+      index: "02",
+      badge: "empty-list",
+      title: "빈 리스트 (코드 없음)",
+      description: "blog/heritage 등 데이터 없을 때. code 생략, 좌측 정렬.",
+      preview: (
+        <EmptyState
+          eyebrow="Blog"
+          title="아직 글이 없습니다."
+          description="곧 학습 일지부터 채워나갑니다."
+        />
+      ),
+      prompt: `데이터 없는 페이지(빈 블로그, 빈 Heritage 등). code 생략 → smallcaps + 큰 제목 + 설명만.
+416 / 500 / "준비 중" 등 다양한 빈 상태에 사용 가능.`,
+      react: `<EmptyState
+  eyebrow="Blog"
+  title="아직 글이 없습니다."
+  description="곧 학습 일지부터..."
+/>`,
+    },
+  ],
+  props: [
+    { name: "code", type: "ReactNode", desc: "큰 숫자/코드 (예: 404)" },
+    { name: "eyebrow", type: "ReactNode", desc: "smallcaps" },
+    { name: "title", type: "ReactNode", desc: "큰 제목 (필수)" },
+    { name: "description", type: "ReactNode", desc: "보조 설명" },
+    { name: "actions", type: "[{label, href, tone?}]", desc: "LinkRow 액션들" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬 (404는 center 권장)" },
+  ],
+};
+
+const CTA_SECTION_DEF: ComponentDef = {
+  id: "cta-section",
+  ko: "CTA 섹션",
+  en: "CTASection",
+  desc: "페이지 하단 CTA. 헤어라인 + h2 제목 + Lead + LinkRow 묶음.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 헤어라인 + 좌측 정렬",
+      description: "페이지 자연스러운 마무리로서 액션 유도.",
+      preview: (
+        <CTASection
+          eyebrow="Talk"
+          title="이기는 싸움이 있다면 알려주세요."
+          lead="간단한 의뢰 메모로 충분합니다. 1인 랩이 직접 응답합니다."
+          actions={[
+            { label: "Talk 페이지로", href: "#", tone: "accent" },
+            { label: "이메일", href: "#" },
+          ]}
+        />
+      ),
+      prompt: `페이지 하단 CTA 영역. 헤어라인 위 + h2 제목 + Lead + LinkRow.
+
+스타일:
+- 위쪽 헤어라인: border-t border-zinc-200/60 dark:white/[0.06]
+- 패딩: py-16 md:py-20
+- 제목: SectionHeading h2 톤
+- LinkRow 1~2개 (accent + default)
+
+박스 거부 — 페이지 마무리로서 자연스러운 액션 유도.`,
+      react: `<CTASection
+  eyebrow="Talk"
+  title="이기는 싸움이 있다면 알려주세요."
+  lead="간단한 의뢰 메모로 충분합니다."
+  actions={[{ label: "Talk", href: "/talk", tone: "accent" }]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "eyebrow", type: "ReactNode", desc: "smallcaps" },
+    { name: "title", type: "ReactNode", desc: "h2 톤 제목 (필수)" },
+    { name: "lead", type: "ReactNode", desc: "보조 카피" },
+    { name: "actions", type: "CTASectionAction[]", desc: "1~2개 권장" },
+    { name: "divider", type: "boolean", default: "true", desc: "위쪽 헤어라인" },
+    { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
+  ],
+};
+
+const BANNER_DEF: ComponentDef = {
+  id: "banner",
+  ko: "알림 배너",
+  en: "Banner",
+  desc: "작은 알림 띠. 페이지 상단 또는 본문 사이. 큰 박스 X, 헤어라인 + 살짝 톤 배경.",
+  examples: [
+    {
+      index: "01",
+      badge: "tone × 4",
+      title: "4가지 톤",
+      description: "info / accent / warning / danger.",
+      preview: (
+        <div className="space-y-3">
+          <Banner label="공지">새 마일스톤 0.3.0 작업 중 — 페이지 패턴 + 액션.</Banner>
+          <Banner tone="accent" label="Live">anti-card 0.2.0 출시 — 19개 컴포넌트.</Banner>
+          <Banner tone="warning" label="알림">env not set — 환경 변수 확인 필요.</Banner>
+          <Banner tone="danger" label="에러">데이터베이스 연결 실패.</Banner>
+        </div>
+      ),
+      prompt: `페이지 상단 또는 본문 사이의 작은 알림 띠. shadcn Alert처럼 큰 박스 X.
+
+스타일:
+- border-y (위 아래 헤어라인) + 살짝 톤 배경
+- 좌측 label (smallcaps 11px) + 본문 + 우측 action / dismiss
+- tone: info(zinc) / accent(emerald) / warning(yellow) / danger(rose)
+
+큰 둥근 박스 거부. 띠 형태로 본문 흐름 거의 안 막음.`,
+      react: `<Banner tone="accent" label="Live">
+  anti-card 0.2.0 출시
+</Banner>
+
+<Banner tone="warning" label="알림" onDismiss={() => {}}>
+  env not set
+</Banner>`,
+    },
+  ],
+  props: [
+    { name: "tone", type: '"info" | "accent" | "warning" | "danger"', default: '"info"', desc: "색 톤" },
+    { name: "label", type: "ReactNode", desc: "좌측 라벨 (smallcaps)" },
+    { name: "action", type: "ReactNode", desc: "우측 액션" },
+    { name: "onDismiss", type: "() => void", desc: "닫기 버튼 자동 노출" },
+  ],
+};
+
+const BUTTON_PRIMARY_DEF: ComponentDef = {
+  id: "button-primary",
+  ko: "기본 버튼",
+  en: "Button (Primary)",
+  desc: "채워진 박스 버튼. 폼 submit, 모달 confirm 등 진짜 button. variant='primary'.",
+  examples: [
+    {
+      index: "01",
+      badge: "tone · default",
+      title: "기본 — neutral 채움",
+      description: "zinc-900 배경 (라이트) / zinc-50 배경 (다크). 본문과 강한 대비.",
+      preview: (
+        <div className="flex flex-wrap gap-3">
+          <Button>전송</Button>
+          <Button size="small">작게</Button>
+          <Button size="large">크게</Button>
+        </div>
+      ),
+      prompt: `진짜 button이 필요한 곳 — 폼 submit, 모달 confirm, 게시글 발행 등.
+일반 페이지 CTA는 LinkRow 권장. Button은 form/dialog 전용.
+
+스타일:
+- variant="primary" tone="default": bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900
+- rounded-md (살짝 둥글게, shadcn보다 약함)
+- shadow X, gradient X, ring X
+
+size: small (px-3 py-1.5 13px) / default (px-4 py-2 14px) / large (px-5 py-2.5 15px)`,
+      react: `<Button type="submit">전송</Button>
+<Button size="small">취소</Button>`,
+    },
+    {
+      index: "02",
+      badge: "tone · accent",
+      title: "accent — emerald",
+      description: "주요 액션. 페이지당 1번만.",
+      preview: <Button tone="accent">발행하기</Button>,
+      prompt: `페이지 안 가장 강조하고 싶은 액션 (발행, 결제, 구독 등). 페이지당 1번만 — 남발 X.
+스타일: bg-emerald-600 text-white dark:bg-emerald-500 dark:text-zinc-950.`,
+      react: `<Button tone="accent">발행하기</Button>`,
+    },
+  ],
+  props: [
+    { name: "variant", type: '"primary" | "secondary"', default: '"primary"', desc: "primary=채움 / secondary=헤어라인 only" },
+    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "neutral / emerald (primary 전용)" },
+    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택)" },
+    { name: "...rest", type: "ButtonHTMLAttributes<HTMLButtonElement>", desc: "type / onClick / disabled 등 표준" },
+  ],
+};
+
+const BUTTON_SECONDARY_DEF: ComponentDef = {
+  id: "button-secondary",
+  ko: "보조 버튼",
+  en: "Button (Secondary)",
+  desc: "헤어라인 only 버튼. 채움 X, border만. variant='secondary'.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 헤어라인 only",
+      description: "취소·뒤로가기 같은 보조 액션.",
+      preview: (
+        <div className="flex flex-wrap gap-3">
+          <Button variant="secondary">취소</Button>
+          <Button variant="secondary" size="small">뒤로</Button>
+          <Button variant="secondary" size="large">자세히</Button>
+        </div>
+      ),
+      prompt: `secondary 액션 — primary 옆에서 보조 역할. 채움 X, border만.
+
+스타일:
+- variant="secondary": border border-zinc-300 dark:border-white/[0.15]
+- bg-transparent (호버시 zinc-50 / dark:white/[0.03])
+- text-zinc-900 dark:text-zinc-100
+
+primary와 같은 size 시스템 (small/default/large). 보통 primary와 함께 한 쌍 (취소 + 확인).`,
+      react: `<Button variant="secondary">취소</Button>`,
+    },
+    {
+      index: "02",
+      badge: "pair",
+      title: "primary + secondary 쌍",
+      description: "모달·폼의 표준 — 좌측 secondary(취소) / 우측 primary(확인).",
+      preview: (
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          <Button variant="secondary">취소</Button>
+          <Button variant="primary" tone="accent">확인</Button>
+        </div>
+      ),
+      prompt: `모달·폼 풋터의 표준 패턴. justify-end로 우측 정렬.
+원칙: secondary가 좌측, primary가 우측 (눈의 마지막 도착점이 primary 액션).`,
+      react: `<div className="flex justify-end gap-3">
+  <Button variant="secondary">취소</Button>
+  <Button variant="primary" tone="accent">확인</Button>
+</div>`,
+    },
+  ],
+  props: [
+    { name: "variant", type: '"primary" | "secondary"', default: '"primary"', desc: "primary=채움 / secondary=헤어라인" },
+    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
+    { name: "...rest", type: "ButtonHTMLAttributes<HTMLButtonElement>", desc: "표준" },
+  ],
+};
+
+const FEATURE_ROW_DEF: ComponentDef = {
+  id: "feature-row",
+  ko: "특징 나열 행",
+  en: "FeatureRow",
+  desc: "특징·장점 나열. 카드 그리드 거부, 좌측 라벨/번호 + 우측 본문.",
+  examples: [
+    {
+      index: "01",
+      badge: "row · label",
+      title: "row layout — 좌측 라벨",
+      description: "smallcaps 라벨로 분류. ListRow 비슷하지만 description이 더 길어도 OK.",
+      preview: (
+        <FeatureRow
+          items={[
+            {
+              label: "Speed",
+              title: "1인 랩의 속도",
+              description: "결정자가 직접 의사결정. 이메일 한 통이면 시작.",
+            },
+            {
+              label: "Depth",
+              title: "큰 싸움의 깊이",
+              description: "150건+ 프로젝트 경험. 텔레콤·금융·교육의 큰 무대를 거친 시선.",
+            },
+            {
+              label: "Tone",
+              title: "안티 카드 톤",
+              description: "AI 동질화 거부. 자체 UI 프레임워크로 시각 정체성.",
+            },
+          ]}
+        />
+      ),
+      prompt: `랜딩 페이지의 특징 3~5개 나열. shadcn 카드 그리드 거부, 행 레이아웃.
+
+스타일:
+- ol: divide-y border-y zinc-200 dark:white/[0.06]
+- 각 li: grid [120px label / 1fr 본문] (모바일 stack)
+- label: 12px uppercase smallcaps zinc-500
+- title: 18px font-semibold zinc-900 dark:zinc-50
+- description: 14.5px leading-relaxed zinc-600 dark:zinc-400
+
+설명이 ListRow보다 길어도 OK (max-w-[58ch]).`,
+      react: `<FeatureRow items={[
+  { label: "Speed", title: "1인 랩의 속도", description: "..." },
+  { label: "Depth", title: "큰 싸움의 깊이", description: "..." },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "numbered",
+      title: "numbered layout — 자동 번호",
+      description: "01/02/03 자동. 단계 / 순서가 있는 특징.",
+      preview: (
+        <FeatureRow
+          layout="numbered"
+          items={[
+            { title: "정체성 정리", description: "1인 랩 / 안티 카드 / Lab / Heritage 4축." },
+            { title: "사이트 골격", description: "anti-card 컴포넌트로 메인 hero + 4축 ListRow." },
+            { title: "콘텐츠 채우기", description: "블로그 첫 글, Heritage 사례 정리." },
+          ]}
+        />
+      ),
+      prompt: `단계·순서가 있는 특징. layout="numbered"로 자동 01/02/03 번호. label prop 생략.
+font-mono 번호로 시각 분리.`,
+      react: `<FeatureRow layout="numbered" items={[
+  { title: "정체성 정리", description: "..." },
+  { title: "사이트 골격", description: "..." },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "FeatureRowItem[]", desc: "{label?, title, description?}[]" },
+    { name: "layout", type: '"row" | "numbered"', default: '"row"', desc: "label 사용 / 자동 번호" },
   ],
 };

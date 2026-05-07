@@ -1,0 +1,59 @@
+---
+title: EmptyState
+description: 빈 상태·404·error 페이지. 큰 code + 짧은 메시지 + LinkRow 액션.
+group: components
+order: 23
+published: true
+updated: 2026-05-08
+---
+
+`<EmptyState>`는 빈 상태·에러 페이지입니다. 카드 박스 거부, 큰 코드(숫자) + 메시지로 시각 임팩트.
+
+```tsx
+import { EmptyState } from "@freeive/anti-card";
+
+// 404
+<EmptyState
+  code="404"
+  eyebrow="Not found"
+  title="찾으시는 페이지가 없습니다."
+  description="이미 옮겨졌거나 잘못된 경로일 수 있어요."
+  actions={[{ label: "홈으로 돌아가기", href: "/" }]}
+  align="center"
+/>
+
+// 빈 리스트 (code 생략)
+<EmptyState
+  eyebrow="Blog"
+  title="아직 글이 없습니다."
+  description="곧 학습 일지부터 채워나갑니다."
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `code` | `ReactNode` | — | 큰 숫자/코드 (예: 404, 500) |
+| `eyebrow` | `ReactNode` | — | smallcaps |
+| `title` | `ReactNode` | — | 큰 제목 (필수) |
+| `description` | `ReactNode` | — | 보조 설명 |
+| `actions` | `Array<{label, href, tone?}>` | `[]` | LinkRow 액션 |
+| `align` | `"left" \| "center"` | `"left"` | 정렬 (404는 center 권장) |
+
+## 디자인
+
+- code: `clamp(3rem, 8vw, 5rem)` font-mono zinc-300 dark:zinc-700 (배경처럼 흐림)
+- title: SectionHeading h2 톤
+- description: body 톤
+
+## 사용 시점
+
+- `code="404"` — 페이지 없음 (Next.js `not-found.tsx`)
+- `code="500"` — 서버 에러
+- 빈 리스트 — `code` 생략, 좌측 정렬
+- 준비 중 — `code="soon"` 등 자유 텍스트
+
+## 관련
+
+- [Eyebrow](/anti-card/eyebrow) / [LinkRow](/anti-card/link-row)
