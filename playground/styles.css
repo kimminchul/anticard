@@ -6,7 +6,16 @@
   color-scheme: dark;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 ::selection {
   background: rgba(124, 242, 196, 0.25);
   color: #fff;
+}
+
+/* Code blocks in playground */
+pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
