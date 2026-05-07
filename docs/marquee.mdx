@@ -1,0 +1,63 @@
+---
+title: Marquee
+description: 끊김 없이 흐르는 띠. 클라이언트 로고, 알림 등. children 자동 복제 무한 루프.
+group: components
+order: 36
+published: true
+updated: 2026-05-08
+---
+
+`<Marquee>`는 children을 끊김 없이 흐르는 띠로 표시합니다. CSS-only animation, JS 의존성 없음.
+
+```tsx
+import { Marquee } from "@freeive/anti-card";
+
+<Marquee divider>
+  {clients.map((c) => (
+    <span key={c.name}>{c.name}</span>
+  ))}
+</Marquee>
+
+// 빠른 알림 띠
+<Marquee direction="right" duration={15}>
+  <span>· 새 글</span>
+  <span>· 0.5.0 출시</span>
+</Marquee>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `direction` | `"left" \| "right"` | `"left"` | 흐름 방향 |
+| `duration` | `number (s)` | `30` | 한 사이클 시간 (작을수록 빠름) |
+| `pauseOnHover` | `boolean` | `true` | hover시 정지 |
+| `gap` | `number (px)` | `48` | 항목 사이 간격 |
+| `divider` | `boolean` | `false` | 위/아래 헤어라인 |
+| `children` | `ReactNode` | — | 흐를 항목들 |
+
+## 구현
+
+- children 2회 복제 (두 번째는 `aria-hidden`)
+- transform translateX(0 → -50%) infinite
+- linear timing — 끊김 없이 자연스러운 흐름
+
+## 접근성
+
+- `prefers-reduced-motion: reduce` 시 자동 정지
+- 두 번째 복제는 aria-hidden — 스크린리더 중복 읽기 방지
+
+## ClientLogos vs Marquee
+
+| | ClientLogos | Marquee |
+|---|---|---|
+| 정렬 | 정적 grid/row | 동적 흐름 |
+| 항목 수 | 5~20개 | 5~10개 (너무 많으면 어지러움) |
+| 시각 | 차분 | 동적 |
+
+ClientLogos = 신뢰 시그널 (정적), Marquee = 활기 (동적). 용도별 선택.
+
+## 관련
+
+- [ClientLogos](/anti-card/client-logos) — 정적 띠 (대안)
+- [Banner](/anti-card/banner) — 알림 띠 (정적)

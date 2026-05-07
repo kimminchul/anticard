@@ -1,0 +1,52 @@
+---
+title: HoverAccent
+description: 자식에 hover 시 색·밑줄·이동 효과. group 패턴 wrapper.
+group: components
+order: 34
+published: true
+updated: 2026-05-08
+---
+
+`<HoverAccent>`는 자유 마크업에 hover 강조를 입히는 wrapper입니다. Tailwind group 패턴.
+
+```tsx
+import { HoverAccent } from "@freeive/anti-card";
+
+<HoverAccent>
+  <a href="/heritage">전체 Heritage 보기 →</a>
+</HoverAccent>
+
+<HoverAccent effect="underline">
+  <span>밑줄이 자라는 텍스트</span>
+</HoverAccent>
+
+<HoverAccent effect="all">
+  <a href="/talk">Talk · 의뢰 <span aria-hidden>→</span></a>
+</HoverAccent>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `effect` | `"color" \| "underline" \| "translate" \| "all"` | `"color"` | 효과 종류 |
+| `tone` | `"accent" \| "mute"` | `"accent"` | emerald / zinc 진하게 |
+| `as` | `"div" \| "span" \| "li"` | `"div"` | 시맨틱 |
+
+## effect
+
+| effect | 동작 |
+|---|---|
+| `color` | hover시 자식 텍스트 emerald (또는 zinc 진하게) |
+| `underline` | 좌→우로 차오르는 밑줄 (300ms) |
+| `translate` | 자식 살짝 우측 이동 (translate-x-0.5) |
+| `all` | color + translate 동시 |
+
+## LinkRow와의 차이
+
+- `LinkRow`: 자체 마크업 + hover 처리 내장
+- `HoverAccent`: 자유 마크업 wrapper (a, span, span+icon 등 자유)
+
+## 관련
+
+- [LinkRow](/anti-card/link-row) — 표준 CTA (hover 내장)

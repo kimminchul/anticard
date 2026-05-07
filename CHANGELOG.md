@@ -5,6 +5,24 @@
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-05-08
+
+### Added
+- **P4 마일스톤** — 인터랙션 컴포넌트 5개:
+  - `WaveCard` — 물결 차오르는 진척도 (variant=frame/card, freeive 기존 자산 이식)
+  - `FadeIn` — 스크롤 in-view 등장 (Intersection Observer + transition, motion-reduce 자동)
+  - `HoverAccent` — hover 강조 wrapper (color/underline/translate/all × accent/mute)
+  - `ScrollProgress` — fixed 1~3px 진행 막대 (top/bottom × accent/mute, target 옵션)
+  - `Marquee` — CSS-only 무한 흐름 (left/right × duration × pauseOnHover × divider)
+- 각 컴포넌트 docs 5개
+- playground 5 ComponentDef + NAV status ready
+
+### Notes
+- 0.5.0 = 사이트에 동적 시그널 추가 (Lab 페이지·진행 중 영역에 시너지)
+- `FadeIn` / `ScrollProgress`는 `"use client"` 컴포넌트 — Next.js App Router 서버 페이지에서도 자유롭게 사용
+- 누적: 36개 컴포넌트 (3 + P0 8 + P1 8 + P2 8 + P3 4 + P4 5)
+- 다음 마일스톤(0.6.0) = P5 콘텐츠 블록 + 비교 6개 (Callout / FAQ / PricingTable / PricingPattern / Steps / CompareTable)
+
 ## [0.4.0] — 2026-05-08
 
 ### Added

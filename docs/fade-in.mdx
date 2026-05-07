@@ -1,0 +1,55 @@
+---
+title: FadeIn
+description: 스크롤 시 in-view 감지 → opacity + translate 등장. prefers-reduced-motion 자동.
+group: components
+order: 33
+published: true
+updated: 2026-05-08
+---
+
+`<FadeIn>`은 요소가 화면에 들어올 때 부드럽게 등장합니다. Intersection Observer + CSS transition.
+
+```tsx
+import { FadeIn } from "@freeive/anti-card";
+
+<FadeIn>
+  <SectionHeading>스크롤로 등장</SectionHeading>
+</FadeIn>
+
+// stagger
+{items.map((item, i) => (
+  <FadeIn key={item.id} delay={i * 80}>
+    <ListRow ... />
+  </FadeIn>
+))}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `direction` | `"up" \| "down" \| "left" \| "right" \| "none"` | `"up"` | 등장 방향 |
+| `distance` | `number (px)` | `16` | 시작 transform 거리 |
+| `delay` | `number (ms)` | `0` | 등장 지연 |
+| `duration` | `number (ms)` | `700` | 트랜지션 길이 |
+| `once` | `boolean` | `true` | 한 번만 등장 |
+| `threshold` | `number 0~1` | `0.15` | Intersection threshold |
+
+## 접근성
+
+- `prefers-reduced-motion: reduce`인 사용자에게는 자동으로 등장 효과 제거 (즉시 보임)
+- once=true (기본) — 스크롤 위로 가도 다시 사라지지 않음
+
+## 사용 원칙
+
+- **살짝 + 짧음 + 한 번만** (anti-card 차분 톤)
+- distance 기본 16px — 너무 크게(50+) 하면 화려함 강해짐
+- 과도한 stagger (8개 이상)는 끝까지 기다리는 시간 부담
+
+## 클라이언트 컴포넌트
+
+`"use client"` 파일이라 Next.js App Router의 server component 안에서도 자유롭게 사용 가능 (자동 client boundary).
+
+## 관련
+
+- [HoverAccent](/anti-card/hover-accent) — 호버 인터랙션

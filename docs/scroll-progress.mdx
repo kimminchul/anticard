@@ -1,0 +1,67 @@
+---
+title: ScrollProgress
+description: 페이지 스크롤 진행 막대. fixed 1~3px, 본문 흐름 거의 안 막음.
+group: components
+order: 35
+published: true
+updated: 2026-05-08
+---
+
+`<ScrollProgress>`는 페이지 스크롤 진행도를 1~3px 막대로 표시합니다.
+
+```tsx
+import { ScrollProgress } from "@freeive/anti-card";
+
+// 페이지 상단 고정
+<ScrollProgress />
+
+// 특정 article만 추적
+const ref = useRef<HTMLElement>(null);
+<article ref={ref}>...</article>
+<ScrollProgress target={ref} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `position` | `"top" \| "bottom"` | `"top"` | fixed 위치 |
+| `tone` | `"accent" \| "mute"` | `"accent"` | emerald / zinc |
+| `thickness` | `number (px)` | `2` | 두께 |
+| `target` | `RefObject<HTMLElement>` | — | 추적할 요소 (생략시 document) |
+
+## 디자인
+
+- fixed top-0 left-0 right-0 z-50 (또는 bottom-0)
+- 1~3px 두께 (본문 흐름 거의 안 막음)
+- transition-[width] 100ms ease-out (즉각 반응)
+- accent: emerald-500 dark:emerald-400
+- mute: zinc-700 dark:zinc-300
+
+## target — 특정 요소 추적
+
+블로그 글의 article 스크롤만 추적:
+
+```tsx
+"use client";
+import { useRef } from "react";
+import { ScrollProgress } from "@freeive/anti-card";
+
+export default function BlogPost() {
+  const ref = useRef<HTMLElement>(null);
+  return (
+    <>
+      <ScrollProgress target={ref} position="top" />
+      <article ref={ref}>...</article>
+    </>
+  );
+}
+```
+
+## 클라이언트 컴포넌트
+
+`"use client"` 파일. Next.js App Router에서 서버 컴포넌트 페이지 안에 자유롭게 배치 가능.
+
+## 관련
+
+- [Header](/anti-card/header) — sticky=true와 함께 사용 시 시너지

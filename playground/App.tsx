@@ -34,6 +34,11 @@ import {
   Testimonial,
   StatBlock,
   CaseStudy,
+  WaveCard,
+  FadeIn,
+  HoverAccent,
+  ScrollProgress,
+  Marquee,
 } from "@freeive/anti-card";
 
 /**
@@ -151,11 +156,11 @@ const NAV: NavGroup[] = [
     group: "인터랙션",
     desc: "움직임·반응. 시그니처.",
     items: [
-      { id: "fade-in", ko: "부드러운 등장", en: "Fade-in on Scroll", status: "soon" },
-      { id: "hover-accent", ko: "호버 강조", en: "Hover Accent", status: "soon" },
-      { id: "scroll-progress", ko: "스크롤 진행", en: "Scroll Progress", status: "soon" },
-      { id: "marquee", ko: "흐르는 띠", en: "Marquee", status: "soon" },
-      { id: "wave-card", ko: "물결 진행 카드", en: "Wave Card", status: "soon" },
+      { id: "fade-in", ko: "부드러운 등장", en: "Fade-in on Scroll", status: "ready" },
+      { id: "hover-accent", ko: "호버 강조", en: "Hover Accent", status: "ready" },
+      { id: "scroll-progress", ko: "스크롤 진행", en: "Scroll Progress", status: "ready" },
+      { id: "marquee", ko: "흐르는 띠", en: "Marquee", status: "ready" },
+      { id: "wave-card", ko: "물결 진행 카드", en: "Wave Card", status: "ready" },
     ],
   },
   {
@@ -241,6 +246,11 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   testimonial: () => <ComponentPage def={TESTIMONIAL_DEF} />,
   "stat-block": () => <ComponentPage def={STAT_BLOCK_DEF} />,
   "case-study": () => <ComponentPage def={CASE_STUDY_DEF} />,
+  "wave-card": () => <ComponentPage def={WAVE_CARD_DEF} />,
+  "fade-in": () => <ComponentPage def={FADE_IN_DEF} />,
+  "hover-accent": () => <ComponentPage def={HOVER_ACCENT_DEF} />,
+  "scroll-progress": () => <ComponentPage def={SCROLL_PROGRESS_DEF} />,
+  marquee: () => <ComponentPage def={MARQUEE_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -3782,5 +3792,335 @@ Problem / Solution만 좌우 분할로 표시.`,
     { name: "solution", type: "ReactNode", desc: "Solution 섹션 (필수, emerald smallcaps)" },
     { name: "outcomes", type: "CaseStudyOutcome[]", desc: "결과 통계 0~3개" },
     { name: "href / hrefLabel", type: "string / ReactNode", desc: "상세 링크" },
+  ],
+};
+
+const WAVE_CARD_DEF: ComponentDef = {
+  id: "wave-card",
+  ko: "물결 진행 카드",
+  en: "WaveCard",
+  desc: "물결이 차오르는 진척도 시각화. variant=frame(헤어라인) / card(rounded box).",
+  examples: [
+    {
+      index: "01",
+      badge: "frame · default",
+      title: "기본 — 헤어라인 (anti-card 톤)",
+      description: "박스 거부 frame variant. 위/아래 헤어라인 + wave fill.",
+      preview: (
+        <WaveCard
+          title="anti-card 0.5.0"
+          client="Freeive"
+          summary="P4 인터랙션 5개 작업 중. WaveCard / FadeIn / HoverAccent / ScrollProgress / Marquee."
+          progress={62}
+          waveColor="#34d399"
+          year="2026"
+        />
+      ),
+      prompt: `진행 중 프로젝트의 진척도를 wave fill로 시각화. 박스 거부 frame variant.
+
+스타일:
+- variant="frame" (default): border-y (헤어라인 위/아래) + wave fill
+- 220~240px height
+- 좌측 상단 "In progress" smallcaps + 우측 상단 "%" badge
+- 하단: 큰 제목 + summary + (client · year) smallcaps
+
+wave는 0~90% 권장 (90+는 거의 완료라 시각이 어색).`,
+      react: `<WaveCard
+  title="anti-card 0.5.0"
+  client="Freeive"
+  summary="P4 인터랙션 작업 중."
+  progress={62}
+  waveColor="#34d399"
+  year="2026"
+/>`,
+    },
+    {
+      index: "02",
+      badge: "card · variant",
+      title: "card variant — 기존 freeive 톤",
+      description: "rounded-xl + border + bg. freeive Heritage In progress 카드와 동일.",
+      preview: (
+        <WaveCard
+          variant="card"
+          title="freeive.com 메인 리뉴얼"
+          client="Freeive"
+          summary="외주 에이전시 → 1인 랩 정체성으로 교체."
+          progress={78}
+          waveColor="#7cf2c4"
+          year="2026"
+        />
+      ),
+      prompt: `기존 freeive Heritage 페이지의 In progress 카드 톤. variant="card".
+박스 정체성 강하지만 단일 컴포넌트로서 특수 시각이라 인정.`,
+      react: `<WaveCard variant="card" title="..." progress={78} waveColor="#7cf2c4" />`,
+    },
+  ],
+  props: [
+    { name: "title", type: "ReactNode", desc: "제목 (필수)" },
+    { name: "client / summary / year", type: "ReactNode", desc: "메타·요약" },
+    { name: "progress", type: "number", desc: "0~90 권장" },
+    { name: "waveColor", type: "string (hex)", default: '"#34d399"', desc: "wave 색" },
+    { name: "variant", type: '"card" | "frame"', default: '"frame"', desc: "card=rounded box / frame=헤어라인" },
+    { name: "label", type: "ReactNode", default: '"In progress"', desc: "좌측 상단 smallcaps" },
+  ],
+};
+
+const FADE_IN_DEF: ComponentDef = {
+  id: "fade-in",
+  ko: "부드러운 등장",
+  en: "FadeIn",
+  desc: "스크롤 시 in-view 감지 → opacity + translate 등장. prefers-reduced-motion 자동 반응.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — up 16px / 700ms",
+      description: "아래에서 위로 살짝 + opacity. 페이지 스크롤하면 자연스럽게 등장.",
+      preview: (
+        <div className="space-y-4">
+          <FadeIn>
+            <div className="rounded-md border border-zinc-200 bg-zinc-50 p-6 dark:border-white/[0.06] dark:bg-white/[0.02]">
+              <p className="text-[14px] text-zinc-700 dark:text-zinc-300">
+                FadeIn 안의 콘텐츠. 스크롤로 in-view 시 등장.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      ),
+      prompt: `요소가 스크롤로 화면에 들어올 때 부드러운 등장이 필요하다.
+
+구현:
+- Intersection Observer로 in-view 감지
+- threshold 0.15 (15% 보이면 등장)
+- direction="up" + distance=16px + 700ms ease-out
+- once=true (한 번만 — 스크롤 위로 가도 다시 사라지지 않음)
+- motion-reduce 자동 비활성
+
+화려한 애니메이션 거부 — 살짝 + 짧음 + 한 번만.`,
+      react: `<FadeIn>
+  <SectionHeading>스크롤로 등장하는 섹션</SectionHeading>
+</FadeIn>`,
+    },
+    {
+      index: "02",
+      badge: "delay · stagger",
+      title: "stagger — delay로 순차 등장",
+      description: "각 항목마다 delay 다르게 → 줄지어 등장.",
+      preview: (
+        <div className="space-y-3">
+          {[0, 100, 200, 300].map((d) => (
+            <FadeIn key={d} delay={d}>
+              <div className="border-y border-zinc-200/60 py-3 text-[14px] dark:border-white/[0.06]">
+                delay={d}ms
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      ),
+      prompt: `리스트의 각 항목이 줄지어 등장. delay를 항목마다 100~150ms씩 다르게.
+
+ListRow의 각 행에 FadeIn 감싸고 index × 80ms로 delay 주면 자연스러운 stagger.
+주의: 너무 많은 항목(50+)에는 stagger 안 함 — 끝까지 기다리는 시간 길어짐.`,
+      react: `{items.map((item, i) => (
+  <FadeIn key={item.id} delay={i * 80}>
+    <ListRow ... />
+  </FadeIn>
+))}`,
+    },
+  ],
+  props: [
+    { name: "direction", type: '"up" | "down" | "left" | "right" | "none"', default: '"up"', desc: "등장 방향" },
+    { name: "distance", type: "number (px)", default: "16", desc: "시작 transform 거리" },
+    { name: "delay", type: "number (ms)", default: "0", desc: "등장 지연" },
+    { name: "duration", type: "number (ms)", default: "700", desc: "트랜지션 길이" },
+    { name: "once", type: "boolean", default: "true", desc: "한 번만 등장" },
+    { name: "threshold", type: "number 0~1", default: "0.15", desc: "Intersection threshold" },
+  ],
+};
+
+const HOVER_ACCENT_DEF: ComponentDef = {
+  id: "hover-accent",
+  ko: "호버 강조",
+  en: "HoverAccent",
+  desc: "자식에 hover 시 색·밑줄·이동 효과. group 패턴 wrapper.",
+  examples: [
+    {
+      index: "01",
+      badge: "color",
+      title: "color — 텍스트 emerald",
+      description: "hover시 자식 텍스트가 emerald로.",
+      preview: (
+        <HoverAccent>
+          <a href="#" className="text-[15.5px]">호버하면 emerald가 됩니다 →</a>
+        </HoverAccent>
+      ),
+      prompt: `자식 요소(텍스트, 링크)에 hover시 emerald 색 강조 wrapper. group 패턴.
+
+LinkRow가 직접 hover 처리하지만, 자유로운 마크업에 적용하고 싶을 때 HoverAccent로 감쌈.
+
+effect="color" (default): hover시 text-emerald-600 dark:emerald-400 transition.`,
+      react: `<HoverAccent>
+  <a href="/heritage">전체 Heritage 보기 →</a>
+</HoverAccent>`,
+    },
+    {
+      index: "02",
+      badge: "underline",
+      title: "underline — 좌→우 밑줄",
+      description: "hover시 밑줄이 좌에서 우로 차오름.",
+      preview: (
+        <HoverAccent effect="underline">
+          <span className="text-[15.5px]">밑줄이 자라는 텍스트</span>
+        </HoverAccent>
+      ),
+      prompt: `hover시 밑줄이 좌에서 우로 채워지는 효과. 본문 안 링크에 시그널.
+
+CSS-only ::after pseudo + width transition (0% → 100%, 300ms).`,
+      react: `<HoverAccent effect="underline">
+  <span>밑줄이 자라는 텍스트</span>
+</HoverAccent>`,
+    },
+    {
+      index: "03",
+      badge: "all",
+      title: "all — color + translate",
+      description: "color + 살짝 우측 이동 (LinkRow와 비슷).",
+      preview: (
+        <HoverAccent effect="all">
+          <a href="#" className="inline-flex items-baseline gap-2 text-[15.5px]">
+            모든 효과 한꺼번에 <span aria-hidden>→</span>
+          </a>
+        </HoverAccent>
+      ),
+      prompt: `color + translate 동시. 화살표가 살짝 우측으로 이동 + 텍스트 emerald.
+LinkRow가 내장하는 효과를 자유 마크업에 재현.`,
+      react: `<HoverAccent effect="all">
+  <a href="/talk">Talk · 의뢰 <span aria-hidden>→</span></a>
+</HoverAccent>`,
+    },
+  ],
+  props: [
+    { name: "effect", type: '"color" | "underline" | "translate" | "all"', default: '"color"', desc: "효과 종류" },
+    { name: "tone", type: '"accent" | "mute"', default: '"accent"', desc: "accent=emerald / mute=zinc 진하게" },
+    { name: "as", type: '"div" | "span" | "li"', default: '"div"', desc: "시맨틱" },
+  ],
+};
+
+const SCROLL_PROGRESS_DEF: ComponentDef = {
+  id: "scroll-progress",
+  ko: "스크롤 진행",
+  en: "ScrollProgress",
+  desc: "페이지 스크롤 진행을 1~3px 막대로 표시. fixed 위/아래.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 상단 emerald 2px",
+      description: "페이지 상단 fixed. 스크롤하면 좌→우로 차오름. 본문 흐름 거의 안 막음.",
+      preview: (
+        <div className="space-y-3 text-[14px]">
+          <p className="text-zinc-500 dark:text-zinc-400">
+            ※ ScrollProgress는 fixed top-0 z-50이라 페이지 진짜 상단에 노출됩니다 — playground 안의 미리보기로는 효과를 시각화하기 어렵습니다.
+          </p>
+          <div className="border-y border-zinc-200 py-3 dark:border-white/[0.06]">
+            <div className="h-0.5 w-2/3 bg-emerald-500 dark:bg-emerald-400" />
+            <p className="mt-2 text-[12.5px] text-zinc-500">실제 시뮬레이션 (66% 스크롤된 상태)</p>
+          </div>
+        </div>
+      ),
+      prompt: `페이지 상단에 스크롤 진행도 막대. 본문 흐름 거의 안 막음 — 1~3px 두께.
+
+스타일:
+- fixed top-0 left-0 right-0 z-50
+- height: thickness(기본 2px)
+- bg: emerald-500 (accent) 또는 zinc-700 (mute)
+- transition-[width] duration-100 ease-out
+
+target prop으로 특정 요소만 추적 가능 (블로그 글의 article 스크롤 등).`,
+      react: `// 페이지 상단 고정
+<ScrollProgress />
+
+// 특정 article만 추적
+const ref = useRef<HTMLElement>(null);
+<article ref={ref}>...</article>
+<ScrollProgress target={ref} />`,
+    },
+  ],
+  props: [
+    { name: "position", type: '"top" | "bottom"', default: '"top"', desc: "fixed 위치" },
+    { name: "tone", type: '"accent" | "mute"', default: '"accent"', desc: "emerald / zinc" },
+    { name: "thickness", type: "number (px)", default: "2", desc: "두께" },
+    { name: "target", type: "RefObject<HTMLElement>", desc: "추적할 요소 (생략시 document)" },
+  ],
+};
+
+const MARQUEE_DEF: ComponentDef = {
+  id: "marquee",
+  ko: "흐르는 띠",
+  en: "Marquee",
+  desc: "끊김 없이 흐르는 띠. 클라이언트 로고, 알림 등. children 자동 복제 무한 루프.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 좌로 30초 사이클",
+      description: "children 자동 2회 복제 → 끊김 없는 무한 스크롤.",
+      preview: (
+        <Marquee divider>
+          {["EBS", "라이나생명", "롯데카드", "아이스크림미디어", "통신3사", "Freeive"].map((name) => (
+            <span
+              key={name}
+              className="text-[12.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400"
+            >
+              {name}
+            </span>
+          ))}
+        </Marquee>
+      ),
+      prompt: `클라이언트 로고/이름이 흐르는 띠. shadcn 캐러셀 거부 — 단순 CSS animation으로.
+
+구현:
+- children을 2회 복제 (aria-hidden 두 번째)
+- transform: translateX(0 → -50%)
+- 30s linear infinite
+- pauseOnHover (기본 true) — group:hover시 animation-play-state:paused
+
+prefers-reduced-motion 자동 멈춤.
+
+용도: 클라이언트 띠 (로고 5+개 가로 흐름), 알림 뉴스 등.`,
+      react: `<Marquee divider>
+  {clients.map((c) => (
+    <span key={c.name}>{c.name}</span>
+  ))}
+</Marquee>`,
+    },
+    {
+      index: "02",
+      badge: "right · fast",
+      title: "right + 빠른 속도",
+      description: "오른쪽으로 흐름 + duration=15(빠름).",
+      preview: (
+        <Marquee direction="right" duration={15} divider>
+          {["새 글", "P4 작업 중", "0.5.0 곧 출시", "Talk · 이기는 싸움만"].map((t) => (
+            <span key={t} className="text-[13px] text-zinc-700 dark:text-zinc-300">
+              · {t}
+            </span>
+          ))}
+        </Marquee>
+      ),
+      prompt: `방향과 속도 변형. direction="right" + duration 작게(빠름).
+알림 띠, 뉴스 ticker 등에 사용.`,
+      react: `<Marquee direction="right" duration={15}>
+  <span>· 새 글</span>
+  <span>· 0.5.0 출시</span>
+</Marquee>`,
+    },
+  ],
+  props: [
+    { name: "direction", type: '"left" | "right"', default: '"left"', desc: "흐름 방향" },
+    { name: "duration", type: "number (s)", default: "30", desc: "한 사이클 시간" },
+    { name: "pauseOnHover", type: "boolean", default: "true", desc: "hover시 정지" },
+    { name: "gap", type: "number (px)", default: "48", desc: "항목 사이 간격" },
+    { name: "divider", type: "boolean", default: "false", desc: "헤어라인 위/아래" },
   ],
 };

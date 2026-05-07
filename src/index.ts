@@ -104,6 +104,21 @@ export type {
   CaseStudyOutcome,
 } from "./components/case-study";
 
+export { WaveCard } from "./components/wave-card";
+export type { WaveCardProps } from "./components/wave-card";
+
+export { FadeIn } from "./components/fade-in";
+export type { FadeInProps } from "./components/fade-in";
+
+export { HoverAccent } from "./components/hover-accent";
+export type { HoverAccentProps } from "./components/hover-accent";
+
+export { ScrollProgress } from "./components/scroll-progress";
+export type { ScrollProgressProps } from "./components/scroll-progress";
+
+export { Marquee } from "./components/marquee";
+export type { MarqueeProps } from "./components/marquee";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

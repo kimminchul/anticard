@@ -1,0 +1,53 @@
+---
+title: WaveCard
+description: 물결이 차오르는 진척도 시각화. variant=frame(헤어라인) / card(rounded box).
+group: components
+order: 32
+published: true
+updated: 2026-05-08
+---
+
+`<WaveCard>`는 진행 중 프로젝트의 진척도를 wave fill로 시각화합니다. **frame variant**가 anti-card 기본 톤 (헤어라인 only).
+
+```tsx
+import { WaveCard } from "@freeive/anti-card";
+
+<WaveCard
+  title="anti-card 0.5.0"
+  client="Freeive"
+  summary="P4 인터랙션 작업 중."
+  progress={62}
+  waveColor="#34d399"
+  year="2026"
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `ReactNode` | — | 제목 (필수) |
+| `client / summary / year` | `ReactNode` | — | 메타·요약 |
+| `progress` | `number` | — | 0~90 권장 |
+| `waveColor` | `string (hex)` | `"#34d399"` | wave 색 |
+| `variant` | `"card" \| "frame"` | `"frame"` | rounded box / 헤어라인 |
+| `label` | `ReactNode` | `"In progress"` | 좌측 상단 smallcaps |
+
+## variant
+
+| variant | 시각 |
+|---|---|
+| `frame` (default) | 위/아래 헤어라인 + wave fill (anti-card 톤) |
+| `card` | rounded-xl + border + bg (freeive 기존 자산) |
+
+## 디자인
+
+- 220~240px height
+- 좌측 상단: "In progress" smallcaps
+- 우측 상단: "%" badge (rounded-full + backdrop-blur)
+- 하단: 큰 제목 + summary + (client · year) smallcaps
+- wave 2개 layer (동시 다른 속도) + tint fill
+
+## 관련
+
+- [Heritage 페이지](https://freeive.com/heritage) — 활용 사례
