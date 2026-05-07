@@ -478,25 +478,45 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
 /* ================ Variant block (only in design tab) ================ */
 
 function Variant({
+  index,
+  badge,
   title,
   description,
   children,
 }: {
+  index: string;
+  badge?: string;
   title: string;
   description?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="mt-10 first:mt-0">
-      <div className="overflow-hidden rounded-lg border border-white/[0.06]">
-        <div className="border-b border-white/[0.06] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
-          Preview
+    <div className="mt-14 first:mt-0">
+      <div className="overflow-hidden rounded-lg border border-white/[0.08]">
+        <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-5 py-2.5">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] text-zinc-500">{index}</span>
+            <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-400">
+              Preview
+            </span>
+            {badge && (
+              <span className="rounded-full border border-emerald-400/30 bg-emerald-500/[0.06] px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+                {badge}
+              </span>
+            )}
+          </div>
+          <span className="text-[10.5px] tracking-[0.04em] text-zinc-500">{title}</span>
         </div>
         <div className="p-6 md:p-8">{children}</div>
       </div>
-      <h4 className="mt-4 text-[13px] font-medium tracking-tight text-zinc-100">{title}</h4>
       {description && (
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-zinc-400">{description}</p>
+        <p className="mt-3 text-[12.5px] leading-relaxed text-zinc-400">
+          <span className="font-mono text-zinc-600">{index}</span>
+          <span className="ml-2 text-zinc-500">·</span>
+          <span className="ml-2 text-zinc-200">{title}</span>
+          <span className="ml-2 text-zinc-500">—</span>
+          <span className="ml-2">{description}</span>
+        </p>
       )}
     </div>
   );
@@ -626,16 +646,16 @@ function EyebrowSection() {
 
       {tab === "design" && (
         <div className="mt-2">
-          <Variant title="기본 톤 (neutral)" description="본문 텍스트보다 한 단계 어두운 회색.">
+          <Variant index="01" badge="default" title="기본 톤 (neutral)" description="본문 텍스트보다 한 단계 어두운 회색.">
             <Eyebrow>Heritage · 2016 — Now</Eyebrow>
           </Variant>
-          <Variant title="강조 톤 (accent)" description="진행 중·라이브 같은 상태 표시에.">
+          <Variant index="02" badge="accent" title="강조 톤 (accent)" description="진행 중·라이브 같은 상태 표시에.">
             <div className="space-y-3">
               <Eyebrow tone="accent">Live · 진행 중</Eyebrow>
               <Eyebrow tone="accent">In progress</Eyebrow>
             </div>
           </Variant>
-          <Variant title="실제 사용 패턴" description="라벨 + 큰 헤딩 + 서브 카피 묶음. SectionFrame이 이 묶음을 자동으로 만듭니다.">
+          <Variant index="03" badge="real-world" title="실제 사용 패턴" description="라벨 + 큰 헤딩 + 서브 카피 묶음. SectionFrame이 이 묶음을 자동으로 만듭니다.">
             <div>
               <Eyebrow>Pillars</Eyebrow>
               <h2 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-50">
@@ -646,7 +666,7 @@ function EyebrowSection() {
               </p>
             </div>
           </Variant>
-          <Variant title="커스텀 색 (className)" description="사전 정의 두 톤 외 색은 className으로.">
+          <Variant index="04" badge="custom" title="커스텀 색 (className)" description="사전 정의 두 톤 외 색은 className으로.">
             <div className="space-y-3">
               <Eyebrow className="text-yellow-400">env not set</Eyebrow>
               <Eyebrow className="text-rose-400">danger zone</Eyebrow>
@@ -769,14 +789,14 @@ function SectionFrameSection() {
 
       {tab === "design" && (
         <div className="mt-2">
-          <Variant title="기본 — 라벨 + 제목 + 설명" description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동.">
+          <Variant index="01" badge="default" title="기본 — 라벨 + 제목 + 설명" description="가장 흔한 사용 패턴. 위쪽 헤어라인이 자동.">
             <SectionFrame
               eyebrow="Pillars"
               title="네 개의 축으로 운영합니다."
               description="만들어 파는 것 두 축, 토대 한 축, 함께 배우는 한 축."
             />
           </Variant>
-          <Variant title="첫 섹션 (divider 끔)" description="페이지 첫 섹션이면 divider={false}.">
+          <Variant index="02" badge="first-section" title="첫 섹션 (divider 끔)" description="페이지 첫 섹션이면 divider={false}.">
             <SectionFrame
               divider={false}
               eyebrow="Hero"
@@ -784,7 +804,7 @@ function SectionFrameSection() {
               description="페이지 시작부에는 위쪽 라인이 어색하니 끕니다."
             />
           </Variant>
-          <Variant title="ListRow와 함께" description="children에 ListRow ul을 넣으면 표준 섹션.">
+          <Variant index="03" badge="composite" title="ListRow와 함께" description="children에 ListRow ul을 넣으면 표준 섹션.">
             <SectionFrame divider={false} eyebrow="Heritage · Education" title="교육·에듀테크">
               <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
                 <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
@@ -965,20 +985,20 @@ function ListRowSection() {
 
       {tab === "design" && (
         <div className="mt-2">
-          <Variant title="기본 — meta + 본문" description="가장 단순. trailing 없으면 우측 영역 비어있음.">
+          <Variant index="01" badge="minimal" title="기본 — meta + 본문" description="가장 단순. trailing 없으면 우측 영역 비어있음.">
             <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
               <ListRow meta="2024">미니북 저작 퍼블리셔</ListRow>
               <ListRow meta="2021">EBS 온라인 클래스 재구조화</ListRow>
             </ul>
           </Variant>
-          <Variant title="trailing — 표준 패턴" description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준.">
+          <Variant index="02" badge="standard" title="trailing — 표준 패턴" description="우측에 클라이언트, 카테고리 등 보조 정보. Heritage 페이지의 표준.">
             <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
               <ListRow meta="2024" trailing="아이스크림미디어">미니북 저작 퍼블리셔</ListRow>
               <ListRow meta="2023" trailing="롯데카드">mydata 수집 및 admin 개발</ListRow>
               <ListRow meta="2022" trailing="라이나생명">대고객 디지털채널 재구축</ListRow>
             </ul>
           </Variant>
-          <Variant title="클릭 가능 — href" description="href 주면 자동 a 태그, hover 시 액센트.">
+          <Variant index="03" badge="interactive" title="클릭 가능 — href" description="href 주면 자동 a 태그, hover 시 액센트.">
             <ul className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
               <ListRow meta="2024" trailing="EBS" href="#">EBS 온라인 클래스 재구조화 (클릭 가능)</ListRow>
               <ListRow meta="2023" trailing="롯데카드" href="#">mydata 수집 및 admin 개발 (클릭 가능)</ListRow>
