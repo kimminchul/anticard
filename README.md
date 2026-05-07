@@ -6,6 +6,8 @@
 **현재 버전: 0.9.1** · 51 컴포넌트 · 12 타이포 토큰
 🎯 **[Playground 보기 → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
 
+> [Read in English](./README.en.md)
+
 ---
 
 ## 시장의 진짜 그림
