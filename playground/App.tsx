@@ -392,16 +392,16 @@ function Variant({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mt-8 first:mt-0">
-      <h4 className="text-[13px] font-medium tracking-tight text-zinc-100">{title}</h4>
-      <div className="mt-3 overflow-hidden rounded-lg border border-white/[0.06]">
+    <div className="mt-10 first:mt-0">
+      <div className="overflow-hidden rounded-lg border border-white/[0.06]">
         <div className="border-b border-white/[0.06] bg-white/[0.02] px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
           Preview
         </div>
         <div className="p-6 md:p-8">{children}</div>
       </div>
+      <h4 className="mt-4 text-[13px] font-medium tracking-tight text-zinc-100">{title}</h4>
       {description && (
-        <p className="mt-3 text-[12.5px] leading-relaxed text-zinc-400">{description}</p>
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-zinc-400">{description}</p>
       )}
     </div>
   );
