@@ -27,5 +27,10 @@ export default defineConfig({
   build: {
     outDir: "dist",
     emptyOutDir: true,
+    /**
+     * lightningcss(vite 8 default)는 SVG data URL을 거부할 수 있음.
+     * esbuild minifier가 더 관용적이라 GitHub runner에서도 안정.
+     */
+    cssMinify: "esbuild",
   },
 });
