@@ -1,6 +1,23 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
-import { Moon, Sun, ArrowUpRight, ChevronDown, Search, X } from "lucide-react";
+import {
+  Moon,
+  Sun,
+  ArrowUpRight,
+  ArrowRight,
+  ChevronDown,
+  Search,
+  X,
+  Plus,
+  Mail,
+  Lock,
+  Check,
+  Info,
+  AlertTriangle,
+  AlertOctagon,
+  Sparkles,
+  ExternalLink,
+} from "lucide-react";
 import {
   Eyebrow,
   SectionFrame,
@@ -191,7 +208,22 @@ const NAV: NavGroup[] = [
       { id: "empty-error", ko: "빈 상태·404", en: "Empty / 404", status: "ready" },
     ],
   },
+  {
+    group: "리소스",
+    desc: "표준·정책·외부 자산",
+    items: [
+      { id: "icons", ko: "아이콘 (lucide)", en: "Icons", status: "ready" },
+    ],
+  },
 ];
+
+/** Lucide 아이콘을 내부적으로 사용하는 컴포넌트 (0.10.0~)
+ *  사이드바 + ComponentPage 헤더에 'lucide' 뱃지로 표기. */
+const USES_LUCIDE: Record<string, string[]> = {
+  "link-row": ["ArrowRight", "ArrowUpRight"],
+  faq: ["Plus"],
+  pill: ["ArrowUpRight"],
+};
 
 const VERSION = "0.10.0";
 
@@ -323,6 +355,7 @@ interface ComponentDef {
 const READY_SECTIONS: Record<string, () => JSX.Element> = {
   intro: Intro,
   "typography-tokens": TypographyTokens,
+  icons: Icons,
   eyebrow: () => <ComponentPage def={EYEBROW_DEF} />,
   "section-frame": () => <ComponentPage def={SECTION_FRAME_DEF} />,
   "list-row": () => <ComponentPage def={LIST_ROW_DEF} />,
@@ -607,20 +640,37 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         </div>
       )}
 
-      <div className="mt-7 space-y-7">
+      <div className="mt-7 space-y-2">
         {filteredGroups.map(({ group, items }) => {
           if (items.length === 0) return null;
+          // 자동 펼침 조건: 검색 중 / 활성 컴포넌트가 이 그룹에 속함
+          const containsActive = items.some((it) => it.id === activeId);
+          const autoOpen = Boolean(q) || containsActive;
           return (
-            <div key={group.group}>
-              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
-                {group.group}
-              </p>
-              {group.desc && <p className="mt-1 text-[12px] leading-snug text-zinc-500">{group.desc}</p>}
-              <ul className="mt-3.5 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
+            <details
+              key={group.group}
+              open={autoOpen}
+              className="group/cat [&>summary]:list-none [&>summary]:cursor-pointer"
+            >
+              <summary className="flex items-baseline justify-between gap-2 rounded-md px-1.5 py-1.5 hover:bg-zinc-100/50 dark:hover:bg-white/[0.03]">
+                <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+                  {group.group}
+                </span>
+                <span aria-hidden className="flex items-baseline gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-500">
+                  <span className="font-mono tabular-nums">{items.length}</span>
+                  <span className="transition-transform duration-200 group-open/cat:rotate-90">▶</span>
+                </span>
+              </summary>
+              {group.desc && (
+                <p className="mt-1 px-1.5 text-[12px] leading-snug text-zinc-500">{group.desc}</p>
+              )}
+              <ul className="mt-2 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
                   const isActive = activeId === item.id;
+                  const v = COMPONENT_VERSIONS[item.id];
+                  const isUpdatedNow = v?.updatedIn === VERSION;
                   return (
                     <li key={item.id}>
                       {isClickable ? (
@@ -628,7 +678,15 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                           href={`#${item.id}`}
                           className={`-ml-3.5 flex items-baseline justify-between gap-2 rounded-r-md py-1 pl-3.5 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400" : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"}`}
                         >
-                          <span>{item.ko}</span>
+                          <span className="flex items-baseline gap-1.5">
+                            <span>{item.ko}</span>
+                            {isUpdatedNow && (
+                              <span
+                                title={`v${VERSION}에서 업데이트됨`}
+                                className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"
+                              />
+                            )}
+                          </span>
                           <span className={`text-[11px] ${isActive ? "text-emerald-600 dark:text-emerald-400" : meta.cls}`}>{meta.label}</span>
                         </a>
                       ) : (
@@ -641,7 +699,7 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                   );
                 })}
               </ul>
-            </div>
+            </details>
           );
         })}
       </div>
@@ -696,9 +754,73 @@ function Intro() {
         </a>
       </div>
 
+      {/* 시작하기 — 간단 install + 1.0.0 정책 안내 */}
       <div className="mt-12 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
-        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">준비된 컴포넌트</p>
-        <p className="mt-1.5 text-[12.5px] text-zinc-500">좌측 사이드바에서도 선택할 수 있습니다.</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">시작하기</p>
+        <p className="mt-1.5 max-w-[58ch] text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-500">
+          현재 v{VERSION} — <strong>GitHub-only release</strong>. npm publish는 1.0.0부터 (정책: <code>docs/VERSIONING.md</code> §7).
+          그 전까지는 tarball 방식으로 설치합니다.
+        </p>
+
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* 0.x.x 설치 — tarball */}
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">현재 (0.x.x)</p>
+            <pre className="mt-2 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50 p-3 text-[11.5px] leading-relaxed dark:border-white/[0.08] dark:bg-white/[0.02]">
+              <code>{`# 1) repo clone + 빌드
+git clone https://github.com/kimminchul/anticard.git
+cd anticard
+npm install --legacy-peer-deps
+npm run build
+
+# 2) tarball 생성
+npm pack
+# → freeive-anti-card-${VERSION}.tgz
+
+# 3) 자기 프로젝트에서 설치
+cd ../my-project
+npm install ../anticard/freeive-anti-card-${VERSION}.tgz`}</code>
+            </pre>
+          </div>
+
+          {/* 1.0.0+ 설치 — npm */}
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">1.0.0 이후 (예정)</p>
+            <pre className="mt-2 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50 p-3 text-[11.5px] leading-relaxed dark:border-white/[0.08] dark:bg-white/[0.02]">
+              <code>{`npm install @freeive/anti-card`}</code>
+            </pre>
+            <p className="mt-3 text-[11.5px] leading-relaxed text-zinc-500 dark:text-zinc-500">
+              1.0.0 release 전까지: API 동결 / Tailwind config 가이드 / AI Skill install 명령 정식화 작업 진행 중.
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-6 text-[11.5px] leading-relaxed text-zinc-500 dark:text-zinc-500">
+          전체 가이드:{" "}
+          <a
+            href="https://github.com/kimminchul/anticard/blob/main/docs/getting-started.mdx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+          >
+            docs/getting-started.mdx
+          </a>{" "}
+          ·{" "}
+          <a
+            href="https://github.com/kimminchul/anticard/blob/main/docs/VERSIONING.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+          >
+            docs/VERSIONING.md
+          </a>
+        </p>
+      </div>
+
+      {/* 빠른 미리보기 — 시드 컴포넌트 3개 */}
+      <div className="mt-12 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">시드 컴포넌트</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500">처음 만들어진 3개. 좌측 사이드바에서 51개 전체 탐색.</p>
         <ul className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200/40 dark:border-white/[0.08] dark:bg-white/[0.02] sm:grid-cols-3">
           {[
             { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", desc: "섹션 카테고리 라벨 (smallcaps)" },
@@ -997,10 +1119,238 @@ function TypographyTokens() {
   );
 }
 
+/* ================ Icons resource page ================ */
+
+/** Icons resource page — 안티 카드의 lucide 사용 정책 + 사용·검토 컴포넌트 */
+function Icons() {
+  // 0.10.0 부터 라이브러리 내부에서 자동 사용 중인 아이콘
+  const inUse: Array<{ component: string; id: string; icons: Array<{ name: string; el: ReactNode }>; note: string }> = [
+    {
+      component: "LinkRow",
+      id: "link-row",
+      icons: [
+        { name: "ArrowRight", el: <ArrowRight className="h-4 w-4" /> },
+        { name: "ArrowUpRight", el: <ArrowUpRight className="h-4 w-4" /> },
+      ],
+      note: "내부 링크 → ArrowRight / external prop → ArrowUpRight 자동",
+    },
+    {
+      component: "FAQ",
+      id: "faq",
+      icons: [{ name: "Plus", el: <Plus className="h-4 w-4" /> }],
+      note: "details 닫힘 → +, 열림 → group-open으로 45도 회전 → ×",
+    },
+    {
+      component: "Pill",
+      id: "pill",
+      icons: [{ name: "ArrowUpRight", el: <ArrowUpRight className="h-3 w-3 opacity-60" /> }],
+      note: "as=\"a\" + external=true 일 때 자동 (h-3 w-3, opacity-60)",
+    },
+  ];
+
+  // 아이콘 prop 추가 검토 중인 컴포넌트들 (1.0.0 전까지 결정)
+  const candidates: Array<{ component: string; id?: string; where: string; suggestion: ReactNode }> = [
+    {
+      component: "Input",
+      id: "input",
+      where: "leading / trailing",
+      suggestion: (
+        <span className="inline-flex items-center gap-2">
+          <Search className="h-3.5 w-3.5" /> <Mail className="h-3.5 w-3.5" /> <Lock className="h-3.5 w-3.5" /> 검색·이메일·잠금 등
+        </span>
+      ),
+    },
+    {
+      component: "Button",
+      id: "button-primary",
+      where: "leading (children 앞)",
+      suggestion: <span>이미 children: ReactNode — `&lt;Plus className="h-4 w-4" /&gt;` 형태 자유 삽입 가능. 표준 패턴 docs 정리 필요.</span>,
+    },
+    {
+      component: "Banner",
+      id: "banner",
+      where: "tone별 자동",
+      suggestion: (
+        <span className="inline-flex items-center gap-2">
+          <Info className="h-3.5 w-3.5" />info / <Sparkles className="h-3.5 w-3.5" />accent / <AlertTriangle className="h-3.5 w-3.5" />warning / <AlertOctagon className="h-3.5 w-3.5" />danger
+        </span>
+      ),
+    },
+    {
+      component: "Callout",
+      id: "callout",
+      where: "tone별 자동",
+      suggestion: <span>Banner와 동일 톤 (info/accent/warning/danger)</span>,
+    },
+    {
+      component: "Steps",
+      id: "steps",
+      where: "step별 사용자 지정",
+      suggestion: <span>각 step.icon 옵션 — 없으면 번호 (현재 동작) 유지</span>,
+    },
+    {
+      component: "Select",
+      id: "select",
+      where: "trailing (현재 SVG)",
+      suggestion: (
+        <span className="inline-flex items-center gap-2">
+          <ChevronDown className="h-3.5 w-3.5" /> ChevronDown으로 통일 — 현재 inline SVG → lucide
+        </span>
+      ),
+    },
+    {
+      component: "Checkbox / Radio",
+      id: "checkbox-radio",
+      where: "체크 표시 (native accent-color 사용 중)",
+      suggestion: (
+        <span className="inline-flex items-center gap-2">
+          <Check className="h-3.5 w-3.5" /> 커스텀 표시 옵션 (현재 native ✓ 사용 — 유지 권장)
+        </span>
+      ),
+    },
+    {
+      component: "Footer",
+      id: "footer",
+      where: "소셜 / 외부 링크 옆",
+      suggestion: (
+        <span className="inline-flex items-center gap-2">
+          <ExternalLink className="h-3.5 w-3.5" /> 외부 링크 표시 — brand icons는 lucide 미수록(GitHub 등) → simple-icons 별도 검토
+        </span>
+      ),
+    },
+    {
+      component: "ListRow",
+      id: "list-row",
+      where: "meta 옆 또는 trailing",
+      suggestion: <span>meta가 카테고리/날짜이므로 leading icon은 어울림. external indicator도 자동 가능.</span>,
+    },
+  ];
+
+  return (
+    <section>
+      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">Resource</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">아이콘 (lucide-react)</h2>
+      <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+        안티 카드는 v0.10.0부터 <strong>lucide-react</strong> 를 base 아이콘 라이브러리로 사용합니다.
+        <strong className="ml-1">1px stroke 미니멀 톤</strong>이 헤어라인 정체성과 일치하기 때문입니다.
+      </p>
+
+      {/* 정책 */}
+      <div className="mt-10 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">정책</p>
+        <ul className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 text-[14px] text-zinc-700 dark:text-zinc-300 md:grid-cols-2">
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>표준 라이브러리</strong>: lucide-react (ISC License) — 1500+ 아이콘</span>
+          </li>
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>크기 표준</strong>: <code>h-3 w-3</code> (12px tiny) / <code>h-3.5 w-3.5</code> (14px) / <code>h-4 w-4</code> (16px default) / <code>h-5 w-5</code> (20px large)</span>
+          </li>
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>tree-shaking</strong>: 사용 아이콘만 번들 (ESM 빌드 → 자동)</span>
+          </li>
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>다른 라이브러리도 자유</strong>: anti-card 컴포넌트의 <code>icon</code> prop은 모두 <code>ReactNode</code></span>
+          </li>
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>color 톤</strong>: 기본 <code>text-current</code> 상속, hover 시 <code>text-emerald-*</code> (accent), opacity로 secondary 톤</span>
+          </li>
+          <li className="flex items-baseline gap-2">
+            <span className="text-emerald-600 dark:text-emerald-400">·</span>
+            <span><strong>aria</strong>: 장식적 아이콘은 <code>aria-hidden</code>, 의미 있는 경우 <code>aria-label</code></span>
+          </li>
+        </ul>
+        <p className="mt-5 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+          외부:{" "}
+          <a href="https://lucide.dev" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300">
+            lucide.dev
+          </a>{" "}
+          (전체 카탈로그) ·{" "}
+          <a href="https://lucide.dev/guide/packages/lucide-react" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300">
+            React 가이드
+          </a>
+        </p>
+      </div>
+
+      {/* 사용 중 (라이브러리 내부) */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">사용 중 — 라이브러리 내부 ({inUse.length})</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">v0.10.0 부터 자동 적용. 사용자가 추가 import 불필요.</p>
+        <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+          {inUse.map((row) => (
+            <li key={row.component} className="grid grid-cols-1 gap-2 py-4 md:grid-cols-[140px_120px_1fr] md:items-baseline md:gap-6">
+              <a href={`#${row.id}`} className="text-[14px] font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400">
+                &lt;{row.component}&gt;
+              </a>
+              <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+                {row.icons.map((ic) => (
+                  <span key={ic.name} title={ic.name} className="inline-flex items-center gap-1">
+                    {ic.el}
+                    <code className="text-[10.5px] text-zinc-500">{ic.name}</code>
+                  </span>
+                ))}
+              </div>
+              <p className="text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">{row.note}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 검토 중 (1.0.0 전까지) */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">검토 중 — 아이콘 prop 추가 후보 ({candidates.length})</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">1.0.0 API 동결 전까지 결정. 추가 시 호환 깨지지 않게 optional prop으로 도입.</p>
+        <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+          {candidates.map((row) => (
+            <li key={row.component} className="grid grid-cols-1 gap-2 py-4 md:grid-cols-[160px_140px_1fr] md:items-baseline md:gap-6">
+              {row.id ? (
+                <a href={`#${row.id}`} className="text-[14px] font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400">
+                  &lt;{row.component}&gt;
+                </a>
+              ) : (
+                <span className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100">&lt;{row.component}&gt;</span>
+              )}
+              <span className="text-[12px] uppercase tracking-[0.06em] text-zinc-500 dark:text-zinc-400">{row.where}</span>
+              <span className="text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">{row.suggestion}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 사용 가이드 */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">사용 가이드 (사용자 코드)</p>
+        <pre className="mt-4 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50 p-4 text-[12.5px] dark:border-white/[0.08] dark:bg-white/[0.02]">
+          <code>{`import { Plus, ArrowRight } from "lucide-react";
+import { LinkRow, Pill } from "@freeive/anti-card";
+
+// 1) 컴포넌트가 자동 사용 — 사용자는 코드 작성 X
+<LinkRow href="/heritage">전체 보기</LinkRow>            {/* → ArrowRight 자동 */}
+<LinkRow href="https://github.com" external>GitHub</LinkRow>  {/* → ArrowUpRight */}
+
+// 2) 직접 합치기 (Button children 등)
+<Button>
+  <Plus className="h-4 w-4" />
+  새 항목
+</Button>
+
+// 3) Pill external indicator (자동)
+<Pill as="a" href="https://..." external>외부 링크</Pill>  {/* → ArrowUpRight 자동 */}`}</code>
+        </pre>
+      </div>
+    </section>
+  );
+}
+
 /* ================ Component page ================ */
 
 function ComponentPage({ def }: { def: ComponentDef }) {
   const version = COMPONENT_VERSIONS[def.id];
+  const lucideIcons = USES_LUCIDE[def.id];
 
   return (
     <section>
@@ -1013,20 +1363,22 @@ function ComponentPage({ def }: { def: ComponentDef }) {
           </span>
         </div>
 
-        {/* 버전 메타 — addedIn / updatedIn (정책: docs/VERSIONING.md) */}
-        {version && (
+        {/* 메타 뱃지 — 버전 (addedIn / updatedIn) + lucide 사용 여부 */}
+        {(version || lucideIcons) && (
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
-            <a
-              href={changelogUrl(version.addedIn)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
-              title="첫 출현 버전 — CHANGELOG로 이동"
-            >
-              <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">added</span>
-              <span>v{version.addedIn}</span>
-            </a>
-            {version.updatedIn && version.updatedIn !== version.addedIn && (
+            {version && (
+              <a
+                href={changelogUrl(version.addedIn)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
+                title="첫 출현 버전 — CHANGELOG로 이동"
+              >
+                <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">added</span>
+                <span>v{version.addedIn}</span>
+              </a>
+            )}
+            {version?.updatedIn && version.updatedIn !== version.addedIn && (
               <a
                 href={changelogUrl(version.updatedIn)}
                 target="_blank"
@@ -1036,6 +1388,16 @@ function ComponentPage({ def }: { def: ComponentDef }) {
               >
                 <span className="text-[10px] uppercase tracking-[0.08em] opacity-70">updated</span>
                 <span>v{version.updatedIn}</span>
+              </a>
+            )}
+            {lucideIcons && (
+              <a
+                href="#icons"
+                className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
+                title={`내부 lucide 아이콘 사용: ${lucideIcons.join(", ")}`}
+              >
+                <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">icons</span>
+                <span>lucide · {lucideIcons.length}</span>
               </a>
             )}
           </div>

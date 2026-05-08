@@ -33,6 +33,25 @@ export default {
     "md:grid-cols-24",
   ],
   darkMode: "class",
-  theme: { extend: {} },
+  theme: {
+    extend: {
+      fontFamily: {
+        // Pretendard 디폴트 — index.html이 CDN에서 로드, 모든 font-sans 클래스가 이를 우선
+        sans: [
+          '"Pretendard Variable"',
+          "Pretendard",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "system-ui",
+          "Roboto",
+          '"Helvetica Neue"',
+          '"Segoe UI"',
+          '"Apple SD Gothic Neo"',
+          '"Noto Sans KR"',
+          "sans-serif",
+        ],
+      },
+    },
+  },
   plugins: [],
 } satisfies Config;
