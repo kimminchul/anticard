@@ -195,6 +195,17 @@ npm run sync
 - **v1.1.0+** — Tailwind preset packaged, headless mode (without Tailwind)
 - **v2.0.0+** — AI Skill formal install command (`claude skill install`), Vue/Svelte ports
 
+## Acknowledgements
+
+- [**lucide-react**](https://lucide.dev) — ISC License · playground icons (Sun/Moon/ArrowUpRight/ChevronDown). 1px stroke aesthetic matches anti-card's hairline principle.
+- [**prism-react-renderer**](https://github.com/FormidableLabs/prism-react-renderer) — MIT License · playground code syntax highlighting.
+- [**Tailwind CSS**](https://tailwindcss.com) — MIT License · base for the 5 principles.
+
+## Branch policy
+
+- **`main`** — stable deploy branch. GitHub Actions auto-deploys to GitHub Pages on push.
+- **`develop`** — work branch. New components / experiments live here, merged to main when stable.
+
 ## License
 
 MIT — © Kim Min Chul (Freeive)
