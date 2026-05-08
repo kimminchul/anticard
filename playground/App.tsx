@@ -138,6 +138,8 @@ const NAV: NavGroup[] = [
     items: [
       { id: "button-primary", ko: "기본 버튼", en: "Button (Primary)", status: "ready" },
       { id: "button-secondary", ko: "보조 버튼", en: "Button (Secondary)", status: "ready" },
+      { id: "button-ghost", ko: "고스트 버튼", en: "Button (Ghost)", status: "ready" },
+      { id: "button-plain", ko: "플레인 버튼", en: "Button (Plain)", status: "ready" },
       { id: "link-row", ko: "링크 행", en: "Link Row", status: "ready" },
       { id: "cta-section", ko: "CTA 섹션", en: "CTA Section", status: "ready" },
       { id: "banner", ko: "알림 배너", en: "Banner", status: "ready" },
@@ -383,6 +385,8 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   banner: () => <ComponentPage def={BANNER_DEF} />,
   "button-primary": () => <ComponentPage def={BUTTON_PRIMARY_DEF} />,
   "button-secondary": () => <ComponentPage def={BUTTON_SECONDARY_DEF} />,
+  "button-ghost": () => <ComponentPage def={BUTTON_GHOST_DEF} />,
+  "button-plain": () => <ComponentPage def={BUTTON_PLAIN_DEF} />,
   "feature-row": () => <ComponentPage def={FEATURE_ROW_DEF} />,
   "client-logos": () => <ComponentPage def={CLIENT_LOGOS_DEF} />,
   testimonial: () => <ComponentPage def={TESTIMONIAL_DEF} />,
@@ -1225,7 +1229,7 @@ function Icons() {
       id: "input",
       where: "leading / trailing",
       suggestion: (
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
           <Search className="h-3.5 w-3.5" /> <Mail className="h-3.5 w-3.5" /> <Lock className="h-3.5 w-3.5" /> 검색·이메일·잠금 등
         </span>
       ),
@@ -1241,7 +1245,7 @@ function Icons() {
       id: "banner",
       where: "tone별 자동",
       suggestion: (
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
           <Info className="h-3.5 w-3.5" />info / <Sparkles className="h-3.5 w-3.5" />accent / <AlertTriangle className="h-3.5 w-3.5" />warning / <AlertOctagon className="h-3.5 w-3.5" />danger
         </span>
       ),
@@ -1263,7 +1267,7 @@ function Icons() {
       id: "select",
       where: "trailing (현재 SVG)",
       suggestion: (
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
           <ChevronDown className="h-3.5 w-3.5" /> ChevronDown으로 통일 — 현재 inline SVG → lucide
         </span>
       ),
@@ -1273,7 +1277,7 @@ function Icons() {
       id: "checkbox-radio",
       where: "체크 표시 (native accent-color 사용 중)",
       suggestion: (
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
           <Check className="h-3.5 w-3.5" /> 커스텀 표시 옵션 (현재 native ✓ 사용 — 유지 권장)
         </span>
       ),
@@ -1283,7 +1287,7 @@ function Icons() {
       id: "footer",
       where: "소셜 / 외부 링크 옆",
       suggestion: (
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
           <ExternalLink className="h-3.5 w-3.5" /> 외부 링크 표시 — brand icons는 lucide 미수록(GitHub 등) → simple-icons 별도 검토
         </span>
       ),
@@ -1352,19 +1356,19 @@ function Icons() {
         <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">v0.10.0 부터 자동 적용. 사용자가 추가 import 불필요.</p>
         <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
           {inUse.map((row) => (
-            <li key={row.component} className="grid grid-cols-1 gap-2 py-4 md:grid-cols-[140px_120px_1fr] md:items-baseline md:gap-6">
-              <a href={`#${row.id}`} className="text-[14px] font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400">
+            <li key={row.component} className="grid grid-cols-1 gap-2 py-5 md:grid-cols-[140px_160px_1fr] md:items-start md:gap-8">
+              <a href={`#${row.id}`} className="text-[14px] font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400 md:pt-1">
                 &lt;{row.component}&gt;
               </a>
-              <div className="flex items-center gap-3 text-zinc-700 dark:text-zinc-300">
+              <div className="flex flex-col items-start gap-2 text-zinc-700 dark:text-zinc-300">
                 {row.icons.map((ic) => (
-                  <span key={ic.name} title={ic.name} className="inline-flex items-center gap-1">
-                    {ic.el}
-                    <code className="text-[10.5px] text-zinc-500">{ic.name}</code>
+                  <span key={ic.name} title={ic.name} className="inline-flex items-center gap-2">
+                    <span className="inline-flex h-5 w-5 items-center justify-center">{ic.el}</span>
+                    <code className="text-[11px] text-zinc-500">{ic.name}</code>
                   </span>
                 ))}
               </div>
-              <p className="text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">{row.note}</p>
+              <p className="text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400 md:pt-1">{row.note}</p>
             </li>
           ))}
         </ul>
@@ -4154,12 +4158,58 @@ size: small (px-3 py-1.5 13px) / default (px-4 py-2 14px) / large (px-5 py-2.5 1
 스타일: bg-emerald-600 text-white dark:bg-emerald-500 dark:text-zinc-950.`,
       react: `<Button tone="accent">발행하기</Button>`,
     },
+    {
+      index: "03",
+      badge: "with icon",
+      title: "leading / trailing 아이콘",
+      description: "leadingIcon / trailingIcon 으로 lucide 아이콘. anti-card 표준 h-4 w-4.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-3">
+          <Button leadingIcon={<Plus className="h-4 w-4" />}>새로 만들기</Button>
+          <Button tone="accent" leadingIcon={<Check className="h-4 w-4" />}>완료</Button>
+          <Button trailingIcon={<ArrowRight className="h-4 w-4" />}>다음</Button>
+        </div>
+      ),
+      prompt: `Button + 아이콘. anti-card는 lucide-react 표준 (자세히는 #icons).
+- leadingIcon: 텍스트 앞 (가장 흔한 패턴)
+- trailingIcon: 텍스트 뒤 (다음 단계 등)
+- 크기 표준: h-4 w-4 (16px) — Button default size에 맞춤
+- aria-hidden 자동 (장식 아이콘)`,
+      react: `import { Plus, ArrowRight, Check } from "lucide-react";
+
+<Button leadingIcon={<Plus className="h-4 w-4" />}>새로 만들기</Button>
+<Button tone="accent" leadingIcon={<Check className="h-4 w-4" />}>완료</Button>
+<Button trailingIcon={<ArrowRight className="h-4 w-4" />}>다음</Button>`,
+    },
+    {
+      index: "04",
+      badge: "iconOnly",
+      title: "아이콘만 (정사각형 패딩)",
+      description: "iconOnly=true. 텍스트 없이 아이콘만 — aria-label 필수.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-3">
+          <Button iconOnly aria-label="검색" size="small"><Search className="h-3.5 w-3.5" /></Button>
+          <Button iconOnly aria-label="새로 만들기"><Plus className="h-4 w-4" /></Button>
+          <Button iconOnly aria-label="확인" tone="accent" size="large"><Check className="h-5 w-5" /></Button>
+        </div>
+      ),
+      prompt: `iconOnly=true: 정사각형 패딩 (size에 따라 p-1.5 / p-2 / p-2.5).
+필수: aria-label (스크린 리더 텍스트 대체).
+사용처: 툴바, 액션 그리드, 작은 액션 (검색·즐겨찾기·삭제 등).`,
+      react: `<Button iconOnly aria-label="검색" size="small">
+  <Search className="h-3.5 w-3.5" />
+</Button>
+<Button iconOnly aria-label="새로 만들기">
+  <Plus className="h-4 w-4" />
+</Button>`,
+    },
   ],
   props: [
-    { name: "variant", type: '"primary" | "secondary"', default: '"primary"', desc: "primary=채움 / secondary=헤어라인 only" },
-    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
-    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "neutral / emerald (primary 전용)" },
-    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택)" },
+    { name: "variant", type: '"primary" | "secondary" | "ghost" | "plain"', default: '"primary"', desc: "박스 강도 — primary > secondary > ghost > plain" },
+    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈 (iconOnly는 정사각형 패딩)" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "neutral / emerald" },
+    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택). h-4 w-4 권장." },
+    { name: "iconOnly", type: "boolean", default: "false", desc: "아이콘만 — 정사각형 패딩 + aria-label 필수" },
     { name: "...rest", type: "ButtonHTMLAttributes<HTMLButtonElement>", desc: "type / onClick / disabled 등 표준" },
   ],
 };
@@ -4212,9 +4262,164 @@ primary와 같은 size 시스템 (small/default/large). 보통 primary와 함께
     },
   ],
   props: [
-    { name: "variant", type: '"primary" | "secondary"', default: '"primary"', desc: "primary=채움 / secondary=헤어라인" },
+    { name: "variant", type: '"primary" | "secondary" | "ghost" | "plain"', default: '"primary"', desc: "박스 강도 — primary > secondary > ghost > plain" },
     { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "neutral / emerald" },
+    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택)" },
+    { name: "iconOnly", type: "boolean", default: "false", desc: "아이콘만 — 정사각형 패딩 + aria-label" },
     { name: "...rest", type: "ButtonHTMLAttributes<HTMLButtonElement>", desc: "표준" },
+  ],
+};
+
+const BUTTON_GHOST_DEF: ComponentDef = {
+  id: "button-ghost",
+  ko: "고스트 버튼",
+  en: "Button (Ghost)",
+  desc: "박스 X, hover 시에만 배경. 인라인 액션·툴바·드롭다운 trigger 등 가벼운 액션. variant='ghost'.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 배경 없음",
+      description: "hover 시에만 zinc-100 배경. 박스 거부 정신 유지.",
+      preview: (
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost">메뉴</Button>
+          <Button variant="ghost" size="small">필터</Button>
+          <Button variant="ghost" size="large">자세히</Button>
+        </div>
+      ),
+      prompt: `ghost 액션 — 배경·border 없음, 호버 시에만 살짝 배경.
+스타일:
+- variant="ghost": bg-transparent + hover:bg-zinc-100 dark:hover:bg-white/[0.06]
+- text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-50
+사용처: 툴바, 드롭다운 trigger, 인라인 보조 액션.
+primary/secondary와 한 페이지에 섞어 위계 만들기 (primary=강 / ghost=약).`,
+      react: `<Button variant="ghost">메뉴</Button>
+<Button variant="ghost" size="small">필터</Button>`,
+    },
+    {
+      index: "02",
+      badge: "tone · accent",
+      title: "accent — emerald 텍스트",
+      description: "강조하되 박스 안 보이는 액션. 채움 X, 텍스트만 emerald.",
+      preview: (
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" tone="accent">자세히 보기</Button>
+          <Button variant="ghost" tone="accent" leadingIcon={<Sparkles className="h-4 w-4" />}>새 기능</Button>
+        </div>
+      ),
+      prompt: `ghost + tone="accent" — 텍스트는 emerald, 호버 시 배경 살짝.
+사용처: "자세히 보기" / 새 기능 알림 / 강조하되 너무 튀지 않게.`,
+      react: `<Button variant="ghost" tone="accent">자세히 보기</Button>`,
+    },
+    {
+      index: "03",
+      badge: "iconOnly + ghost",
+      title: "툴바 아이콘 액션",
+      description: "ghost + iconOnly = 가장 미니멀한 클릭 가능 영역. 툴바·헤더 우측 등.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-1">
+          <Button variant="ghost" iconOnly aria-label="검색"><Search className="h-4 w-4" /></Button>
+          <Button variant="ghost" iconOnly aria-label="알림"><Info className="h-4 w-4" /></Button>
+          <Button variant="ghost" iconOnly aria-label="설정"><ChevronDown className="h-4 w-4" /></Button>
+        </div>
+      ),
+      prompt: `툴바·헤더의 작은 액션. ghost + iconOnly로 시각 무게 최소화.
+gap-1로 가깝게 배치 — 그룹화된 컨트롤 인상.`,
+      react: `<Button variant="ghost" iconOnly aria-label="검색">
+  <Search className="h-4 w-4" />
+</Button>`,
+    },
+  ],
+  props: [
+    { name: "variant", type: '"primary" | "secondary" | "ghost" | "plain"', default: '"primary"', desc: "이 페이지는 ghost 변형 시연" },
+    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "텍스트 톤 (ghost는 채움 없음)" },
+    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택)" },
+    { name: "iconOnly", type: "boolean", default: "false", desc: "아이콘만 (툴바 패턴)" },
+  ],
+};
+
+const BUTTON_PLAIN_DEF: ComponentDef = {
+  id: "button-plain",
+  ko: "플레인 버튼",
+  en: "Button (Plain)",
+  desc: "텍스트만 — 박스 거부 가장 강함. 인라인 토글·edit·미니 액션. hover 시 underline. variant='plain'.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "텍스트 + hover underline",
+      description: "padding 최소, hover 시 텍스트 색·underline. 인라인 본문에 자연스럽게 섞임.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="plain">편집</Button>
+          <Button variant="plain" size="small">취소</Button>
+          <Button variant="plain" size="large">자세히</Button>
+        </div>
+      ),
+      prompt: `plain 액션 — 텍스트만, padding 최소.
+스타일:
+- variant="plain": bg-transparent, padding px-1 py-0.5 (인라인 텍스트 느낌)
+- hover:underline + text 색 강해짐
+사용처: 인라인 토글 (편집/저장), 작은 보조 액션, 본문 안에 박는 클릭 가능 텍스트.
+LinkRow와 차이: plain Button은 form 안에서 사용 (button 태그), LinkRow는 페이지 내비게이션.`,
+      react: `<Button variant="plain">편집</Button>
+<Button variant="plain" size="small">취소</Button>`,
+    },
+    {
+      index: "02",
+      badge: "tone · accent",
+      title: "accent 강조",
+      description: "텍스트 emerald + hover underline. 인라인 강조 액션.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="plain" tone="accent">자세히 보기</Button>
+          <Button variant="plain" tone="accent" trailingIcon={<ArrowRight className="h-3.5 w-3.5" />}>다음 단계로</Button>
+        </div>
+      ),
+      prompt: `plain + tone="accent" — 텍스트만 emerald.
+LinkRow의 inline 버전. 본문 안에 박혀 있어야 자연스러운 액션.`,
+      react: `<Button variant="plain" tone="accent">자세히 보기</Button>
+<Button
+  variant="plain"
+  tone="accent"
+  trailingIcon={<ArrowRight className="h-3.5 w-3.5" />}
+>
+  다음 단계로
+</Button>`,
+    },
+    {
+      index: "03",
+      badge: "inline 패턴",
+      title: "본문 안 인라인 사용",
+      description: "본문 텍스트 흐름에 plain Button 박기 — 클릭 가능 단어 느낌.",
+      preview: (
+        <p className="max-w-[40ch] text-[14px] leading-relaxed text-zinc-600 dark:text-zinc-300">
+          이 글은 자동 저장됩니다. 수동 저장은{" "}
+          <Button variant="plain" tone="accent" size="small">여기를 클릭</Button>{" "}
+          — 또는{" "}
+          <Button variant="plain" size="small">취소</Button>{" "}
+          으로 마지막 저장 상태로 되돌리기.
+        </p>
+      ),
+      prompt: `본문 텍스트 안에 plain Button을 박는 패턴.
+button이지만 텍스트 흐름과 자연스럽게 섞임 — 작은 인라인 액션.
+size="small" + tone="accent"가 inline에 가장 잘 맞음.`,
+      react: `<p>
+  이 글은 자동 저장됩니다. 수동 저장은{" "}
+  <Button variant="plain" tone="accent" size="small">여기를 클릭</Button>
+  {" "}또는{" "}
+  <Button variant="plain" size="small">취소</Button>.
+</p>`,
+    },
+  ],
+  props: [
+    { name: "variant", type: '"primary" | "secondary" | "ghost" | "plain"', default: '"primary"', desc: "이 페이지는 plain 변형 시연" },
+    { name: "size", type: '"small" | "default" | "large"', default: '"default"', desc: "사이즈" },
+    { name: "tone", type: '"default" | "accent"', default: '"default"', desc: "neutral / emerald" },
+    { name: "leadingIcon / trailingIcon", type: "ReactNode", desc: "아이콘 (선택)" },
   ],
 };
 

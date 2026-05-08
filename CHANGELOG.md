@@ -8,14 +8,26 @@
 ### Added
 - `docs/VERSIONING.md` — Hybrid 버전 정책 (라이브러리 SemVer + 컴포넌트 `addedIn`/`updatedIn` 메타)
 - Playground 컴포넌트 페이지에 **버전 메타 Pill** — `added v0.x.x` (zinc) + `updated v0.y.y` (emerald accent, 변경 있을 때만). 클릭 시 GitHub CHANGELOG 이동.
-- Playground `COMPONENT_VERSIONS` 단일 진실 원천 맵 (51 컴포넌트 addedIn 백필)
+- Playground `COMPONENT_VERSIONS` 단일 진실 원천 맵 (addedIn 백필)
+- Playground 사이드바 카테고리 collapse + 검색 dropdown (Header) + 리소스 그룹 (타이포 토큰 / 아이콘)
+- Playground 컴포넌트 헤더 뱃지 → `<Pill>` 컴포넌트 사용 (dogfooding)
+- **Button** 컴포넌트 변형 확장:
+  - `variant`: `primary` | `secondary` | `ghost` (NEW) | `plain` (NEW) — 박스 강도 순
+  - `iconOnly`: 정사각형 패딩 모드 (툴바·작은 액션)
+  - `secondary` + `tone="accent"` (emerald 헤어라인)
+  - 4 variants × default/accent tone × small/default/large size × icon options
+- Playground Button 페이지 4종 (primary/secondary/ghost/plain) — 각 페이지마다 icon 예시
 
 ### Changed
 - Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)
+- 용어 통일: "framework" / "프레임워크" → "library" / "라이브러리" (CHANGELOG 과거 기록 제외)
+- Specific count 제거: "51 컴포넌트" / "12 타이포 토큰" / 카테고리별 (7)(6) 등 일반 표현으로
+- Icons 페이지 테이블 셀 layout — icons column 텍스트 오버랩 fix (세로 stack)
 
 ### Notes
 - `0.x.x`는 GitHub-only release (git tag + GitHub Release). npm publish는 `1.0.0`부터 — 정책 docs/VERSIONING.md §7.
-- 첫 git tag `v0.10.0` 생성 예정 (annotated, commit `aab23ef`).
+- 첫 git tag `v0.10.0` 생성됨 (annotated, commit `aab23ef`).
+- 이 [Unreleased] 항목들은 `0.11.0` release 시점에 [0.11.0] 섹션으로 변환 예정.
 
 ## [0.10.0] — 2026-05-08
 
