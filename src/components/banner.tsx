@@ -37,7 +37,7 @@ export function Banner({
       data-tone={tone}
       role="status"
       className={cn(
-        "flex items-center gap-3 border-y px-4 py-2.5 text-[13.5px]",
+        "flex items-center gap-3 border-y px-4 py-2.5 text-[13.5px] animate-anti-slide-down",
         tone === "info" &&
           "border-zinc-200 bg-zinc-50 text-zinc-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-zinc-300",
         tone === "accent" &&

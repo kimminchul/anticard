@@ -105,10 +105,12 @@ export function Tabs({
       </div>
       {active && (
         <div
+          // key 변경 시 React가 unmount/remount → animate-anti-fade-in 재실행
+          key={active.id}
           role="tabpanel"
           id={`panel-${active.id}`}
           aria-labelledby={`tab-${active.id}`}
-          className="pt-5"
+          className="pt-5 animate-anti-fade-in-fast"
         >
           {active.panel}
         </div>

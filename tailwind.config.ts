@@ -40,6 +40,7 @@ export default {
     "animate-anti-slide-in-right",
     "animate-anti-slide-in-left",
     "animate-anti-scale-in",
+    "animate-anti-dialog-in",
     "backdrop:animate-anti-fade-in",
   ],
   darkMode: "class",
@@ -98,6 +99,12 @@ export default {
           to: { transform: "translateX(0)" },
         },
         "anti-scale-in": {
+          // 더 substantial한 popover/dropdown 등장 — translateY로 방향성 + scale로 무게감
+          from: { opacity: "0", transform: "translateY(-4px) scale(0.98)" },
+          to: { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "anti-dialog-in": {
+          // Dialog는 중앙에서 살짝 더 크게 등장 (popover보다 방향성 X)
           from: { opacity: "0", transform: "scale(0.96)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
@@ -111,7 +118,8 @@ export default {
         "anti-slide-down": "anti-slide-down 300ms cubic-bezier(0, 0, 0.2, 1)",
         "anti-slide-in-right": "anti-slide-in-right 300ms cubic-bezier(0, 0, 0.2, 1)",
         "anti-slide-in-left": "anti-slide-in-left 300ms cubic-bezier(0, 0, 0.2, 1)",
-        "anti-scale-in": "anti-scale-in 200ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-scale-in": "anti-scale-in 250ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-dialog-in": "anti-dialog-in 300ms cubic-bezier(0, 0, 0.2, 1)",
       },
     },
   },
