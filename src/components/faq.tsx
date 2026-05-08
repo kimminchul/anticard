@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Plus } from "lucide-react";
 import { cn } from "../utils/cn";
 
 export interface FAQItem {
@@ -44,12 +45,10 @@ export function FAQ({ items, className, ...props }: FAQProps) {
               <dt className="text-[15.5px] font-medium leading-snug text-zinc-900 transition-colors group-hover:text-emerald-600 dark:text-zinc-100 dark:group-hover:text-emerald-400">
                 {item.question}
               </dt>
-              <span
+              <Plus
                 aria-hidden
-                className="shrink-0 text-[14px] text-zinc-500 transition-transform duration-200 group-open:rotate-45 dark:text-zinc-400"
-              >
-                +
-              </span>
+                className="h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200 group-open:rotate-45 dark:text-zinc-400"
+              />
             </summary>
             <dd className="pb-5 pr-10 text-[14.5px] leading-relaxed text-zinc-600 dark:text-zinc-300">
               {item.answer}

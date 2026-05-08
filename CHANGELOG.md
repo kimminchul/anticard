@@ -5,6 +5,30 @@
 
 ## [Unreleased]
 
+## [0.10.0] — 2026-05-08
+
+### Added
+- **lucide-react** dependency (devDep → dep, ISC License). 안티 카드 헤어라인 정체성과 1px stroke 시각 일치.
+- `LinkRow` 화살표 — 텍스트(→) → `<ArrowRight>` (내부 링크) / `<ArrowUpRight>` (external)
+  - external prop 시 자동 ArrowUpRight 표시 (hover 시 우/상 translate)
+  - size에 따라 h-4/h-5 자동
+- `FAQ` 토글 아이콘 — 텍스트(+) → `<Plus>` (group-open 시 45도 회전 → ×)
+- `Pill` external 자동 표시 — `external=true` 시 자동 `<ArrowUpRight>` (h-3 w-3 opacity-60)
+
+### Changed
+- 사용자 dep 1개 추가 (lucide-react ~24 KB gzipped, tree-shake로 사용 아이콘만 번들)
+- minor 버전 (semver: 새 의존성 추가는 minor)
+
+### Notes
+- README Acknowledgements에 lucide(ISC) / prism(MIT) / Tailwind(MIT) 명시
+- 다른 아이콘 라이브러리 사용도 자유 — anti-card 컴포넌트의 `icon` prop은 모두 ReactNode
+
+## [0.9.1] — 2026-05-08
+
+### Changed
+- `typography.display` (HeroHeading default) — clamp(1.875rem,4vw,3rem) 30~48px → clamp(1.625rem,3vw,2.5rem) **26~40px**
+- 일반 페이지(Lab/Heritage/Blog)의 hero가 차분하게 다운. 메인 hero(`displayLg`)는 그대로 40~64px 유지.
+
 ## [0.9.0] — 2026-05-08
 
 ### Added

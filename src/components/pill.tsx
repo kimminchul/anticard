@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ArrowUpRight } from "lucide-react";
 import { cn } from "../utils/cn";
 
 export interface PillProps extends React.HTMLAttributes<HTMLElement> {
@@ -65,6 +66,9 @@ export function Pill({
         {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {children}
+        {external && (
+          <ArrowUpRight aria-hidden className="h-3 w-3 opacity-60" />
+        )}
       </a>
     );
   }

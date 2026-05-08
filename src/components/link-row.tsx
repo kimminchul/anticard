@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { cn } from "../utils/cn";
 
 export interface LinkRowProps
@@ -57,9 +58,25 @@ export function LinkRow({
       <span className="border-b border-current/30 group-hover:border-current">
         {children}
       </span>
-      <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-        →
-      </span>
+      {external ? (
+        <ArrowUpRight
+          aria-hidden
+          className={cn(
+            "shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+            size === "default" && "h-4 w-4",
+            size === "large" && "h-5 w-5"
+          )}
+        />
+      ) : (
+        <ArrowRight
+          aria-hidden
+          className={cn(
+            "shrink-0 transition-transform group-hover:translate-x-0.5",
+            size === "default" && "h-4 w-4",
+            size === "large" && "h-5 w-5"
+          )}
+        />
+      )}
       {trailing && (
         <span className="ml-2 text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
           {trailing}
