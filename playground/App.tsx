@@ -193,7 +193,99 @@ const NAV: NavGroup[] = [
   },
 ];
 
-const VERSION = "0.0.3";
+const VERSION = "0.10.0";
+
+/* ================ Component versions ================
+ *
+ * 단일 진실 원천 — 컴포넌트별 메타데이터.
+ * - addedIn: 첫 출현 release 버전 (불변)
+ * - updatedIn: 의미 있는 변경의 마지막 버전 (있을 때만)
+ *
+ * 정책: docs/VERSIONING.md
+ * 변경 기준: Props 추가/제거, default 변경, 시각 톤 변경. 단순 리팩터는 X.
+ *
+ * CHANGELOG.md 항목 추가/갱신 시 여기도 함께 갱신.
+ */
+const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }> = {
+  // 0.0.1 — 시드
+  eyebrow: { addedIn: "0.0.1" },
+  "section-frame": { addedIn: "0.0.1" },
+  "list-row": { addedIn: "0.0.1" },
+
+  // 0.1.0 — P0 freeive 골격
+  container: { addedIn: "0.1.0" },
+  hairline: { addedIn: "0.1.0" },
+  "hero-heading": { addedIn: "0.1.0", updatedIn: "0.9.1" }, // size prop (0.1.1) + display token down (0.9.1)
+  "section-heading": { addedIn: "0.1.0" },
+  lead: { addedIn: "0.1.0" },
+  "link-row": { addedIn: "0.1.0", updatedIn: "0.10.0" }, // lucide ArrowRight/ArrowUpRight
+  header: { addedIn: "0.1.0" },
+  footer: { addedIn: "0.1.0" },
+
+  // 0.2.0 — P1 블로그/콘텐츠
+  quote: { addedIn: "0.2.0" },
+  highlight: { addedIn: "0.2.0" },
+  image: { addedIn: "0.2.0" },
+  video: { addedIn: "0.2.0" },
+  "definition-list": { addedIn: "0.2.0" },
+  "stat-list": { addedIn: "0.2.0" },
+  timeline: { addedIn: "0.2.0" },
+  pill: { addedIn: "0.2.0", updatedIn: "0.10.0" }, // lucide ArrowUpRight on external
+
+  // 0.3.0 — P2 페이지 패턴 + 액션
+  "hero-pattern": { addedIn: "0.3.0" },
+  "sectors-pattern": { addedIn: "0.3.0" },
+  "talk-pattern": { addedIn: "0.3.0" },
+  "empty-error": { addedIn: "0.3.0" },
+  "cta-section": { addedIn: "0.3.0" },
+  banner: { addedIn: "0.3.0" },
+  "button-primary": { addedIn: "0.3.0" },
+  "button-secondary": { addedIn: "0.3.0" },
+  "feature-row": { addedIn: "0.3.0" },
+
+  // 0.4.0 — P3 신뢰·증거
+  "client-logos": { addedIn: "0.4.0" },
+  testimonial: { addedIn: "0.4.0", updatedIn: "0.9.0" }, // size large 22~32 → 18~22
+  "stat-block": { addedIn: "0.4.0" },
+  "case-study": { addedIn: "0.4.0" },
+
+  // 0.5.0 — P4 인터랙션
+  "wave-card": { addedIn: "0.5.0" },
+  "fade-in": { addedIn: "0.5.0" },
+  "hover-accent": { addedIn: "0.5.0" },
+  "scroll-progress": { addedIn: "0.5.0" },
+  marquee: { addedIn: "0.5.0" },
+
+  // 0.6.0 — P5 콘텐츠 블록 + 비교
+  callout: { addedIn: "0.6.0" },
+  faq: { addedIn: "0.6.0", updatedIn: "0.10.0" }, // lucide Plus (group-open rotate)
+  "pricing-table": { addedIn: "0.6.0" },
+  "pricing-pattern": { addedIn: "0.6.0" },
+  steps: { addedIn: "0.6.0" },
+  "compare-table": { addedIn: "0.6.0" },
+
+  // 0.8.0 — P6+P7 폼 + 갤러리
+  "grid-columns": { addedIn: "0.8.0" }, // Grid wrapper
+  input: { addedIn: "0.8.0" },
+  textarea: { addedIn: "0.8.0" },
+  select: { addedIn: "0.8.0", updatedIn: "0.9.0" }, // dark mode option bg fix
+  "checkbox-radio": { addedIn: "0.8.0", updatedIn: "0.9.0" }, // accent-color CSS fix
+  gallery: { addedIn: "0.8.0" },
+
+  // 0.9.0 — Grid System
+  "grid-system": { addedIn: "0.9.0" },
+};
+
+const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
+
+/** CHANGELOG anchor 변환 — "0.10.0" → "#0100--2026-05-08" 형식.
+ *  GitHub은 ## [0.10.0] — 2026-05-08 같은 헤딩을 lowercased dash-separated로 anchor화.
+ *  단순화 — 모든 anchor가 정확하지 않으니 fallback으로 그냥 CHANGELOG 페이지로 이동. */
+function changelogUrl(_version: string): string {
+  // GitHub의 정확한 anchor 규칙은 헤딩 텍스트에 따라 변동 — 그냥 페이지 top으로.
+  // 사용자는 거기서 Ctrl+F 0.x.x 검색하면 됨.
+  return CHANGELOG_URL;
+}
 
 const STATUS_META: Record<NavItem["status"], { label: string; cls: string }> = {
   ready: { label: "ready", cls: "text-emerald-600 dark:text-emerald-400" },
@@ -908,6 +1000,8 @@ function TypographyTokens() {
 /* ================ Component page ================ */
 
 function ComponentPage({ def }: { def: ComponentDef }) {
+  const version = COMPONENT_VERSIONS[def.id];
+
   return (
     <section>
       <div id={def.id} className="scroll-mt-10">
@@ -918,6 +1012,35 @@ function ComponentPage({ def }: { def: ComponentDef }) {
             <code>{`<${def.en}>`}</code>
           </span>
         </div>
+
+        {/* 버전 메타 — addedIn / updatedIn (정책: docs/VERSIONING.md) */}
+        {version && (
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            <a
+              href={changelogUrl(version.addedIn)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
+              title="첫 출현 버전 — CHANGELOG로 이동"
+            >
+              <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">added</span>
+              <span>v{version.addedIn}</span>
+            </a>
+            {version.updatedIn && version.updatedIn !== version.addedIn && (
+              <a
+                href={changelogUrl(version.updatedIn)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/[0.08] px-2 py-0.5 text-[11px] font-medium tracking-tight text-emerald-700 transition-colors hover:border-emerald-500/50 dark:border-emerald-400/30 dark:text-emerald-400 dark:hover:border-emerald-400/50"
+                title="마지막 의미 있는 변경 버전 — CHANGELOG로 이동"
+              >
+                <span className="text-[10px] uppercase tracking-[0.08em] opacity-70">updated</span>
+                <span>v{version.updatedIn}</span>
+              </a>
+            )}
+          </div>
+        )}
+
         <p className="mt-4 text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">{def.desc}</p>
       </div>
 

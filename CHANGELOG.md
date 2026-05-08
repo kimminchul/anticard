@@ -5,6 +5,18 @@
 
 ## [Unreleased]
 
+### Added
+- `docs/VERSIONING.md` — Hybrid 버전 정책 (라이브러리 SemVer + 컴포넌트 `addedIn`/`updatedIn` 메타)
+- Playground 컴포넌트 페이지에 **버전 메타 Pill** — `added v0.x.x` (zinc) + `updated v0.y.y` (emerald accent, 변경 있을 때만). 클릭 시 GitHub CHANGELOG 이동.
+- Playground `COMPONENT_VERSIONS` 단일 진실 원천 맵 (51 컴포넌트 addedIn 백필)
+
+### Changed
+- Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)
+
+### Notes
+- `0.x.x`는 GitHub-only release (git tag + GitHub Release). npm publish는 `1.0.0`부터 — 정책 docs/VERSIONING.md §7.
+- 첫 git tag `v0.10.0` 생성 예정 (annotated, commit `aab23ef`).
+
 ## [0.10.0] — 2026-05-08
 
 ### Added
