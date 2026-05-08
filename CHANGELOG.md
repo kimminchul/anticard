@@ -22,8 +22,20 @@
   - `shape="pill"`         : rounded-full, badge 톤 (status·count·NEW/BETA/v0.10.0)
   - Pill = "필 / 태그 / 뱃지" 통일 어휘 (별도 Badge 컴포넌트 없음)
 - 신규 NAV 카테고리:
-  - **내비게이션** (Tabs / Breadcrumb / Pagination) — 모두 `soon`
-  - **오버레이** (Dialog / Drawer / Popover / Tooltip / Toast / Dropdown) — 모두 `soon`
+  - **내비게이션** (Tabs / Breadcrumb / Pagination)
+  - **오버레이** (Dialog / Drawer / Popover / Tooltip / Toast / Dropdown)
+- **내비게이션 컴포넌트 3종** (NEW):
+  - `Breadcrumb` — 위치 표시 (12.5px, ChevronRight 자동, aria-current)
+  - `Pagination` — 페이지 이동 (1...siblings...last 패턴, 헤어라인 박스)
+  - `Tabs` — 탭 패널 전환 (variant=line/pills, role=tablist 자동)
+- **오버레이 컴포넌트 6종** (NEW):
+  - `Dialog` — 모달 (native `<dialog>` + showModal, focus trap·ESC·backdrop 자동)
+  - `Drawer` — 사이드 슬라이드 패널 (left/right, body scroll lock, ESC)
+  - `Popover` — 트리거 옆 floating 패널 (외부 클릭+ESC 자동 닫힘)
+  - `Tooltip` — 호버 시 라벨 (CSS group-hover, JS 불필요)
+  - `Toast` — 일시적 알림 (4 tones × 6 positions, aria-live=polite)
+  - `Dropdown` — 메뉴 리스트 (icon / separator / danger 지원)
+- 모든 오버레이는 anti-card 톤: shadow X, 헤어라인 1px, smallcaps 라벨, 큰 패딩
 
 ### Changed
 - Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)

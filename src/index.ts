@@ -162,6 +162,35 @@ export type { CheckboxProps, RadioProps } from "./components/checkbox-radio";
 export { Gallery } from "./components/gallery";
 export type { GalleryProps, GalleryItem } from "./components/gallery";
 
+// 내비게이션
+export { Breadcrumb } from "./components/breadcrumb";
+export type { BreadcrumbProps, BreadcrumbItem } from "./components/breadcrumb";
+
+export { Pagination } from "./components/pagination";
+export type { PaginationProps } from "./components/pagination";
+
+export { Tabs } from "./components/tabs";
+export type { TabsProps, TabItem } from "./components/tabs";
+
+// 오버레이
+export { Tooltip } from "./components/tooltip";
+export type { TooltipProps } from "./components/tooltip";
+
+export { Popover } from "./components/popover";
+export type { PopoverProps } from "./components/popover";
+
+export { Dialog } from "./components/dialog";
+export type { DialogProps } from "./components/dialog";
+
+export { Drawer } from "./components/drawer";
+export type { DrawerProps } from "./components/drawer";
+
+export { Dropdown } from "./components/dropdown";
+export type { DropdownProps, DropdownItem } from "./components/dropdown";
+
+export { Toast } from "./components/toast";
+export type { ToastProps, ToastTone, ToastPosition } from "./components/toast";
+
 export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";

@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   ArrowRight,
   ChevronDown,
+  ChevronRight,
   Search,
   X,
   Plus,
@@ -17,6 +18,10 @@ import {
   AlertOctagon,
   Sparkles,
   ExternalLink,
+  MoreHorizontal,
+  Settings,
+  Trash2,
+  Pencil,
 } from "lucide-react";
 import {
   Eyebrow,
@@ -72,6 +77,15 @@ import {
   Checkbox,
   Radio,
   Gallery,
+  Breadcrumb,
+  Pagination,
+  Tabs,
+  Tooltip,
+  Popover,
+  Dialog,
+  Drawer,
+  Dropdown,
+  Toast,
 } from "@freeive/anti-card";
 
 /**
@@ -213,21 +227,21 @@ const NAV: NavGroup[] = [
     group: "내비게이션",
     desc: "위치 표시 + 페이지·패널 전환",
     items: [
-      { id: "tabs", ko: "탭 메뉴", en: "Tabs", status: "soon" },
-      { id: "breadcrumb", ko: "브레드크럼", en: "Breadcrumb", status: "soon" },
-      { id: "pagination", ko: "페이지네이션", en: "Pagination", status: "soon" },
+      { id: "tabs", ko: "탭 메뉴", en: "Tabs", status: "ready" },
+      { id: "breadcrumb", ko: "브레드크럼", en: "Breadcrumb", status: "ready" },
+      { id: "pagination", ko: "페이지네이션", en: "Pagination", status: "ready" },
     ],
   },
   {
     group: "오버레이",
     desc: "본문 위에 떠있는 일시적 UI — anti-card 톤 (shadow X, 헤어라인)",
     items: [
-      { id: "dialog", ko: "다이얼로그·모달", en: "Dialog", status: "soon" },
-      { id: "drawer", ko: "서랍·사이드 패널", en: "Drawer", status: "soon" },
-      { id: "popover", ko: "팝오버", en: "Popover", status: "soon" },
-      { id: "tooltip", ko: "툴팁", en: "Tooltip", status: "soon" },
-      { id: "toast", ko: "토스트 알림", en: "Toast", status: "soon" },
-      { id: "dropdown", ko: "드롭다운 메뉴", en: "Dropdown Menu", status: "soon" },
+      { id: "dialog", ko: "다이얼로그·모달", en: "Dialog", status: "ready" },
+      { id: "drawer", ko: "서랍·사이드 패널", en: "Drawer", status: "ready" },
+      { id: "popover", ko: "팝오버", en: "Popover", status: "ready" },
+      { id: "tooltip", ko: "툴팁", en: "Tooltip", status: "ready" },
+      { id: "toast", ko: "토스트 알림", en: "Toast", status: "ready" },
+      { id: "dropdown", ko: "드롭다운 메뉴", en: "Dropdown Menu", status: "ready" },
     ],
   },
   {
@@ -329,6 +343,19 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
 
   // 0.9.0 — Grid System
   "grid-system": { addedIn: "0.9.0" },
+
+  // 0.11.0 — 내비게이션 (다음 release 예정)
+  tabs: { addedIn: "0.11.0" },
+  breadcrumb: { addedIn: "0.11.0" },
+  pagination: { addedIn: "0.11.0" },
+
+  // 0.11.0 — 오버레이
+  dialog: { addedIn: "0.11.0" },
+  drawer: { addedIn: "0.11.0" },
+  popover: { addedIn: "0.11.0" },
+  tooltip: { addedIn: "0.11.0" },
+  toast: { addedIn: "0.11.0" },
+  dropdown: { addedIn: "0.11.0" },
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -431,6 +458,17 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   select: () => <ComponentPage def={SELECT_DEF} />,
   "checkbox-radio": () => <ComponentPage def={CHECKBOX_RADIO_DEF} />,
   gallery: () => <ComponentPage def={GALLERY_DEF} />,
+  // 내비게이션
+  tabs: () => <ComponentPage def={TABS_DEF} />,
+  breadcrumb: () => <ComponentPage def={BREADCRUMB_DEF} />,
+  pagination: () => <ComponentPage def={PAGINATION_DEF} />,
+  // 오버레이
+  dialog: () => <ComponentPage def={DIALOG_DEF} />,
+  drawer: () => <ComponentPage def={DRAWER_DEF} />,
+  popover: () => <ComponentPage def={POPOVER_DEF} />,
+  tooltip: () => <ComponentPage def={TOOLTIP_DEF} />,
+  toast: () => <ComponentPage def={TOAST_DEF} />,
+  dropdown: () => <ComponentPage def={DROPDOWN_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -6114,5 +6152,525 @@ href시 살짝 scale + opacity-90.`,
     { name: "columns", type: "2 | 3 | 4", default: "3", desc: "데스크톱 컬럼" },
     { name: "ratio", type: '"native" | "16/9" | "4/3" | "1/1"', default: '"4/3"', desc: "종횡비" },
     { name: "gap", type: '"tight" | "default" | "loose"', default: '"default"', desc: "간격" },
+  ],
+};
+
+/* ================================================================
+ * 내비게이션 (Breadcrumb / Pagination / Tabs)
+ * ================================================================ */
+
+const BREADCRUMB_DEF: ComponentDef = {
+  id: "breadcrumb",
+  ko: "브레드크럼",
+  en: "Breadcrumb",
+  desc: "사용자 위치 표시. 12.5px, 마지막 항목은 진한 색 + aria-current. ChevronRight 자동.",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "기본 — 3단계",
+      description: "Home / Lab / 안티 카드. 마지막은 자동 진한 색.",
+      preview: (
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "#" },
+            { label: "Lab", href: "#" },
+            { label: "안티 카드" },
+          ]}
+        />
+      ),
+      prompt: `사이트 위치 표시 — 사용자가 어디에 있는지.
+스타일: 12.5px, zinc-500 (현재 페이지만 진한 색).
+구분 기호: ChevronRight (lucide) — 화살표 X.
+마지막 항목: href 없음 + aria-current="page" 자동.`,
+      react: `<Breadcrumb items={[
+  { label: "Home", href: "/" },
+  { label: "Lab", href: "/lab" },
+  { label: "안티 카드" }, // 현재 페이지 (href 없음)
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "BreadcrumbItem[]", desc: "{label, href?}[]" },
+    { name: "separator", type: "ReactNode", desc: "구분 기호 (default: ChevronRight)" },
+  ],
+};
+
+function PaginationDemo() {
+  const [page, setPage] = useState(5);
+  return (
+    <div className="space-y-4">
+      <Pagination currentPage={page} totalPages={20} onPageChange={setPage} />
+      <p className="text-[12.5px] text-zinc-500 dark:text-zinc-400">
+        현재 페이지: <span className="font-mono text-zinc-700 dark:text-zinc-300">{page}</span> / 20
+      </p>
+    </div>
+  );
+}
+
+const PAGINATION_DEF: ComponentDef = {
+  id: "pagination",
+  ko: "페이지네이션",
+  en: "Pagination",
+  desc: "페이지 이동. 헤어라인 박스 + 활성만 emerald 배경. 1 ... siblings ... last 패턴.",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "기본 — 20 페이지 중 5",
+      description: "이전·다음 + 1 / 4·5·6 / 20 패턴. siblings=1.",
+      preview: <PaginationDemo />,
+      prompt: `페이지네이션 — 페이지 수 적으면 모두, 많으면 1...현재±siblings...last 패턴.
+스타일: rounded-md border + 활성만 emerald-500/10 배경.
+shadcn 채움 거부 — 헤어라인만.
+이전/다음은 ChevronLeft/ChevronRight (lucide).`,
+      react: `const [page, setPage] = useState(5);
+
+<Pagination
+  currentPage={page}
+  totalPages={20}
+  onPageChange={setPage}
+  siblings={1}
+/>`,
+    },
+  ],
+  props: [
+    { name: "currentPage", type: "number", desc: "현재 페이지 (1-indexed)" },
+    { name: "totalPages", type: "number", desc: "전체 페이지 수" },
+    { name: "onPageChange", type: "(page: number) => void", desc: "페이지 변경 콜백" },
+    { name: "siblings", type: "number", default: "1", desc: "현재 양 옆 노출 개수" },
+  ],
+};
+
+const TABS_DEF: ComponentDef = {
+  id: "tabs",
+  ko: "탭 메뉴",
+  en: "Tabs",
+  desc: "탭 패널 전환. variant=line(헤어라인+emerald 언더라인) / pills(Pill 톤).",
+  examples: [
+    {
+      index: "01",
+      badge: "variant · line",
+      title: "기본 — 헤어라인 톤",
+      description: "하단 1px border + 활성 탭 emerald 1px 언더라인.",
+      preview: (
+        <Tabs
+          items={[
+            { id: "overview", label: "개요", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">개요 패널 — 컴포넌트의 큰 그림.</p> },
+            { id: "spec", label: "스펙", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">props, default, type 정보.</p> },
+            { id: "usage", label: "사용", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">실제 사용 예시 코드.</p> },
+          ]}
+        />
+      ),
+      prompt: `탭 메뉴 line variant — 안티 카드 톤.
+하단 헤어라인 (border-b zinc-200) + 활성 탭은 emerald 텍스트 + 1px emerald 언더라인.
+shadcn pill-style 거부, 박스도 거부 — 가장 가벼운 헤어라인.
+접근성: role=tablist/tab/tabpanel + aria-selected/aria-controls 자동.`,
+      react: `<Tabs items={[
+  { id: "overview", label: "개요", panel: <Overview /> },
+  { id: "spec",     label: "스펙", panel: <Spec /> },
+  { id: "usage",    label: "사용", panel: <Usage /> },
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "variant · pills",
+      title: "Pill 톤",
+      description: "Pill 컴포넌트와 동일 톤 (rounded-md + emerald 배경).",
+      preview: (
+        <Tabs
+          variant="pills"
+          items={[
+            { id: "all", label: "전체", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">전체 항목.</p> },
+            { id: "ready", label: "준비됨", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">준비된 항목만.</p> },
+            { id: "soon", label: "예정", panel: <p className="text-[14px] text-zinc-700 dark:text-zinc-300">곧 추가될 항목.</p> },
+          ]}
+        />
+      ),
+      prompt: `pills variant — Pill 컴포넌트와 시각 일관.
+필터 토글 같은 짧은 라벨 그룹에 적합. flex flex-wrap gap-1.5.`,
+      react: `<Tabs variant="pills" items={[
+  { id: "all", label: "전체", panel: ... },
+  { id: "ready", label: "준비됨", panel: ... },
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "TabItem[]", desc: "{id, label, panel, disabled?}[]" },
+    { name: "defaultActiveId", type: "string", desc: "시작 활성 탭 (default: 첫 항목)" },
+    { name: "variant", type: '"line" | "pills"', default: '"line"', desc: "시각 톤" },
+  ],
+};
+
+/* ================================================================
+ * 오버레이 (Dialog / Drawer / Popover / Tooltip / Toast / Dropdown)
+ * ================================================================ */
+
+function DialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>다이얼로그 열기</Button>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="삭제 확인"
+        description="이 작업은 되돌릴 수 없습니다. 정말 삭제하시겠습니까?"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setOpen(false)}>취소</Button>
+            <Button tone="accent" onClick={() => { alert("삭제됨"); setOpen(false); }}>삭제</Button>
+          </>
+        }
+      />
+    </>
+  );
+}
+
+const DIALOG_DEF: ComponentDef = {
+  id: "dialog",
+  ko: "다이얼로그·모달",
+  en: "Dialog",
+  desc: "native <dialog> 사용 — focus trap·ESC·backdrop 자동. shadow X, 헤어라인. footer slot.",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "삭제 확인 패턴",
+      description: "title + description + secondary/primary 푸터. ESC·backdrop·X 버튼으로 닫힘.",
+      preview: <DialogDemo />,
+      prompt: `다이얼로그 — 모달 confirm·짧은 폼.
+native <dialog> + showModal() 사용. focus trap / ESC / backdrop 자동.
+스타일: shadow X, rounded-md border, 큰 padding (24~32px), backdrop:bg-zinc-900/40.
+사용처: confirm/cancel, 짧은 폼. 큰 폼은 Drawer 권장.
+
+footer 패턴: <>secondary 취소 + primary 확인</> (justify-end gap-3).`,
+      react: `const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>다이얼로그 열기</Button>
+
+<Dialog
+  open={open}
+  onOpenChange={setOpen}
+  title="삭제 확인"
+  description="되돌릴 수 없습니다."
+  footer={
+    <>
+      <Button variant="secondary" onClick={() => setOpen(false)}>취소</Button>
+      <Button tone="accent" onClick={handleDelete}>삭제</Button>
+    </>
+  }
+/>`,
+    },
+  ],
+  props: [
+    { name: "open", type: "boolean", desc: "열림 상태" },
+    { name: "onOpenChange", type: "(open: boolean) => void", desc: "상태 변경 콜백" },
+    { name: "title", type: "ReactNode", desc: "헤더 제목" },
+    { name: "description", type: "ReactNode", desc: "헤더 설명" },
+    { name: "children", type: "ReactNode", desc: "본문 (폼·콘텐츠)" },
+    { name: "footer", type: "ReactNode", desc: "푸터 액션" },
+    { name: "size", type: '"narrow" | "default" | "wide"', default: '"default"', desc: "너비" },
+    { name: "showClose", type: "boolean", default: "true", desc: "X 닫기 버튼" },
+  ],
+};
+
+function DrawerDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)} variant="secondary">필터 열기</Button>
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        side="right"
+        title="필터"
+        footer={
+          <>
+            <Button variant="plain" onClick={() => setOpen(false)}>초기화</Button>
+            <Button tone="accent" onClick={() => setOpen(false)}>적용</Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-[14px] text-zinc-700 dark:text-zinc-300">필터 폼이 여기 들어갑니다.</p>
+          <Input label="검색어" placeholder="검색..." />
+          <Checkbox label="준비됨만" />
+          <Checkbox label="새 항목 우선" />
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+const DRAWER_DEF: ComponentDef = {
+  id: "drawer",
+  ko: "서랍·사이드 패널",
+  en: "Drawer",
+  desc: "옆에서 슬라이드 패널. side=left/right. Dialog보다 긴 콘텐츠·폼에 적합.",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive · right",
+      title: "필터 패널",
+      description: "우측 슬라이드. ESC + backdrop 클릭으로 닫힘. body scroll lock 자동.",
+      preview: <DrawerDemo />,
+      prompt: `Drawer — 옆에서 슬라이드되는 패널.
+side="left" or "right". 긴 콘텐츠·폼·필터 패널에 적합.
+ESC + backdrop 클릭으로 닫힘. body overflow:hidden 자동 (배경 스크롤 잠금).
+스타일: shadow X, 헤어라인 1px (border-l/r).
+header (border-b 1px) + 본문 (overflow-y-auto) + footer (border-t 1px) 3단.`,
+      react: `<Drawer
+  open={open}
+  onOpenChange={setOpen}
+  side="right"
+  title="필터"
+  footer={<Button tone="accent">적용</Button>}
+>
+  <FilterForm />
+</Drawer>`,
+    },
+  ],
+  props: [
+    { name: "open", type: "boolean", desc: "열림 상태" },
+    { name: "onOpenChange", type: "(open: boolean) => void", desc: "상태 변경 콜백" },
+    { name: "side", type: '"left" | "right"', default: '"right"', desc: "슬라이드 방향" },
+    { name: "title", type: "ReactNode", desc: "헤더 제목" },
+    { name: "children", type: "ReactNode", desc: "본문" },
+    { name: "footer", type: "ReactNode", desc: "푸터 액션" },
+    { name: "size", type: '"narrow" | "default" | "wide"', default: '"default"', desc: "너비" },
+    { name: "showClose", type: "boolean", default: "true", desc: "X 닫기 버튼" },
+  ],
+};
+
+const POPOVER_DEF: ComponentDef = {
+  id: "popover",
+  ko: "팝오버",
+  en: "Popover",
+  desc: "트리거 옆 floating 패널. 클릭으로 열고 닫음. 인터랙티브 콘텐츠 OK (Tooltip과 차이).",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "설정 폼 팝오버",
+      description: "트리거 클릭 → 작은 패널. 외부 클릭 + ESC로 자동 닫힘.",
+      preview: (
+        <Popover
+          trigger={<Button variant="secondary" leadingIcon={<Settings className="h-4 w-4" />}>설정</Button>}
+          content={
+            <div className="space-y-3">
+              <p className="text-[12.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">디스플레이</p>
+              <Checkbox label="다크 모드" defaultChecked />
+              <Checkbox label="컴팩트 뷰" />
+              <Checkbox label="알림 활성" defaultChecked />
+            </div>
+          }
+          side="bottom"
+          align="start"
+        />
+      ),
+      prompt: `Popover — 트리거 옆에 떠있는 작은 패널.
+클릭으로 열고 닫음 (호버 X). 폼·필터·작은 메뉴 적합.
+스타일: shadow X, 헤어라인 1px, p-4. min-w-[220px].
+side: top/bottom/left/right. align (top/bottom): start/center/end.
+외부 클릭 + ESC 자동 닫힘.`,
+      react: `<Popover
+  trigger={<Button variant="ghost">설정</Button>}
+  content={
+    <div className="space-y-3">
+      <Checkbox label="다크 모드" />
+      <Checkbox label="컴팩트 뷰" />
+    </div>
+  }
+  side="bottom"
+  align="start"
+/>`,
+    },
+  ],
+  props: [
+    { name: "trigger", type: "ReactNode", desc: "클릭 가능한 트리거 요소" },
+    { name: "content", type: "ReactNode", desc: "팝오버 본문" },
+    { name: "side", type: '"top" | "bottom" | "left" | "right"', default: '"bottom"', desc: "위치" },
+    { name: "align", type: '"start" | "center" | "end"', default: '"start"', desc: "가로 정렬 (top/bottom)" },
+    { name: "closeOnOutside", type: "boolean", default: "true", desc: "외부 클릭 시 닫기" },
+  ],
+};
+
+const TOOLTIP_DEF: ComponentDef = {
+  id: "tooltip",
+  ko: "툴팁",
+  en: "Tooltip",
+  desc: "호버 시 작은 정보. CSS group-hover로 작동, JS 불필요. focus 시에도 노출 (a11y).",
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "버튼 위 툴팁",
+      description: "호버 시 위로 작은 라벨. side=top/bottom/left/right.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-6 py-2">
+          <Tooltip content="자동 저장됩니다" side="top">
+            <Button variant="ghost" iconOnly aria-label="저장"><Check className="h-4 w-4" /></Button>
+          </Tooltip>
+          <Tooltip content="삭제" side="top">
+            <Button variant="ghost" iconOnly aria-label="삭제"><Trash2 className="h-4 w-4" /></Button>
+          </Tooltip>
+          <Tooltip content="더 보기" side="bottom">
+            <Button variant="ghost" iconOnly aria-label="더 보기"><MoreHorizontal className="h-4 w-4" /></Button>
+          </Tooltip>
+        </div>
+      ),
+      prompt: `Tooltip — 호버 시 작은 라벨.
+CSS group-hover/tt 사용 — JS 없음. focus-within에도 노출.
+스타일: shadow X, 헤어라인 1px, 11.5px, px-2 py-1. whitespace-nowrap.
+side: top/bottom/left/right.
+사용처: iconOnly 버튼, 짧은 도움말, 숨겨진 키보드 단축키 표시.`,
+      react: `<Tooltip content="자동 저장됩니다" side="top">
+  <Button variant="ghost" iconOnly aria-label="저장">
+    <Check className="h-4 w-4" />
+  </Button>
+</Tooltip>`,
+    },
+  ],
+  props: [
+    { name: "content", type: "ReactNode", desc: "툴팁 본문" },
+    { name: "side", type: '"top" | "bottom" | "left" | "right"', default: '"top"', desc: "위치" },
+    { name: "children", type: "ReactNode", desc: "트리거 (inline 요소 권장)" },
+  ],
+};
+
+function ToastDemo() {
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openWarning, setOpenWarning] = useState(false);
+  const [openDanger, setOpenDanger] = useState(false);
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Button variant="secondary" onClick={() => setOpenSuccess(true)}>성공 토스트</Button>
+      <Button variant="secondary" onClick={() => setOpenWarning(true)}>경고 토스트</Button>
+      <Button variant="secondary" onClick={() => setOpenDanger(true)}>위험 토스트</Button>
+
+      <Toast
+        open={openSuccess}
+        onOpenChange={setOpenSuccess}
+        tone="success"
+        title="저장됨"
+        description="변경사항이 저장되었습니다."
+        position="bottom-right"
+      />
+      <Toast
+        open={openWarning}
+        onOpenChange={setOpenWarning}
+        tone="warning"
+        title="확인 필요"
+        description="일부 항목이 비어있습니다."
+        position="bottom-right"
+      />
+      <Toast
+        open={openDanger}
+        onOpenChange={setOpenDanger}
+        tone="danger"
+        title="실패"
+        description="네트워크 오류가 발생했습니다."
+        position="bottom-right"
+      />
+    </div>
+  );
+}
+
+const TOAST_DEF: ComponentDef = {
+  id: "toast",
+  ko: "토스트 알림",
+  en: "Toast",
+  desc: "일시적 알림. tone=default/success/warning/danger. 자동 닫힘 (default 4초). aria-live=polite.",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive · 4 tones",
+      title: "tone별 토스트",
+      description: "success/warning/danger 클릭 시 우하단 알림. 4초 후 자동 닫힘.",
+      preview: <ToastDemo />,
+      prompt: `Toast — 일시적 알림.
+스타일: shadow X, tone별 헤어라인 (emerald/amber/red), 12.5~13.5px, p-4.
+tone 자동 아이콘: default=Info / success=Check / warning=AlertTriangle / danger=AlertOctagon.
+duration ms (0이면 영구). aria-live="polite" 자동.
+position: 6가지 (top/bottom × left/right/center).
+
+단일 컴포넌트 — queue/stack은 별도 wrapper.`,
+      react: `const [open, setOpen] = useState(false);
+
+<Button onClick={() => setOpen(true)}>저장</Button>
+
+<Toast
+  open={open}
+  onOpenChange={setOpen}
+  tone="success"
+  title="저장됨"
+  description="변경사항이 저장되었습니다."
+  position="bottom-right"
+/>`,
+    },
+  ],
+  props: [
+    { name: "open", type: "boolean", desc: "열림 상태" },
+    { name: "onOpenChange", type: "(open: boolean) => void", desc: "상태 변경 콜백" },
+    { name: "duration", type: "number", default: "4000", desc: "자동 닫힘 ms (0 = 영구)" },
+    { name: "tone", type: '"default" | "success" | "warning" | "danger"', default: '"default"', desc: "tone (자동 아이콘 + 색)" },
+    { name: "title", type: "ReactNode", desc: "제목" },
+    { name: "description", type: "ReactNode", desc: "본문" },
+    { name: "position", type: "ToastPosition", default: '"bottom-right"', desc: "fixed 위치 (6종)" },
+    { name: "showClose", type: "boolean", default: "true", desc: "X 닫기 버튼" },
+  ],
+};
+
+const DROPDOWN_DEF: ComponentDef = {
+  id: "dropdown",
+  ko: "드롭다운 메뉴",
+  en: "Dropdown Menu",
+  desc: "트리거 클릭 → 메뉴 리스트. 외부 클릭 + ESC로 자동 닫힘. icon / separator / danger 지원.",
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "액션 메뉴",
+      description: "편집/공유/삭제 패턴. 위험 액션은 separator 후 빨간색.",
+      preview: (
+        <Dropdown
+          trigger={<Button variant="ghost" iconOnly aria-label="더 보기"><MoreHorizontal className="h-4 w-4" /></Button>}
+          align="end"
+          items={[
+            { label: "편집", icon: <Pencil className="h-3.5 w-3.5" />, onClick: () => alert("편집") },
+            { label: "공유하기", icon: <ExternalLink className="h-3.5 w-3.5" />, onClick: () => alert("공유") },
+            { label: "설정", icon: <Settings className="h-3.5 w-3.5" />, onClick: () => alert("설정") },
+            { label: "삭제", icon: <Trash2 className="h-3.5 w-3.5" />, onClick: () => alert("삭제"), danger: true, separator: true },
+          ]}
+        />
+      ),
+      prompt: `Dropdown — 트리거 클릭 → 메뉴 리스트.
+스타일: shadow X, 헤어라인 1px, py-1, min-w-[180px], 13.5px.
+each item: px-3 py-1.5, hover bg-zinc-50.
+- icon: 좌측 작은 아이콘 (h-3.5 w-3.5, zinc-500)
+- separator: 위에 1px 구분선
+- danger: 빨간 텍스트 + hover red bg
+- href / onClick 둘 중 하나
+- disabled: opacity-50
+
+외부 클릭 + ESC 자동 닫힘.`,
+      react: `<Dropdown
+  trigger={<Button variant="ghost" iconOnly aria-label="더 보기">
+    <MoreHorizontal className="h-4 w-4" />
+  </Button>}
+  align="end"
+  items={[
+    { label: "편집", icon: <Pencil className="h-3.5 w-3.5" />, onClick: edit },
+    { label: "공유하기", href: "/share" },
+    { label: "삭제", onClick: del, danger: true, separator: true },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "trigger", type: "ReactNode", desc: "클릭 트리거 (button 권장)" },
+    { name: "items", type: "DropdownItem[]", desc: "{label, onClick?, href?, icon?, separator?, danger?, disabled?}[]" },
+    { name: "align", type: '"start" | "end"', default: '"start"', desc: "트리거 기준 정렬" },
   ],
 };
