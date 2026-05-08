@@ -86,6 +86,8 @@ import {
   Drawer,
   Dropdown,
   Toast,
+  ToastProvider,
+  useToast,
 } from "@freeive/anti-card";
 
 /**
@@ -499,6 +501,7 @@ export default function App() {
   const ActiveSection = READY_SECTIONS[activeId] ?? Intro;
 
   return (
+    <ToastProvider position="bottom-right" limit={5}>
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
       <Header query={query} onQueryChange={setQuery} />
 
@@ -534,6 +537,7 @@ export default function App() {
         </main>
       </div>
     </div>
+    </ToastProvider>
   );
 }
 
@@ -6540,39 +6544,48 @@ side: top/bottom/left/right.
 };
 
 function ToastDemo() {
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openWarning, setOpenWarning] = useState(false);
-  const [openDanger, setOpenDanger] = useState(false);
+  const { toast, clear } = useToast();
   return (
     <div className="flex flex-wrap gap-3">
-      <Button variant="secondary" onClick={() => setOpenSuccess(true)}>성공 토스트</Button>
-      <Button variant="secondary" onClick={() => setOpenWarning(true)}>경고 토스트</Button>
-      <Button variant="secondary" onClick={() => setOpenDanger(true)}>위험 토스트</Button>
-
-      <Toast
-        open={openSuccess}
-        onOpenChange={setOpenSuccess}
-        tone="success"
-        title="저장됨"
-        description="변경사항이 저장되었습니다."
-        position="bottom-right"
-      />
-      <Toast
-        open={openWarning}
-        onOpenChange={setOpenWarning}
-        tone="warning"
-        title="확인 필요"
-        description="일부 항목이 비어있습니다."
-        position="bottom-right"
-      />
-      <Toast
-        open={openDanger}
-        onOpenChange={setOpenDanger}
-        tone="danger"
-        title="실패"
-        description="네트워크 오류가 발생했습니다."
-        position="bottom-right"
-      />
+      <Button
+        variant="secondary"
+        onClick={() => toast({ tone: "success", title: "저장됨", description: "변경사항이 저장되었습니다." })}
+      >
+        성공
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => toast({ tone: "warning", title: "확인 필요", description: "일부 항목이 비어있습니다." })}
+      >
+        경고
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => toast({ tone: "danger", title: "실패", description: "네트워크 오류가 발생했습니다." })}
+      >
+        위험
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => toast({ title: "기본 알림", description: "추가 정보 없이 간단한 메시지." })}
+      >
+        기본
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => {
+          // 빠르게 5개 누적 — stack 시연
+          const tones: Array<"default" | "success" | "warning" | "danger"> = ["success", "warning", "danger", "default", "success"];
+          tones.forEach((t, i) => {
+            setTimeout(() => {
+              toast({ tone: t, title: `알림 #${i + 1}`, description: `누적된 알림 (${t}).` });
+            }, i * 200);
+          });
+        }}
+      >
+        5개 연속 (stack 시연)
+      </Button>
+      <Button variant="plain" tone="accent" onClick={clear}>전부 닫기</Button>
     </div>
   );
 }
@@ -6581,21 +6594,65 @@ const TOAST_DEF: ComponentDef = {
   id: "toast",
   ko: "토스트 알림",
   en: "Toast",
-  desc: "일시적 알림. tone=default/success/warning/danger. 자동 닫힘 (default 4초). aria-live=polite.",
+  desc: "ToastProvider + useToast로 누적(stack) 알림. 4 tones × 6 positions. 자동 닫힘 + aria-live.",
   examples: [
     {
       index: "01",
-      badge: "interactive · 4 tones",
-      title: "tone별 토스트",
-      description: "success/warning/danger 클릭 시 우하단 알림. 4초 후 자동 닫힘.",
+      badge: "useToast · stacking",
+      title: "누적되는 알림 (Provider 패턴)",
+      description: "useToast() 훅. 여러 알림이 우하단에 쌓임. 5개 연속 클릭으로 stack 시연.",
       preview: <ToastDemo />,
-      prompt: `Toast — 일시적 알림.
-스타일: shadow X, tone별 헤어라인 (emerald/amber/red), 12.5~13.5px, p-4.
-tone 자동 아이콘: default=Info / success=Check / warning=AlertTriangle / danger=AlertOctagon.
-duration ms (0이면 영구). aria-live="polite" 자동.
-position: 6가지 (top/bottom × left/right/center).
+      prompt: `Toast 시스템 — Provider + 훅 패턴.
+1) 앱 root를 <ToastProvider position="..." limit={5}> 로 감쌈
+2) 자식 컴포넌트에서 const { toast } = useToast()
+3) toast({ tone, title, description, duration? })
 
-단일 컴포넌트 — queue/stack은 별도 wrapper.`,
+스타일 (각 toast):
+- shadow X, tone별 헤어라인 (emerald/amber/red/zinc)
+- 12.5~13.5px, p-4
+- 자동 아이콘 (Info/Check/AlertTriangle/AlertOctagon)
+
+Stack:
+- top-* : 새 항목이 아래에 추가 (위로 push)
+- bottom-* : 새 항목이 위에 추가 (아래로 push, 최신이 위)
+- limit 초과 시 가장 오래된 것 자동 제거 (FIFO)
+
+aria-live="polite" 자동 (스크린리더 비차단 알림).`,
+      react: `// app root
+<ToastProvider position="bottom-right" limit={5}>
+  <App />
+</ToastProvider>
+
+// 사용처
+function MyComponent() {
+  const { toast, dismiss, clear } = useToast();
+  return (
+    <Button onClick={() => toast({
+      tone: "success",
+      title: "저장됨",
+      description: "변경사항이 저장되었습니다.",
+    })}>
+      저장
+    </Button>
+  );
+}
+
+// 영구 (자동 안 닫힘)
+toast({ title: "확인 필요", duration: 0 });
+
+// 모두 닫기
+clear();`,
+    },
+    {
+      index: "02",
+      badge: "단일 (저수준)",
+      title: "Toast 컴포넌트 단독",
+      description: "Provider 없이 단일 알림 — open/onOpenChange 제어. 단순 케이스용.",
+      preview: <SingleToastDemo />,
+      prompt: `Provider 없이 Toast 컴포넌트 단독 사용 — open / onOpenChange 직접 제어.
+한 번에 하나의 알림만 필요하거나 이미 자체 상태 관리가 있을 때.
+
+대부분의 경우 ToastProvider + useToast 권장 (누적 / 글로벌 호출 가능).`,
       react: `const [open, setOpen] = useState(false);
 
 <Button onClick={() => setOpen(true)}>저장</Button>
@@ -6605,22 +6662,35 @@ position: 6가지 (top/bottom × left/right/center).
   onOpenChange={setOpen}
   tone="success"
   title="저장됨"
-  description="변경사항이 저장되었습니다."
-  position="bottom-right"
 />`,
     },
   ],
   props: [
-    { name: "open", type: "boolean", desc: "열림 상태" },
-    { name: "onOpenChange", type: "(open: boolean) => void", desc: "상태 변경 콜백" },
-    { name: "duration", type: "number", default: "4000", desc: "자동 닫힘 ms (0 = 영구)" },
-    { name: "tone", type: '"default" | "success" | "warning" | "danger"', default: '"default"', desc: "tone (자동 아이콘 + 색)" },
-    { name: "title", type: "ReactNode", desc: "제목" },
-    { name: "description", type: "ReactNode", desc: "본문" },
-    { name: "position", type: "ToastPosition", default: '"bottom-right"', desc: "fixed 위치 (6종)" },
-    { name: "showClose", type: "boolean", default: "true", desc: "X 닫기 버튼" },
+    { name: "<ToastProvider>", type: "—", desc: "앱 root에 한 번 설치 (children + position + limit + defaultDuration)" },
+    { name: "useToast()", type: "() => { toast, dismiss, clear, toasts }", desc: "Provider 안에서 호출하는 훅" },
+    { name: "toast(input)", type: "(input: ToastInput) => string", desc: "{tone?, title?, description?, duration?}. id 반환" },
+    { name: "dismiss(id)", type: "(id: string) => void", desc: "특정 알림 닫기" },
+    { name: "clear()", type: "() => void", desc: "모든 알림 닫기" },
+    { name: "<Toast> (저수준)", type: "—", desc: "Provider 없이 단일 사용. open / onOpenChange 직접 제어" },
   ],
 };
+
+function SingleToastDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="secondary" onClick={() => setOpen(true)}>단일 Toast 열기</Button>
+      <Toast
+        open={open}
+        onOpenChange={setOpen}
+        tone="success"
+        title="저장됨"
+        description="단일 Toast 컴포넌트 — Provider 없이 사용."
+        position="bottom-right"
+      />
+    </>
+  );
+}
 
 const DROPDOWN_DEF: ComponentDef = {
   id: "dropdown",

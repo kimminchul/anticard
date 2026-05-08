@@ -188,8 +188,14 @@ export type { DrawerProps } from "./components/drawer";
 export { Dropdown } from "./components/dropdown";
 export type { DropdownProps, DropdownItem } from "./components/dropdown";
 
-export { Toast } from "./components/toast";
-export type { ToastProps, ToastTone, ToastPosition } from "./components/toast";
+export { Toast, ToastProvider, useToast } from "./components/toast";
+export type {
+  ToastProps,
+  ToastTone,
+  ToastPosition,
+  ToastInput,
+  ToastProviderProps,
+} from "./components/toast";
 
 export { cn } from "./utils/cn";
 

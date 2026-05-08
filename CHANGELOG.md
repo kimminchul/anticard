@@ -34,6 +34,11 @@
   - `Popover` — 트리거 옆 floating 패널 (외부 클릭+ESC 자동 닫힘)
   - `Tooltip` — 호버 시 라벨 (CSS group-hover, JS 불필요)
   - `Toast` — 일시적 알림 (4 tones × 6 positions, aria-live=polite)
+  - `ToastProvider` + `useToast()` — **누적(stack) 알림 시스템**
+    - app root에 Provider 설치 → 자식에서 `useToast()` 훅으로 호출
+    - 여러 알림이 한 위치에 누적, limit 초과 시 가장 오래된 것 자동 제거
+    - `toast({ tone, title, description, duration? })` / `dismiss(id)` / `clear()`
+    - 단일 `<Toast>` 컴포넌트도 그대로 — 단순 사례용
   - `Dropdown` — 메뉴 리스트 (icon / separator / danger 지원)
 - 모든 오버레이는 anti-card 톤: shadow X, 헤어라인 1px, smallcaps 라벨, 큰 패딩
 
