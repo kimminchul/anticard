@@ -16,7 +16,14 @@
   - `iconOnly`: 정사각형 패딩 모드 (툴바·작은 액션)
   - `secondary` + `tone="accent"` (emerald 헤어라인)
   - 4 variants × default/accent tone × small/default/large size × icon options
-- Playground Button 페이지 4종 (primary/secondary/ghost/plain) — 각 페이지마다 icon 예시
+- Playground Button 페이지 4종 (primary/secondary/ghost/plain) — 각 페이지마다 icon + iconOnly 예시
+- **Pill** `shape` prop 추가:
+  - `shape="rounded"` (기본): rounded-md, 태그·필터 톤
+  - `shape="pill"`         : rounded-full, badge 톤 (status·count·NEW/BETA/v0.10.0)
+  - Pill = "필 / 태그 / 뱃지" 통일 어휘 (별도 Badge 컴포넌트 없음)
+- 신규 NAV 카테고리:
+  - **내비게이션** (Tabs / Breadcrumb / Pagination) — 모두 `soon`
+  - **오버레이** (Dialog / Drawer / Popover / Tooltip / Toast / Dropdown) — 모두 `soon`
 
 ### Changed
 - Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)

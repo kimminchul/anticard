@@ -210,6 +210,27 @@ const NAV: NavGroup[] = [
     ],
   },
   {
+    group: "내비게이션",
+    desc: "위치 표시 + 페이지·패널 전환",
+    items: [
+      { id: "tabs", ko: "탭 메뉴", en: "Tabs", status: "soon" },
+      { id: "breadcrumb", ko: "브레드크럼", en: "Breadcrumb", status: "soon" },
+      { id: "pagination", ko: "페이지네이션", en: "Pagination", status: "soon" },
+    ],
+  },
+  {
+    group: "오버레이",
+    desc: "본문 위에 떠있는 일시적 UI — anti-card 톤 (shadow X, 헤어라인)",
+    items: [
+      { id: "dialog", ko: "다이얼로그·모달", en: "Dialog", status: "soon" },
+      { id: "drawer", ko: "서랍·사이드 패널", en: "Drawer", status: "soon" },
+      { id: "popover", ko: "팝오버", en: "Popover", status: "soon" },
+      { id: "tooltip", ko: "툴팁", en: "Tooltip", status: "soon" },
+      { id: "toast", ko: "토스트 알림", en: "Toast", status: "soon" },
+      { id: "dropdown", ko: "드롭다운 메뉴", en: "Dropdown Menu", status: "soon" },
+    ],
+  },
+  {
     group: "리소스",
     desc: "참조 표준 — 컴포넌트 사용 시 함께 보는 자료",
     items: [
@@ -3703,9 +3724,9 @@ href 있으면 a로 감싸지고 hover시 emerald.`,
 
 const PILL_DEF: ComponentDef = {
   id: "pill",
-  ko: "필 / 태그",
-  en: "Pill / Tag",
-  desc: "작은 라벨·태그·필터 칩. 둥근 사각, 12.5px, 살짝 border + bg.",
+  ko: "필 · 태그 · 뱃지",
+  en: "Pill / Tag / Badge",
+  desc: "작은 라벨·태그·필터 칩·상태 뱃지 통일 어휘. shape='rounded' (rounded-md, 태그 톤) / shape='pill' (rounded-full, badge 톤).",
   examples: [
     {
       index: "01",
@@ -3766,6 +3787,43 @@ shadcn Badge처럼 화려한 색 거부. 본문에 자연스럽게 섞이는 가
       prompt: `Pill을 클릭 가능한 링크로. as="a" + href.`,
       react: `<Pill as="a" href="/blog?tag=ai">AI 워크플로우</Pill>`,
     },
+    {
+      index: "04",
+      badge: "shape · pill (badge)",
+      title: "둥근 형태 — Badge 톤",
+      description: "shape='pill' = rounded-full. 상태 뱃지(NEW / BETA / Live), 카운트(3, 99+), 작은 status indicator.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-2">
+          <Pill shape="pill" tone="accent">NEW</Pill>
+          <Pill shape="pill" tone="muted">BETA</Pill>
+          <Pill shape="pill" tone="default">v0.10.0</Pill>
+          <Pill shape="pill" tone="accent" active>Live</Pill>
+          <Pill shape="pill" tone="muted" className="px-2 py-0.5 text-[11px]">3</Pill>
+          <Pill shape="pill" tone="accent" className="px-2 py-0.5 text-[11px]">99+</Pill>
+        </div>
+      ),
+      prompt: `shape="pill" — rounded-full로 양 끝이 완전 둥근 badge 톤.
+사용처:
+- 상태 라벨 (NEW / BETA / DEPRECATED / Live)
+- 카운트 뱃지 (알림 수, 메시지 수 — 작은 숫자)
+- version 뱃지 (v0.10.0)
+- 인디케이터
+
+차이:
+- shape="rounded" (기본): rounded-md, 태그·필터 (블로그 카테고리)
+- shape="pill"          : rounded-full, badge·status (강조 라벨)
+
+작은 카운트는 className으로 px-2 py-0.5 text-[11px] 더 줄이기 권장.`,
+      react: `<Pill shape="pill" tone="accent">NEW</Pill>
+<Pill shape="pill" tone="muted">BETA</Pill>
+<Pill shape="pill" tone="default">v0.10.0</Pill>
+<Pill shape="pill" tone="accent" active>Live</Pill>
+
+{/* count badge — 더 작게 */}
+<Pill shape="pill" tone="accent" className="px-2 py-0.5 text-[11px]">
+  99+
+</Pill>`,
+    },
   ],
   props: [
     { name: "as", type: '"span" | "a"', default: '"span"', desc: "시맨틱 태그" },
@@ -3773,6 +3831,7 @@ shadcn Badge처럼 화려한 색 거부. 본문에 자연스럽게 섞이는 가
     { name: "external", type: "boolean", desc: "외부 링크" },
     { name: "tone", type: '"default" | "accent" | "muted"', default: '"default"', desc: "색 톤" },
     { name: "active", type: "boolean", default: "false", desc: "활성 상태 (필터 선택)" },
+    { name: "shape", type: '"rounded" | "pill"', default: '"rounded"', desc: "rounded-md (태그) / rounded-full (badge)" },
   ],
 };
 
@@ -4259,6 +4318,46 @@ primary와 같은 size 시스템 (small/default/large). 보통 primary와 함께
   <Button variant="secondary">취소</Button>
   <Button variant="primary" tone="accent">확인</Button>
 </div>`,
+    },
+    {
+      index: "03",
+      badge: "with icon",
+      title: "leading / trailing 아이콘",
+      description: "secondary + 아이콘 — '취소(X)' / '다음(→)' 같은 표준 액션.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="secondary" leadingIcon={<X className="h-4 w-4" />}>취소</Button>
+          <Button variant="secondary" leadingIcon={<Plus className="h-4 w-4" />}>새로 만들기</Button>
+          <Button variant="secondary" trailingIcon={<ArrowRight className="h-4 w-4" />}>다음</Button>
+        </div>
+      ),
+      prompt: `secondary + 아이콘. 채움 X (border만)이라 아이콘이 더 또렷하게 보임.
+사용처: 폼 풋터의 cancel(X), 리스트의 새 항목 만들기(+), 단계 이동(→).
+크기 표준: h-4 w-4 (default size).`,
+      react: `import { X, Plus, ArrowRight } from "lucide-react";
+
+<Button variant="secondary" leadingIcon={<X className="h-4 w-4" />}>취소</Button>
+<Button variant="secondary" leadingIcon={<Plus className="h-4 w-4" />}>새로 만들기</Button>
+<Button variant="secondary" trailingIcon={<ArrowRight className="h-4 w-4" />}>다음</Button>`,
+    },
+    {
+      index: "04",
+      badge: "iconOnly",
+      title: "아이콘만 (헤어라인 박스)",
+      description: "툴바의 보조 액션 — 헤어라인 정사각형. ghost보다 명시적, primary보다 약함.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" iconOnly aria-label="검색"><Search className="h-4 w-4" /></Button>
+          <Button variant="secondary" iconOnly aria-label="새로 만들기"><Plus className="h-4 w-4" /></Button>
+          <Button variant="secondary" iconOnly aria-label="설정" size="small"><ChevronDown className="h-3.5 w-3.5" /></Button>
+        </div>
+      ),
+      prompt: `secondary + iconOnly: 헤어라인 박스 정사각형 아이콘 액션.
+ghost iconOnly와 차이: secondary는 항상 border 보임 (눈에 더 띔), ghost는 hover 시에만 배경.
+사용처: 툴바의 명시적 액션, 디자인 도구의 작은 컨트롤.`,
+      react: `<Button variant="secondary" iconOnly aria-label="검색">
+  <Search className="h-4 w-4" />
+</Button>`,
     },
   ],
   props: [
