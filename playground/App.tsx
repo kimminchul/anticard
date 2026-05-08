@@ -113,7 +113,6 @@ const NAV: NavGroup[] = [
     group: "타이포그래피",
     desc: "글로 위계를 만드는 모든 것",
     items: [
-      { id: "typography-tokens", ko: "타이포 토큰", en: "Typography Tokens", status: "ready" },
       { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", status: "ready" },
       { id: "hero-heading", ko: "히어로 큰 제목", en: "Hero Heading", status: "ready" },
       { id: "section-heading", ko: "섹션 제목", en: "Section Heading", status: "ready" },
@@ -210,8 +209,9 @@ const NAV: NavGroup[] = [
   },
   {
     group: "리소스",
-    desc: "표준·정책·외부 자산",
+    desc: "참조 표준 — 컴포넌트 사용 시 함께 보는 자료",
     items: [
+      { id: "typography-tokens", ko: "타이포 토큰", en: "Typography Tokens", status: "ready" },
       { id: "icons", ko: "아이콘 (lucide)", en: "Icons", status: "ready" },
     ],
   },
@@ -413,6 +413,7 @@ const DEFAULT_ID = "intro";
 export default function App() {
   const [filter, setFilter] = useState<"all" | "ready">("all");
   const [activeId, setActiveId] = useState<string>(DEFAULT_ID);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const sync = () => {
@@ -436,7 +437,7 @@ export default function App() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
-      <Header />
+      <Header query={query} onQueryChange={setQuery} />
 
       {/* Mobile sidebar — collapsible details */}
       <details
@@ -475,9 +476,120 @@ export default function App() {
 
 /* ================ Layout ================ */
 
-function Header() {
+interface HeaderProps {
+  query: string;
+  onQueryChange: (q: string) => void;
+}
+
+interface SearchBoxProps {
+  query: string;
+  onQueryChange: (q: string) => void;
+}
+
+function SearchBox({ query, onQueryChange }: SearchBoxProps) {
+  const [focused, setFocused] = useState(false);
+  const q = query.trim().toLowerCase();
+  const showDropdown = focused && q.length > 0;
+
+  // NAV 전체에서 매칭 (ready 상태만 — 그 외는 클릭 불가)
+  const matches = q
+    ? NAV.flatMap((g) =>
+        g.items
+          .filter(
+            (it) =>
+              it.status === "ready" &&
+              (it.ko.toLowerCase().includes(q) ||
+                it.en.toLowerCase().includes(q) ||
+                it.id.toLowerCase().includes(q) ||
+                g.group.toLowerCase().includes(q))
+          )
+          .map((it) => ({ ...it, group: g.group }))
+      ).slice(0, 12)
+    : [];
+
+  const handleSelect = (id: string) => {
+    onQueryChange("");
+    setFocused(false);
+    window.location.hash = `#${id}`;
+  };
+
   return (
-    <header className="flex flex-wrap items-baseline justify-between gap-y-3 border-b border-zinc-200/60 pb-4 md:pb-5 dark:border-white/[0.06]">
+    <div
+      className="relative"
+      onBlur={(e) => {
+        // 드롭다운 안의 요소로 focus 옮길 때는 닫지 않음
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          setTimeout(() => setFocused(false), 150);
+        }
+      }}
+    >
+      <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => onQueryChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        placeholder="컴포넌트 검색 (한글 / 영문 / 카테고리)"
+        aria-label="컴포넌트 검색"
+        className="w-full rounded-md border border-zinc-200 bg-white py-1.5 pl-8 pr-7 text-[12.5px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/15"
+      />
+      {query && (
+        <button
+          type="button"
+          onClick={() => onQueryChange("")}
+          aria-label="검색 지우기"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-white/[0.06] dark:hover:text-zinc-200"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      )}
+
+      {/* 드롭다운 결과 */}
+      {showDropdown && (
+        <div className="absolute left-0 right-0 top-full z-30 mt-1.5 max-h-[60vh] overflow-y-auto rounded-md border border-zinc-200 bg-white shadow-lg dark:border-white/[0.08] dark:bg-zinc-950">
+          {matches.length === 0 ? (
+            <p className="px-4 py-3 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+              “{query}”에 해당하는 컴포넌트 없음
+            </p>
+          ) : (
+            <ul className="py-1">
+              {matches.map((m) => {
+                const v = COMPONENT_VERSIONS[m.id];
+                return (
+                  <li key={m.id}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault() /* blur 회피 */}
+                      onClick={() => handleSelect(m.id)}
+                      className="group flex w-full items-baseline justify-between gap-3 px-4 py-2 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
+                    >
+                      <span className="flex items-baseline gap-2">
+                        <span className="text-[13px] text-zinc-900 group-hover:text-emerald-700 dark:text-zinc-100 dark:group-hover:text-emerald-400">
+                          {m.ko}
+                        </span>
+                        <code className="text-[11px] text-zinc-500">&lt;{m.en}&gt;</code>
+                      </span>
+                      <span className="flex items-baseline gap-2 text-[10.5px]">
+                        <span className="uppercase tracking-[0.06em] text-zinc-400">{m.group}</span>
+                        {v && (
+                          <span className="font-mono tabular-nums text-zinc-400">v{v.addedIn}</span>
+                        )}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Header({ query, onQueryChange }: HeaderProps) {
+  return (
+    <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-zinc-200/60 pb-4 md:pb-5 dark:border-white/[0.06]">
       <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
         <h1 className="text-lg font-semibold tracking-tight text-zinc-900 md:text-xl dark:text-zinc-50">
           anti-card
@@ -489,7 +601,13 @@ function Header() {
           playground
         </span>
       </div>
-      <nav className="flex items-center gap-3 text-[12.5px] text-zinc-500 sm:gap-4 dark:text-zinc-400">
+
+      {/* 검색바 — 중앙 (md 이상). 결과는 dropdown으로 (모바일·데스크톱 모두) */}
+      <div className="order-3 w-full md:order-2 md:max-w-sm md:flex-1">
+        <SearchBox query={query} onQueryChange={onQueryChange} />
+      </div>
+
+      <nav className="order-2 flex items-center gap-3 text-[12.5px] text-zinc-500 sm:gap-4 md:order-3 dark:text-zinc-400">
         <ThemeToggle />
         <a
           href="https://github.com/kimminchul/anticard"
@@ -551,62 +669,35 @@ interface SidebarProps {
 }
 
 function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
-  const [query, setQuery] = useState("");
-  const q = query.trim().toLowerCase();
-
+  // 사이드바는 query 영향 받지 않음 — 검색은 Header dropdown으로 분리.
   const readyCount = NAV.flatMap((g) => g.items).filter((i) => i.status === "ready").length;
   const totalCount = NAV.flatMap((g) => g.items).length;
 
-  const matchQuery = (item: NavItem, group: NavGroup) =>
-    !q ||
-    item.ko.toLowerCase().includes(q) ||
-    item.en.toLowerCase().includes(q) ||
-    item.id.toLowerCase().includes(q) ||
-    group.group.toLowerCase().includes(q);
-
-  // 검색 결과 카운트 (filter + query 결합)
+  // filter (전체/준비됨) 만 적용
   const filteredGroups = NAV.map((group) => {
-    const items = (filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items)
-      .filter((i) => matchQuery(i, group));
+    const items = filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items;
     return { group, items };
   }).filter((g) => g.items.length > 0);
 
-  const totalMatches = filteredGroups.reduce((sum, g) => sum + g.items.length, 0);
-
   return (
     <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
-      <a
-        href="#intro"
-        className={`mb-5 block rounded-md px-3 py-2.5 text-[14px] transition-colors ${
-          activeId === "intro"
-            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-            : "text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-200 dark:hover:bg-white/[0.04] dark:hover:text-zinc-50"
-        }`}
-      >
-        개요
-      </a>
-
-      {/* Search */}
-      <div className="relative mb-3">
-        <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="검색 (한글 / 영문 / 카테고리)"
-          aria-label="컴포넌트 검색"
-          className="w-full rounded-md border border-zinc-200 bg-transparent py-1.5 pl-8 pr-7 text-[12.5px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/15"
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={() => setQuery("")}
-            aria-label="검색 지우기"
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-white/[0.06] dark:hover:text-zinc-200"
-          >
-            <X className="h-3 w-3" />
-          </button>
-        )}
+      {/* Docs — 개요 단독 */}
+      <div className="mb-6">
+        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
+        <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
+          <li>
+            <a
+              href="#intro"
+              className={`-ml-3.5 flex items-baseline gap-2 rounded-r-md py-1 pl-3.5 pr-2 transition-colors ${
+                activeId === "intro"
+                  ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400"
+                  : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"
+              }`}
+            >
+              개요
+            </a>
+          </li>
+        </ul>
       </div>
 
       {/* Filter (전체 / 준비됨) */}
@@ -619,33 +710,12 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         </button>
       </div>
 
-      {/* Search result count */}
-      {q && (
-        <p className="mt-2 text-[11.5px] text-zinc-500 dark:text-zinc-400">
-          “{query}” — {totalMatches}개 결과
-        </p>
-      )}
-
-      {/* No results */}
-      {q && totalMatches === 0 && (
-        <div className="mt-6 rounded-md border border-dashed border-zinc-200 px-3 py-4 text-[12.5px] text-zinc-500 dark:border-white/[0.08] dark:text-zinc-500">
-          “{query}”에 해당하는 컴포넌트가 없습니다.
-          <button
-            type="button"
-            onClick={() => setQuery("")}
-            className="mt-2 block text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
-          >
-            검색 지우기
-          </button>
-        </div>
-      )}
-
       <div className="mt-7 space-y-2">
         {filteredGroups.map(({ group, items }) => {
           if (items.length === 0) return null;
-          // 자동 펼침 조건: 검색 중 / 활성 컴포넌트가 이 그룹에 속함
+          // 자동 펼침 조건: 활성 컴포넌트가 이 그룹에 속함
           const containsActive = items.some((it) => it.id === activeId);
-          const autoOpen = Boolean(q) || containsActive;
+          const autoOpen = containsActive;
           return (
             <details
               key={group.group}
@@ -671,6 +741,15 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                   const isActive = activeId === item.id;
                   const v = COMPONENT_VERSIONS[item.id];
                   const isUpdatedNow = v?.updatedIn === VERSION;
+                  // ready: 버전 표시 (v0.x.x), 그 외: status 라벨 (soon/planned)
+                  const trailingLabel =
+                    item.status === "ready" && v ? `v${v.addedIn}` : meta.label;
+                  const trailingCls =
+                    item.status === "ready"
+                      ? isActive
+                        ? "font-mono tabular-nums text-emerald-600 dark:text-emerald-400"
+                        : "font-mono tabular-nums text-zinc-400 dark:text-zinc-500"
+                      : meta.cls;
                   return (
                     <li key={item.id}>
                       {isClickable ? (
@@ -687,12 +766,12 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                               />
                             )}
                           </span>
-                          <span className={`text-[11px] ${isActive ? "text-emerald-600 dark:text-emerald-400" : meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[10.5px] ${trailingCls}`}>{trailingLabel}</span>
                         </a>
                       ) : (
                         <span className="flex items-baseline justify-between gap-2 py-1 text-zinc-400 dark:text-zinc-500">
                           <span>{item.ko}</span>
-                          <span className={`text-[11px] ${meta.cls}`}>{meta.label}</span>
+                          <span className={`text-[10.5px] ${meta.cls}`}>{meta.label}</span>
                         </span>
                       )}
                     </li>
@@ -704,12 +783,21 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         })}
       </div>
 
+      {/* 외부 가이드 — 하단 별도 섹션 */}
       <div className="mt-10 border-t border-zinc-200 pt-6 dark:border-white/[0.08]">
-        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
+        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">외부 가이드</p>
         <ul className="mt-3.5 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
-          <li><a href="https://freeive.com/anti-card/manifesto" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Manifesto</a></li>
-          <li><a href="https://freeive.com/anti-card/admin-vs-end-user" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">Admin vs End-user</a></li>
-          <li><a href="https://freeive.com/anti-card/ai-skill" target="_blank" rel="noopener noreferrer" className="block py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400">AI Skill</a></li>
+          <li>
+            <a
+              href="https://freeive.com/anti-card"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-baseline justify-between gap-2 py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400"
+            >
+              <span>Manifesto</span>
+              <span aria-hidden className="text-[10px] opacity-50 transition-transform group-hover:translate-x-0.5">↗</span>
+            </a>
+          </li>
         </ul>
       </div>
     </aside>
@@ -724,7 +812,7 @@ function Intro() {
         컴포넌트 시연실
       </h2>
       <p className="mt-5 text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
-        AI 시대의 UI 프레임워크는 방식이 바꿔야 합니다. 안티 카드는{" "}
+        AI 시대의 UI 라이브러리는 방식이 바뀌어야 합니다. 안티 카드는{" "}
         <strong className="text-zinc-900 dark:text-zinc-200">가장 순수한 HTML/CSS</strong>를 제공하고, AI가 이 디자인과
         구조를 참고합니다. 각 Example마다{" "}
         <strong className="text-zinc-900 dark:text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong> 탭을 제공합니다.
@@ -820,7 +908,7 @@ npm install ../anticard/freeive-anti-card-${VERSION}.tgz`}</code>
       {/* 빠른 미리보기 — 시드 컴포넌트 3개 */}
       <div className="mt-12 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
         <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">시드 컴포넌트</p>
-        <p className="mt-1.5 text-[12.5px] text-zinc-500">처음 만들어진 3개. 좌측 사이드바에서 51개 전체 탐색.</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500">처음 만들어진 3개. 좌측 사이드바에서 전체 탐색.</p>
         <ul className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200/40 dark:border-white/[0.08] dark:bg-white/[0.02] sm:grid-cols-3">
           {[
             { id: "eyebrow", ko: "아이브로우 라벨", en: "Eyebrow", desc: "섹션 카테고리 라벨 (smallcaps)" },
@@ -1685,7 +1773,7 @@ function Footer() {
           @freeive/anti-card
         </p>
         <p className="mt-2 max-w-[36ch] text-[12.5px] leading-relaxed">
-          AI 시대 사이트 동질화에 답하는 1인 랩의 UI 프레임워크. 51 컴포넌트 + 12 타이포 토큰.
+          AI 시대 사이트 동질화에 답하는 1인 랩의 UI 라이브러리.
         </p>
         <p className="mt-3 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-500">
           v{VERSION}
@@ -3726,7 +3814,7 @@ const HERO_PATTERN_DEF: ComponentDef = {
               1인 랩.
             </>
           }
-          lead="외주 에이전시가 아닙니다. 자체 UI 프레임워크와 카메라 기반 공간 UI 연구."
+          lead="외주 에이전시가 아닙니다. 자체 UI 라이브러리와 카메라 기반 공간 UI 연구."
           ctas={[
             { label: "안티 카드 살펴보기", href: "#", tone: "accent" },
             { label: "Talk · 이기는 싸움만", href: "#" },
@@ -4177,7 +4265,7 @@ const FEATURE_ROW_DEF: ComponentDef = {
             {
               label: "Tone",
               title: "안티 카드 톤",
-              description: "AI 동질화 거부. 자체 UI 프레임워크로 시각 정체성.",
+              description: "AI 동질화 거부. 자체 UI 라이브러리로 시각 정체성.",
             },
           ]}
         />

@@ -3,7 +3,7 @@
 > **An end-user UI library + AI Skill.**
 > The market has 20 admin libraries and 0 end-user libraries. That empty space.
 
-**Current version: 0.9.1** · 51 components · 12 typography tokens
+**Current version: 0.10.0**
 🎯 **[View Playground → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
 
 > [한국어 README](./README.md)
@@ -79,21 +79,21 @@ import {
 ]} />
 ```
 
-#### 51 components by category
+#### Components by category
 
 | Category | Components |
 |---|---|
-| **Layout** (7) | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
-| **Typography** (6) | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
-| **List** (5) | ListRow · DefList · StatList · Timeline · CompareTable |
-| **Action** (4) | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
-| **Content blocks** (5) | Callout · FAQ · PricingTable · Steps · FeatureRow |
-| **Trust / Evidence** (4) | ClientLogos · Testimonial · StatBlock · CaseStudy |
-| **Media** (3) | Image · Video · Gallery |
-| **Interaction** (5) | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
-| **Form** (6) | Input · Textarea · Select · Checkbox · Radio · Pill |
-| **Page patterns** (5) | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
-| **Utils** | `cn()` · `typography` tokens (12) |
+| **Layout** | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
+| **Typography** | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
+| **List** | ListRow · DefList · StatList · Timeline · CompareTable |
+| **Action** | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
+| **Content blocks** | Callout · FAQ · PricingTable · Steps · FeatureRow |
+| **Trust / Evidence** | ClientLogos · Testimonial · StatBlock · CaseStudy |
+| **Media** | Image · Video · Gallery |
+| **Interaction** | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
+| **Form** | Input · Textarea · Select · Checkbox · Radio · Pill |
+| **Page patterns** | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
+| **Utils** | `cn()` · `typography` tokens |
 
 Each component's props/usage is in the **[Playground](https://kimminchul.github.io/anticard/)** —
 visual preview + 6 tabs (Design / Prompt / HTML / CSS / JS / React).
@@ -115,7 +115,7 @@ Details: [Manifesto](https://freeive.com/anti-card/manifesto) · [Why not cards]
 
 ## Playground
 
-Visual previews of 51 components + 6 tabs (Design / Prompt / HTML / CSS / JS / React).
+Visual previews of components + 6 tabs (Design / Prompt / HTML / CSS / JS / React).
 
 - **Public URL**: **[kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)** (GitHub Pages, auto-deployed on main push)
 - **Local**: `npm run dev:play` → http://localhost:5174
@@ -132,39 +132,26 @@ GH_PAGES=1 npm run build:play && npm run preview:play
 $env:GH_PAGES="1"; npm run build:play; npm run preview:play
 ```
 
-## What's New (0.9.1, 2026-05-08)
+## What's New
 
-**0.0.3 → 0.9.1, 51 components + token system completed in one day.**
+See [CHANGELOG.md](./CHANGELOG.md) for the full change history.
 
-| Milestone | Version | Added |
-|---|---|---|
-| P0 — freeive skeleton | 0.1.0 | Container · Hairline · HeroHeading · SectionHeading · Lead · LinkRow · Header · Footer (8) |
-| Token patch | 0.1.1 | typography.displayLg + HeroHeading size prop |
-| P1 — Content tone | 0.2.0 | Quote · Highlight · Image · Video · DefList · StatList · Timeline · Pill (8) |
-| P2 — Patterns + actions | 0.3.0 | HeroPattern · SectorsPattern · TalkPattern · EmptyState · CTASection · Banner · Button · FeatureRow (8) |
-| P3 — Trust / Evidence | 0.4.0 | ClientLogos · Testimonial · StatBlock · CaseStudy (4) |
-| P4 — Interaction | 0.5.0 | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee (5) |
-| P5 — Content blocks | 0.6.0 | Callout · FAQ · PricingTable · PricingPattern · Steps · CompareTable (6) |
-| P6+P7 — Form / Gallery | 0.8.0 | Grid · Input · Textarea · Select · Checkbox · Radio · Gallery (6) |
-| Grid system | 0.9.0 | **GridSystem · GridCol** (12 col) + Grid examples 4 + Select/Checkbox/Radio fix |
-| Calmer-tone patch | 0.9.1 | typography.display 30~48 → 26~40px (calmer hero for non-main pages) |
-
-**Typography token system (0.1.1)**
-12 tokens (`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
+**Typography token system**
+Semantic tokens (`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
 All components reference these tokens — adjust the entire site tone from a single source.
 
 **5 principles consistently applied**
-All 51 components self-verify the 5 principles: box rejection + hairlines + smallcaps + space + rows.
+All components self-verify the 5 principles: box rejection + hairlines + smallcaps + space + rows.
 
 **Dogfooding** — [freeive.com](https://freeive.com) is itself the living proof:
-- Main — `HeroPattern` + `ListRow` (rejecting the 4-axis card grid)
+- Main — `HeroPattern` + `ListRow` (rejecting the card grid)
 - Heritage — `StatList` + `ClientLogos` + `WaveCard` + `ListRow`
 - Talk — `TalkPattern` (accept/decline checklist)
 
 ## ⚠️ Status
 
-**0.9.x beta.** 51 components in visual/functional stabilization phase.
-API freeze and npm publish planned at 1.0.0.
+**0.x beta.** Visual/functional stabilization phase.
+API freeze and npm publish planned at 1.0.0 — see [docs/VERSIONING.md](./docs/VERSIONING.md).
 
 ## Live cases
 
@@ -190,7 +177,7 @@ npm run sync
 
 ## Roadmap
 
-- **v0.9.x (current)** — 51 components + token system + Playground on GitHub Pages
+- **v0.x (current)** — Token system + Playground on GitHub Pages, components continuously expanding
 - **v1.0.0** — API freeze, npm publish, solo-lab identity content + first external use cases
 - **v1.1.0+** — Tailwind preset packaged, headless mode (without Tailwind)
 - **v2.0.0+** — AI Skill formal install command (`claude skill install`), Vue/Svelte ports

@@ -27,7 +27,7 @@ export interface SectionFrameProps
  *
  * @example
  *   <SectionFrame
- *     eyebrow="Framework · v0"
+ *     eyebrow="Library · v0"
  *     title="카드 안에 카드를 쌓지 않는다."
  *     description="AI 도구가 생성하는 동질화 UI에 대한 답변."
  *   >

@@ -16,7 +16,7 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
  * 모서리 둥글게(rounded-md) 살짝만, border 없음.
  * caption은 small smallcaps 톤 — 12.5px zinc-500.
  *
- * 주의: Next.js next/image와 다름 (anti-card는 framework-free).
+ * 주의: Next.js next/image와 다름 (anti-card는 라이브러리·환경 의존성 없음).
  * Next.js 환경에서는 직접 next/image 사용하고 figure만 anti-card 톤으로 감싸도 됨.
  *
  * @example

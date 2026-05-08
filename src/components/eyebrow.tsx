@@ -15,7 +15,7 @@ export interface EyebrowProps extends React.HTMLAttributes<HTMLParagraphElement>
  * 영역의 정체성을 표시한다. shadow나 border 없이도 정보 위계가 만들어진다.
  *
  * @example
- *   <Eyebrow>Framework · v0</Eyebrow>
+ *   <Eyebrow>Library · v0</Eyebrow>
  *   <h1>제목</h1>
  */
 export function Eyebrow({

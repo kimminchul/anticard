@@ -3,7 +3,7 @@
 > **End-user UI를 위한 라이브러리 + AI Skill.**
 > 시장에는 admin lib가 20개고, end-user lib는 0개다. 그 빈 자리.
 
-**현재 버전: 0.9.1** · 51 컴포넌트 · 12 타이포 토큰
+**현재 버전: 0.10.0**
 🎯 **[Playground 보기 → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
 
 > [Read in English](./README.en.md)
@@ -79,21 +79,21 @@ import {
 ]} />
 ```
 
-#### 카테고리별 51 컴포넌트
+#### 카테고리별 컴포넌트
 
 | 카테고리 | 컴포넌트 |
 |---|---|
-| **레이아웃** (7) | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
-| **타이포그래피** (6) | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
-| **리스트** (5) | ListRow · DefList · StatList · Timeline · CompareTable |
-| **액션** (4) | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
-| **콘텐츠 블록** (5) | Callout · FAQ · PricingTable · Steps · FeatureRow |
-| **신뢰·증거** (4) | ClientLogos · Testimonial · StatBlock · CaseStudy |
-| **미디어** (3) | Image · Video · Gallery |
-| **인터랙션** (5) | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
-| **폼** (6) | Input · Textarea · Select · Checkbox · Radio · Pill |
-| **페이지 패턴** (5) | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
-| **유틸** | `cn()` · `typography` 토큰 (12개) |
+| **레이아웃** | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
+| **타이포그래피** | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
+| **리스트** | ListRow · DefList · StatList · Timeline · CompareTable |
+| **액션** | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
+| **콘텐츠 블록** | Callout · FAQ · PricingTable · Steps · FeatureRow |
+| **신뢰·증거** | ClientLogos · Testimonial · StatBlock · CaseStudy |
+| **미디어** | Image · Video · Gallery |
+| **인터랙션** | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
+| **폼** | Input · Textarea · Select · Checkbox · Radio · Pill |
+| **페이지 패턴** | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
+| **유틸** | `cn()` · `typography` 토큰 |
 
 각 컴포넌트의 props·사용법은 **[Playground](https://kimminchul.github.io/anticard/)** 에서 시각 미리보기 + 6 탭(디자인 / 프롬프트 / HTML / CSS / JS / React)으로 확인.
 
@@ -114,7 +114,7 @@ import {
 
 ## Playground
 
-51 컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
+컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
 
 - **공개 URL**: **[kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)** (GitHub Pages, main push 시 자동 배포)
 - **로컬**: `npm run dev:play` → http://localhost:5174
@@ -131,39 +131,26 @@ GH_PAGES=1 npm run build:play && npm run preview:play
 $env:GH_PAGES="1"; npm run build:play; npm run preview:play
 ```
 
-## What's New (0.9.1, 2026-05-08)
+## What's New
 
-**0.0.3 → 0.9.1, 하루 만에 51 컴포넌트 + 토큰 시스템 완성.**
+전체 변경 이력은 [CHANGELOG.md](./CHANGELOG.md) 참고.
 
-| 마일스톤 | 버전 | 추가 |
-|---|---|---|
-| P0 — freeive 골격 | 0.1.0 | Container · Hairline · HeroHeading · SectionHeading · Lead · LinkRow · Header · Footer (8) |
-| 토큰 patch | 0.1.1 | typography.displayLg + HeroHeading size prop |
-| P1 — 콘텐츠 톤 | 0.2.0 | Quote · Highlight · Image · Video · DefList · StatList · Timeline · Pill (8) |
-| P2 — 패턴 + 액션 | 0.3.0 | HeroPattern · SectorsPattern · TalkPattern · EmptyState · CTASection · Banner · Button · FeatureRow (8) |
-| P3 — 신뢰·증거 | 0.4.0 | ClientLogos · Testimonial · StatBlock · CaseStudy (4) |
-| P4 — 인터랙션 | 0.5.0 | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee (5) |
-| P5 — 콘텐츠 블록 | 0.6.0 | Callout · FAQ · PricingTable · PricingPattern · Steps · CompareTable (6) |
-| P6+P7 — 폼·갤러리 | 0.8.0 | Grid · Input · Textarea · Select · Checkbox · Radio · Gallery (6) |
-| Grid 시스템 | 0.9.0 | **GridSystem · GridCol** (12 col) + Grid examples 4 + Select/Checkbox/Radio fix |
-| 차분 톤 patch | 0.9.1 | typography.display 30~48 → 26~40px (일반 페이지 hero 차분) |
-
-**타이포 토큰 시스템 (0.1.1)**
-12개 토큰 (`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
-모든 컴포넌트가 토큰 참조 — 단일 변경점으로 전체 톤 조정 가능.
+**타이포 토큰 시스템**
+의미 단위 토큰들(`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
+모든 컴포넌트가 토큰을 참조 — 단일 변경점으로 전체 톤 조정 가능.
 
 **5 원칙 일관 적용**
-모든 51 컴포넌트가 박스 거부 + 헤어라인 + smallcaps + 공간 + 행 5원칙을 자체 검증.
+모든 컴포넌트가 박스 거부 + 헤어라인 + smallcaps + 공간 + 행 5원칙을 자체 검증.
 
 **dogfooding** — [freeive.com](https://freeive.com) 사이트 자체가 살아있는 증거:
-- 메인 — `HeroPattern` + `ListRow` (4축 카드 그리드 거부)
+- 메인 — `HeroPattern` + `ListRow` (카드 그리드 거부)
 - Heritage — `StatList` + `ClientLogos` + `WaveCard` + `ListRow`
 - Talk — `TalkPattern` (받음/안받음 체크리스트)
 
 ## ⚠️ Status
 
-**0.9.x 베타.** 51 컴포넌트 시각·기능 안정화 단계.
-1.0.0에서 API 동결, npm publish 예정.
+**0.x 베타.** 시각·기능 안정화 단계.
+1.0.0에서 API 동결, npm publish 예정 — 정책: [docs/VERSIONING.md](./docs/VERSIONING.md).
 
 ## 활용사례
 
@@ -189,7 +176,7 @@ npm run sync
 
 ## Roadmap
 
-- **v0.9.x (현재)** — 51 컴포넌트 + 토큰 시스템 + Playground GitHub Pages
+- **v0.x (현재)** — 토큰 시스템 + Playground GitHub Pages, 컴포넌트 지속 확장
 - **v1.0.0** — API 동결, npm publish, 1인 랩 정체성 콘텐츠 + 첫 외부 사용 사례
 - **v1.1.0+** — Tailwind preset 패키지화, Headless 모드 (Tailwind 없이도)
 - **v2.0.0+** — AI Skill 정식 install 명령 (`claude skill install`), Vue/Svelte 포트
