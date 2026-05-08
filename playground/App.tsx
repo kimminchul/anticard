@@ -294,6 +294,11 @@ export default function App() {
       if (READY_SECTIONS[id]) {
         setActiveId(id);
         window.scrollTo({ top: 0, behavior: "smooth" });
+        // 모바일 사이드바 자동 close (컴포넌트 클릭 시 본문 즉시 보이도록)
+        const det = document.querySelector(
+          "details[data-mobile-sidebar]"
+        ) as HTMLDetailsElement | null;
+        if (det && det.open) det.open = false;
       }
     };
     sync();
@@ -304,13 +309,38 @@ export default function App() {
   const ActiveSection = READY_SECTIONS[activeId] ?? Intro;
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
+    <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
       <Header />
-      <div className="mt-10 grid grid-cols-1 gap-12 md:grid-cols-[280px_1fr]">
-        <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
+
+      {/* Mobile sidebar — collapsible details */}
+      <details
+        data-mobile-sidebar
+        className="mt-5 border-y border-zinc-200/60 dark:border-white/[0.06] md:hidden"
+      >
+        <summary className="flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
+          <span className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100">
+            메뉴 / Components
+          </span>
+          <span
+            aria-hidden
+            className="text-[12px] text-zinc-500 transition-transform group-open:rotate-180"
+          >
+            ▼
+          </span>
+        </summary>
+        <div className="pb-4 pt-2">
+          <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
+        </div>
+      </details>
+
+      {/* Layout: desktop grid + mobile single column */}
+      <div className="mt-6 md:mt-10 md:grid md:grid-cols-[280px_1fr] md:gap-12">
+        <aside className="hidden md:block">
+          <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
+        </aside>
         <main className="min-w-0">
           <ActiveSection />
-          <div className="mt-24 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+          <div className="mt-16 border-t border-zinc-200 pt-8 md:mt-24 dark:border-white/[0.08]">
             <Footer />
           </div>
         </main>
@@ -323,9 +353,9 @@ export default function App() {
 
 function Header() {
   return (
-    <header className="flex items-baseline justify-between border-b border-zinc-200/60 pb-5 dark:border-white/[0.06]">
-      <div className="flex items-baseline gap-3">
-        <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+    <header className="flex flex-wrap items-baseline justify-between gap-y-3 border-b border-zinc-200/60 pb-4 md:pb-5 dark:border-white/[0.06]">
+      <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
+        <h1 className="text-lg font-semibold tracking-tight text-zinc-900 md:text-xl dark:text-zinc-50">
           anti-card
         </h1>
         <span className="rounded-full border border-zinc-200 px-2 py-0.5 text-[11px] text-zinc-600 dark:border-white/15 dark:text-zinc-300">
@@ -335,12 +365,22 @@ function Header() {
           playground
         </span>
       </div>
-      <nav className="flex items-center gap-4 text-[12.5px] text-zinc-500 dark:text-zinc-400">
+      <nav className="flex items-center gap-3 text-[12.5px] text-zinc-500 sm:gap-4 dark:text-zinc-400">
         <ThemeToggle />
-        <a href="https://github.com/kimminchul/anticard" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
+        <a
+          href="https://github.com/kimminchul/anticard"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+        >
           Github
         </a>
-        <a href="https://freeive.com/anti-card" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100">
+        <a
+          href="https://freeive.com/anti-card"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden transition-colors hover:text-zinc-900 sm:inline dark:hover:text-zinc-100"
+        >
           freeive.com/anti-card
         </a>
       </nav>
@@ -866,7 +906,16 @@ function ExampleBlock({ example }: { example: Example }) {
           </div>
         )}
         {tab === "prompt" && <PromptInline prompt={example.prompt} />}
-        {tab === "html" && <CodeInline code={example.html} language="HTML (Tailwind)" />}
+        {tab === "html" && (
+          example.html ? (
+            <CodeInline code={example.html} language="HTML (Tailwind)" />
+          ) : (
+            <NoteInline
+              title="React 컴포넌트가 본질"
+              body="이 컴포넌트는 props·variant 처리가 많아 React 사용을 권장합니다. 단순 HTML 변환은 가능하지만 모든 variant를 직접 구현해야 합니다 — 우측 React 탭의 코드를 우선 참고하세요."
+            />
+          )
+        )}
         {tab === "css" && (
           example.css ? (
             <>
@@ -874,7 +923,7 @@ function ExampleBlock({ example }: { example: Example }) {
               {example.cssHtml && <CodeInline code={example.cssHtml} language="HTML (vanilla CSS와 함께)" />}
             </>
           ) : (
-            <NoteInline title="Tailwind만으로 충분" body="이 example은 별도 vanilla CSS 없이도 Tailwind 클래스만으로 동작합니다. 위 HTML 탭의 코드를 그대로 사용하세요." />
+            <NoteInline title="Tailwind만으로 충분" body="이 example은 별도 vanilla CSS 없이도 Tailwind 클래스만으로 동작합니다. 위 HTML 탭의 코드(있는 경우) 또는 React 탭의 className을 그대로 사용하세요." />
           )
         )}
         {tab === "js" && (
