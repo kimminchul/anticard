@@ -511,6 +511,30 @@ function Intro() {
         구조를 참고합니다. 각 Example마다{" "}
         <strong className="text-zinc-900 dark:text-zinc-200">디자인 / 프롬프트 / HTML / CSS / JS / React</strong> 탭을 제공합니다.
       </p>
+
+      {/* freeive 역링크 — 정체성·철학·5원칙은 freeive에 */}
+      <div className="mt-7 border-y border-zinc-200/60 py-4 dark:border-white/[0.06]">
+        <p className="text-[12px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+          공식 사이트
+        </p>
+        <p className="mt-2 text-[14px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+          이 Playground는 컴포넌트 카탈로그입니다. <strong className="text-zinc-900 dark:text-zinc-100">정체성·철학·5원칙·dogfooding 사례</strong>는 공식 사이트에서:
+        </p>
+        <a
+          href="https://freeive.com/anti-card"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-3 inline-flex items-baseline gap-2 text-[15px] font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+        >
+          <span className="border-b border-current/30 group-hover:border-current">
+            freeive.com/anti-card
+          </span>
+          <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+            ↗
+          </span>
+        </a>
+      </div>
+
       <div className="mt-12 border-t border-zinc-200 pt-10 dark:border-white/[0.08]">
         <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">준비된 컴포넌트</p>
         <p className="mt-1.5 text-[12.5px] text-zinc-500">좌측 사이드바에서도 선택할 수 있습니다.</p>
@@ -1100,25 +1124,104 @@ function PropsTable({
 
 function Footer() {
   return (
-    <footer className="text-[12.5px] text-zinc-500">
-      <div className="mb-4 flex items-center gap-2">
-        <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10.5px] font-medium text-amber-700 dark:text-amber-400">
-          dev only
-        </span>
-        <span className="text-[12px] text-zinc-500">
-          이 playground는 패키지 dev 전용. npm 발행 시 제외됨 (.npmignore).
-        </span>
+    <footer className="grid grid-cols-1 gap-y-6 text-[12.5px] text-zinc-500 md:grid-cols-[1.5fr_3fr] md:gap-x-12 dark:text-zinc-400">
+      {/* Brand */}
+      <div>
+        <p className="text-[14px] font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          @freeive/anti-card
+        </p>
+        <p className="mt-2 max-w-[36ch] text-[12.5px] leading-relaxed">
+          AI 시대 사이트 동질화에 답하는 1인 랩의 UI 프레임워크. 51 컴포넌트 + 12 타이포 토큰.
+        </p>
+        <p className="mt-3 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-500">
+          v{VERSION}
+        </p>
       </div>
-      <p>
-        새 컴포넌트 추가:{" "}
-        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">src/components/foo.tsx</code> →{" "}
-        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">src/index.ts</code> export →{" "}
-        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">playground/App.tsx</code> 의 ComponentDef + READY_SECTIONS 등록
-      </p>
-      <p className="mt-2">
-        사이트(:3000) 통합:{" "}
-        <code className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11.5px] text-zinc-700 dark:bg-white/5 dark:text-zinc-300">npm run sync</code>
-      </p>
+
+      {/* Links */}
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+            공식
+          </p>
+          <ul className="mt-3 space-y-2">
+            <li>
+              <a
+                href="https://freeive.com/anti-card"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                freeive.com/anti-card
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://freeive.com/blog/solo-lab-and-anti-card"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                블로그 첫 글
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+            Open
+          </p>
+          <ul className="mt-3 space-y-2">
+            <li>
+              <a
+                href="https://github.com/kimminchul/anticard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                GitHub
+              </a>
+            </li>
+            <li>
+              <span className="text-zinc-400 dark:text-zinc-600">
+                NPM · 1.0.0 발행 예정
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+            Talk
+          </p>
+          <ul className="mt-3 space-y-2">
+            <li>
+              <a
+                href="mailto:ive@freeive.com"
+                className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                ive@freeive.com
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://freeive.com/talk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+              >
+                의뢰·문의
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Copyright — 전체 너비 */}
+      <div className="border-t border-zinc-200/60 pt-4 text-[11px] uppercase tracking-[0.08em] text-zinc-500 md:col-span-2 dark:border-white/[0.06] dark:text-zinc-500">
+        © 2026 Freeive · MIT License · Kim Min Chul
+      </div>
     </footer>
   );
 }
