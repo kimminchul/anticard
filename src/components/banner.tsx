@@ -35,7 +35,7 @@ export function Banner({
     <div
       data-anti-card="banner"
       data-tone={tone}
-      role="status"
+      role={tone === "danger" || tone === "warning" ? "alert" : "status"}
       className={cn(
         "flex items-center gap-3 border-y px-4 py-2.5 text-[13.5px] animate-anti-slide-down",
         tone === "info" &&

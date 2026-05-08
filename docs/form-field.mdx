@@ -1,0 +1,62 @@
+---
+title: FormField
+description: label / control / hint / error wrapper. 11px smallcaps 라벨, error 시 rose 톤.
+group: components
+order: 50
+published: true
+updated: 2026-05-08
+---
+
+`<FormField>`는 폼 필드의 **메타 영역**(label / hint / error)을 담당하는 wrapper입니다. 자식으로 `<Input>`, `<Textarea>`, `<Select>`, `<DatePicker>`, `<Combobox>` 어떤 control이든 들어갈 수 있어요.
+
+```tsx
+import { FormField, Input } from "@freeive/anti-card";
+
+<FormField label="이메일" htmlFor="email" required hint="회신 받을 주소" error={errors.email}>
+  <Input id="email" type="email" value={email} onChange={...} />
+</FormField>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` | `ReactNode` | — | 11px uppercase smallcaps 라벨 |
+| `htmlFor` | `string` | — | 자식 control id 매핑 |
+| `hint` | `ReactNode` | — | 보조 설명 (12.5px zinc-500) |
+| `error` | `ReactNode` | — | 에러 메시지. 표시 시 hint 자리 대체 + label도 rose |
+| `required` | `boolean` | `false` | 필수 표시 (label 옆 emerald 점) |
+| `layout` | `"label-top" \| "label-left"` | `"label-top"` | 데스크톱 horizontal 레이아웃 |
+
+## 디자인
+
+- 박스 X — wrapper일 뿐, 시각적 박스 없음
+- label = `<Eyebrow>`와 동일한 11px smallcaps zinc-500
+- error 표시 시 label·메시지 모두 rose-600 (dark: rose-400)
+- `data-anti-card="form-field"` + `data-error=""` 속성으로 외부 CSS 룰에서
+  자식 input의 border 색을 rose로 자동 전환할 수도 있음 (선택)
+
+## 자식 input의 error 보더
+
+자동 전환은 안 함. 사용자가 명시적으로 className으로 지정:
+
+```tsx
+<Input className={error ? "border-rose-500/60 dark:border-rose-400/40" : undefined} />
+```
+
+또는 프로젝트 styles.css에서:
+
+```css
+[data-anti-card="form-field"][data-error] input,
+[data-anti-card="form-field"][data-error] textarea {
+  border-color: rgb(244 63 94 / 0.6); /* rose-500/60 */
+}
+```
+
+## 관련
+
+- [Input](/anti-card/input) — 입력 control
+- [Textarea](/anti-card/textarea) — 여러 줄
+- [Select](/anti-card/select) — 옵션 select
+- [DatePicker](/anti-card/date-picker) — 날짜 선택
+- [Combobox](/anti-card/combobox) — 검색 가능 select

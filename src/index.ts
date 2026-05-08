@@ -1,7 +1,12 @@
-// @freeive/anti-card v0.0.1
+"use client";
+// @freeive/anti-card
 //
 // 카드 안에 카드를 쌓지 않는 UI 시드.
 // 자세한 원칙·로드맵: https://freeive.com/anti-card
+//
+// "use client" directive는 단일 entry에 createContext/useState 등 client-only 코드가
+// 섞여 있어 Next.js Server Component에서 import 시 깨지는 문제를 해소합니다.
+// children은 사용자가 자유롭게 server component로 유지할 수 있습니다.
 
 export { Eyebrow } from "./components/eyebrow";
 export type { EyebrowProps } from "./components/eyebrow";
@@ -162,6 +167,9 @@ export type { CheckboxProps, RadioProps } from "./components/checkbox-radio";
 export { Gallery } from "./components/gallery";
 export type { GalleryProps, GalleryItem } from "./components/gallery";
 
+export { Carousel } from "./components/carousel";
+export type { CarouselProps, CarouselSlide } from "./components/carousel";
+
 // 내비게이션
 export { Breadcrumb } from "./components/breadcrumb";
 export type { BreadcrumbProps, BreadcrumbItem } from "./components/breadcrumb";
@@ -196,6 +204,22 @@ export type {
   ToastInput,
   ToastProviderProps,
 } from "./components/toast";
+
+// 폼 + 데이터 (0.11.0~)
+export { FormField } from "./components/form-field";
+export type { FormFieldProps } from "./components/form-field";
+
+export { DataTable } from "./components/data-table";
+export type { DataTableProps, DataTableColumn } from "./components/data-table";
+
+export { TextList } from "./components/text-list";
+export type { TextListProps, TextListVariant } from "./components/text-list";
+
+export { DatePicker } from "./components/date-picker";
+export type { DatePickerProps } from "./components/date-picker";
+
+export { Combobox } from "./components/combobox";
+export type { ComboboxProps, ComboboxOption } from "./components/combobox";
 
 export { cn } from "./utils/cn";
 

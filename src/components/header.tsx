@@ -98,7 +98,7 @@ export function Header({
               : {})}
             className="ml-auto inline-flex items-baseline gap-1.5 text-[14px] font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-50 dark:hover:text-emerald-400"
           >
-            <span className="border-b border-current/40">{cta.label}</span>
+            <span className="border-b border-zinc-900/40 dark:border-zinc-50/40">{cta.label}</span>
             <span aria-hidden>→</span>
           </a>
         )}

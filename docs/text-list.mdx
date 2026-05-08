@@ -1,0 +1,50 @@
+---
+title: TextList
+description: 본문 ul/ol 리스트. 6 variant — bullet · hyphen · number · number-padded · check · dot-accent.
+group: components
+order: 16
+published: true
+updated: 2026-05-08
+---
+
+`<TextList>`는 본문 흐름 안에 들어가는 **일반 글머리 리스트**입니다. 카드·행 박스가 아닌 단순 ul/ol — 마커 종류만 골라 쓰면 됩니다.
+
+```tsx
+import { TextList } from "@freeive/anti-card";
+
+<TextList items={["첫째", "둘째", "셋째"]} />
+<TextList variant="number-padded" items={["박스 거부", "헤어라인", "공간"]} />
+<TextList variant="check" items={["MVP 컨설팅", "기술 서포트"]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `ReactNode[]` | — | 리스트 항목 |
+| `variant` | `"bullet" \| "hyphen" \| "number" \| "number-padded" \| "check" \| "dot-accent"` | `"bullet"` | 마커 종류 |
+| `density` | `"tight" \| "default" \| "loose"` | `"default"` | 행 간격 |
+
+## Variants
+
+| variant | 마커 | 시맨틱 | 사용처 |
+|---|---|---|---|
+| `bullet` | `•` (zinc) | ul | 일반 글머리 — 가장 자주 |
+| `hyphen` | `—` (lucide Minus) | ul | 분류·키워드 가벼운 나열 |
+| `number` | `1. 2. 3.` | ol | 절차·순서가 의미 있을 때 |
+| `number-padded` | `01 02 03` (mono) | ol | 매니페스토·원칙·연혁 차분한 톤 |
+| `check` | `✓` (lucide Check, emerald) | ul | 긍정 강조 (받음·포함 사항) |
+| `dot-accent` | `•` (emerald) | ul | 강조된 글머리 (릴리즈 노트 등) |
+
+## ListRow와의 차이
+
+- `<ListRow>`: 행마다 1px 헤어라인 + 좌측 meta + 우측 trailing — 인터랙티브 행 (Heritage·Blog 목록)
+- `<TextList>`: 본문 안 단순 글머리 리스트 — 헤어라인 없음 (블로그 본문·About·약관)
+
+리스트 항목이 클릭 가능한 행이면 ListRow, 본문 안 글머리 텍스트면 TextList.
+
+## 관련
+
+- [ListRow](/anti-card/list-row) — 헤어라인 인터랙티브 행
+- [Steps](/anti-card/steps) — 큰 절차 단계 (제목 + 설명)
+- [Quote](/anti-card/quote) — 인용 (별개)

@@ -1,6 +1,6 @@
 {
   "name": "@freeive/anti-card",
-  "version": "0.10.0",
+  "version": "0.12.1",
   "description": "An anti-card UI library. AI 시대의 ‘카드 안의 카드’ 동질화에 답하는 React + Tailwind UI 시드.",
   "license": "MIT",
   "author": "Kim Min Chul (Freeive) <ive@freeive.com>",
@@ -40,7 +40,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/add-use-client.mjs",
     "dev": "tsup --watch",
     "dev:play": "vite",
     "build:play": "vite build",

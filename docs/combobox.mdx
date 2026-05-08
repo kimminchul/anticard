@@ -1,0 +1,67 @@
+---
+title: Combobox
+description: Input + Dropdown 결합. 검색 가능 select. ↑↓ 키보드, Enter 선택.
+group: components
+order: 53
+published: true
+updated: 2026-05-08
+---
+
+`<Combobox>`는 옵션이 많을 때 사용하는 **검색 가능한 select**입니다. `<Select>` + 검색 input + 키보드 네비게이션.
+
+```tsx
+import { Combobox } from "@freeive/anti-card";
+
+<Combobox
+  value={brand}
+  onChange={setBrand}
+  options={[
+    { value: "preive", label: "Preive (2016~2022)" },
+    { value: "freeive", label: "Freeive (2023~)" },
+  ]}
+  placeholder="브랜드 선택"
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `options` | `ComboboxOption[]` | — | `{value, label, searchText?, disabled?}` |
+| `value` | `string \| null` | — | 선택값 (controlled) |
+| `onChange` | `(value) => void` | — | 변경 콜백 |
+| `placeholder` | `string` | `"선택"` | 트리거 placeholder |
+| `searchPlaceholder` | `string` | `"검색…"` | 검색 input placeholder |
+| `empty` | `ReactNode` | `"결과 없음"` | 결과 없을 때 |
+| `width` | `string` | `"w-[220px]"` | 전체 너비 (Tailwind) |
+| `clearable` | `boolean` | `true` | X 버튼 표시 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `id` | `string` | — | FormField htmlFor 매칭 |
+
+## 디자인
+
+- 트리거: 1px 헤어라인 button, 우측 lucide ChevronDown(open 시 rotate-180), 클리어 X
+- popover: 1px 헤어라인, `animate-anti-scale-in`
+- 검색 input top + 옵션 listbox bottom (scroll, max-h-[220px])
+- 옵션 활성(↑↓): bg-zinc-100, hover: bg-zinc-50
+- 선택 옵션: 우측 emerald Check 아이콘
+
+## 인터랙션 / 키보드
+
+- 트리거 클릭 → popover 열림 + input 자동 focus
+- 입력 → 옵션 필터링 (label 또는 `searchText` 포함 매칭)
+- ↑/↓ → activeIndex 이동
+- Enter → 활성 옵션 선택 + 닫힘
+- ESC → 닫힘
+- 클리어 X → 선택값 null
+
+## Select와의 차이
+
+- `<Select>`: native `<select>` — 옵션 ~10개 이하 적합
+- `<Combobox>`: 검색 가능 — 옵션 많을 때 (섹터 30+, 도시 등)
+
+## 관련
+
+- [Select](/anti-card/select) — native select
+- [Dropdown](/anti-card/dropdown) — 액션 메뉴 (선택 X)
+- [FormField](/anti-card/form-field) — label/error wrapper

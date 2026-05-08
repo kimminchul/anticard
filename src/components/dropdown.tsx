@@ -21,8 +21,8 @@ export interface DropdownItem {
 }
 
 export interface DropdownProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 트리거 요소 (button 권장) */
-  trigger: React.ReactNode;
+  /** 트리거 요소 — 키보드 동작 위해 button 또는 button-like ReactElement 권장 */
+  trigger: React.ReactElement;
   items: DropdownItem[];
   /** 정렬 — start = trigger 좌측 / end = trigger 우측 */
   align?: "start" | "end";
@@ -74,6 +74,21 @@ export function Dropdown({
   const itemBase =
     "flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-[13.5px] transition-colors disabled:cursor-not-allowed disabled:opacity-50";
 
+  // trigger element에 onClick / aria 주입 — outer span 제거로 키보드 trigger 가능
+  const triggerProps = (trigger as React.ReactElement<Record<string, unknown>>).props ?? {};
+  const userOnClick = triggerProps.onClick as ((e: React.MouseEvent) => void) | undefined;
+  const triggerEl = React.cloneElement(
+    trigger as React.ReactElement<Record<string, unknown>>,
+    {
+      onClick: (e: React.MouseEvent) => {
+        userOnClick?.(e);
+        setOpen((v) => !v);
+      },
+      "aria-expanded": open,
+      "aria-haspopup": "menu",
+    } as Record<string, unknown>
+  );
+
   return (
     <div
       ref={ref}
@@ -82,7 +97,7 @@ export function Dropdown({
       className={cn("relative inline-flex", className)}
       {...props}
     >
-      <span onClick={() => setOpen((v) => !v)}>{trigger}</span>
+      {triggerEl}
       {open && (
         <div
           role="menu"

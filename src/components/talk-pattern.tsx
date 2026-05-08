@@ -57,7 +57,13 @@ export function TalkPattern({
       />
 
       {(acceptList.length > 0 || declineList.length > 0) && (
-        <div className="mt-12 grid grid-cols-1 gap-12 border-t border-zinc-200 pt-12 md:grid-cols-2 md:gap-16 md:pt-16 dark:border-white/[0.06]">
+        <div
+          className={cn(
+            "mt-12 grid grid-cols-1 gap-12 border-t border-zinc-200 pt-12 md:gap-16 md:pt-16 dark:border-white/[0.06]",
+            // 받음 / 안받음이 모두 있을 때만 2열. 한 쪽만 있으면 1열로 자연스럽게.
+            acceptList.length > 0 && declineList.length > 0 && "md:grid-cols-2"
+          )}
+        >
           {acceptList.length > 0 && (
             <div>
               <Eyebrow tone="accent">받음</Eyebrow>

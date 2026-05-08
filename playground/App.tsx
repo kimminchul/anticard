@@ -77,6 +77,12 @@ import {
   Checkbox,
   Radio,
   Gallery,
+  Carousel,
+  FormField,
+  DataTable,
+  DatePicker,
+  Combobox,
+  TextList,
   Breadcrumb,
   Pagination,
   Tabs,
@@ -142,11 +148,25 @@ const NAV: NavGroup[] = [
     group: "리스트",
     desc: "정보 나열 (카드 그리드의 대안)",
     items: [
+      { id: "text-list", ko: "텍스트 리스트 (블릿·하이픈·번호)", en: "Text List", status: "ready" },
       { id: "list-row", ko: "리스트 행", en: "ListRow", status: "ready" },
       { id: "definition-list", ko: "정의 리스트", en: "Definition List", status: "ready" },
       { id: "stat-list", ko: "통계 숫자 행", en: "Stat List", status: "ready" },
       { id: "timeline", ko: "타임라인", en: "Timeline", status: "ready" },
       { id: "compare-table", ko: "비교 표", en: "Compare Table", status: "ready" },
+    ],
+  },
+  {
+    group: "데이터 테이블",
+    desc: "정렬·편집·계층 등 인터랙티브 표 모음. 행 + 1px 헤어라인 시그니처.",
+    items: [
+      { id: "data-table", ko: "기본 데이터 테이블 (정렬)", en: "DataTable", status: "ready" },
+      { id: "selectable-table", ko: "선택 가능 테이블 (체크박스 + 일괄 액션)", en: "SelectableTable", status: "planned" },
+      { id: "expandable-table", ko: "펼침 가능 테이블 (행 클릭 → 상세)", en: "ExpandableTable", status: "planned" },
+      { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "planned" },
+      { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "planned" },
+      { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "planned" },
+      { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "planned" },
     ],
   },
   {
@@ -190,18 +210,21 @@ const NAV: NavGroup[] = [
       { id: "image", ko: "이미지", en: "Image", status: "ready" },
       { id: "video", ko: "비디오 플레이어", en: "Video", status: "ready" },
       { id: "gallery", ko: "갤러리", en: "Gallery", status: "ready" },
-      { id: "carousel", ko: "캐러셀·슬라이드", en: "Carousel", status: "planned" },
+      { id: "carousel", ko: "캐러셀·슬라이드", en: "Carousel", status: "ready" },
     ],
   },
   {
     group: "폼",
-    desc: "입력·선택. 안티 카드 영역에선 최소한.",
+    desc: "입력·선택·검증. admin / Talk / 검색에 필요한 풀 라인업.",
     items: [
       { id: "input", ko: "입력 필드", en: "Input", status: "ready" },
       { id: "textarea", ko: "여러 줄 입력", en: "Textarea", status: "ready" },
       { id: "select", ko: "드롭다운", en: "Select", status: "ready" },
       { id: "checkbox-radio", ko: "체크박스·라디오", en: "Checkbox/Radio", status: "ready" },
       { id: "pill", ko: "필 / 태그", en: "Pill / Tag", status: "ready" },
+      { id: "form-field", ko: "폼 필드 (라벨·검증)", en: "Form Field", status: "ready" },
+      { id: "date-picker", ko: "날짜 선택", en: "Date Picker", status: "ready" },
+      { id: "combobox", ko: "콤보박스 (검색 select)", en: "Combobox", status: "ready" },
     ],
   },
   {
@@ -266,7 +289,7 @@ const USES_LUCIDE: Record<string, string[]> = {
   pill: ["ArrowUpRight"],
 };
 
-const VERSION = "0.10.0";
+const VERSION = "0.12.0";
 
 /* ================ Component versions ================
  *
@@ -348,18 +371,33 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   // 0.9.0 — Grid System
   "grid-system": { addedIn: "0.9.0" },
 
-  // 0.11.0 — 내비게이션 (다음 release 예정)
+  // 0.11.0 — 내비게이션
   tabs: { addedIn: "0.11.0" },
   breadcrumb: { addedIn: "0.11.0" },
   pagination: { addedIn: "0.11.0" },
 
   // 0.11.0 — 오버레이
-  dialog: { addedIn: "0.11.0" },
-  drawer: { addedIn: "0.11.0" },
-  popover: { addedIn: "0.11.0" },
+  dialog: { addedIn: "0.11.0", updatedIn: "0.12.0" }, // 커스텀 오버레이 + focus trap + aria-labelledby
+  drawer: { addedIn: "0.11.0", updatedIn: "0.12.0" }, // focus trap + aria-labelledby
+  popover: { addedIn: "0.11.0", updatedIn: "0.12.0" }, // trigger cloneElement (키보드 동작)
   tooltip: { addedIn: "0.11.0" },
   toast: { addedIn: "0.11.0" },
-  dropdown: { addedIn: "0.11.0" },
+  dropdown: { addedIn: "0.11.0", updatedIn: "0.12.0" }, // trigger cloneElement
+
+  // 0.12.0 — 폼·데이터·미디어
+  carousel: { addedIn: "0.12.0" },
+  "form-field": { addedIn: "0.12.0" },
+  "data-table": { addedIn: "0.12.0" },
+  "date-picker": { addedIn: "0.12.0" },
+  combobox: { addedIn: "0.12.0" },
+  "text-list": { addedIn: "0.12.0" },
+
+  // 0.12.0 — 카피·톤 정리 + 모션 보강
+  banner: { addedIn: "0.3.0", updatedIn: "0.12.0" }, // role="alert" 분기 + slide-down 모션
+  callout: { addedIn: "0.6.0", updatedIn: "0.12.0" }, // 아이콘 vertical center
+  "wave-card": { addedIn: "0.5.0", updatedIn: "0.12.0" }, // orientation prop
+  "talk-pattern": { addedIn: "0.3.0", updatedIn: "0.12.0" }, // 한쪽만 있을 때 1열
+  header: { addedIn: "0.1.0", updatedIn: "0.12.0" }, // border-current/40 fix
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -399,7 +437,19 @@ interface ComponentDef {
   id: string;
   ko: string;
   en: string;
+  /** 한 줄 요약 — 카탈로그 사이드바 / 페이지 상단 */
   desc: string;
+  /**
+   * 비개발자도 이해할 수 있는 풍부한 설명 (2~4문장).
+   * "이게 무엇이고 왜 쓰는지" — 코드 용어 최소화.
+   * 미정 시 desc만 노출 (점진적 채움 가능).
+   */
+  intro?: string;
+  /**
+   * 주 사용처 — 실제 페이지/맥락 기준 짧은 문장 4~6개.
+   * "어디에 쓰나"를 비개발자 시각으로.
+   */
+  useCases?: string[];
   examples: Example[];
   props: Array<{ name: string; type: string; default?: string; desc: string }>;
 }
@@ -463,6 +513,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   select: () => <ComponentPage def={SELECT_DEF} />,
   "checkbox-radio": () => <ComponentPage def={CHECKBOX_RADIO_DEF} />,
   gallery: () => <ComponentPage def={GALLERY_DEF} />,
+  carousel: () => <ComponentPage def={CAROUSEL_DEF} />,
   // 내비게이션
   tabs: () => <ComponentPage def={TABS_DEF} />,
   breadcrumb: () => <ComponentPage def={BREADCRUMB_DEF} />,
@@ -474,6 +525,13 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   tooltip: () => <ComponentPage def={TOOLTIP_DEF} />,
   toast: () => <ComponentPage def={TOAST_DEF} />,
   dropdown: () => <ComponentPage def={DROPDOWN_DEF} />,
+  // 폼·데이터 (0.11.0~)
+  "form-field": () => <ComponentPage def={FORM_FIELD_DEF} />,
+  "data-table": () => <ComponentPage def={DATA_TABLE_DEF} />,
+  "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
+  combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
+  // 리스트 / 텍스트
+  "text-list": () => <ComponentPage def={TEXT_LIST_DEF} />,
 };
 
 const DEFAULT_ID = "intro";
@@ -753,8 +811,8 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
     <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
       {/* Docs — 개요 단독 */}
       <div className="mb-6">
-        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
-        <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
+        <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Docs</p>
+        <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[15px] dark:border-white/[0.08]">
           <li>
             <a
               href="#intro"
@@ -772,10 +830,10 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
 
       {/* Filter (전체 / 준비됨) */}
       <div className="flex items-center gap-1 rounded-md border border-zinc-200 p-0.5 dark:border-white/[0.08]">
-        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1.5 text-[12px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
+        <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1.5 text-[13px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           전체 {totalCount}
         </button>
-        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1.5 text-[12px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
+        <button type="button" onClick={() => onFilterChange("ready")} className={`flex-1 rounded px-2 py-1.5 text-[13px] transition-colors ${filter === "ready" ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           준비됨 {readyCount}
         </button>
       </div>
@@ -792,19 +850,19 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
               open={autoOpen}
               className="group/cat [&>summary]:list-none [&>summary]:cursor-pointer"
             >
-              <summary className="flex items-baseline justify-between gap-2 rounded-md px-1.5 py-1.5 hover:bg-zinc-100/50 dark:hover:bg-white/[0.03]">
-                <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+              <summary className="flex items-baseline justify-between gap-2 rounded-md px-1.5 py-2 hover:bg-zinc-100/50 dark:hover:bg-white/[0.03]">
+                <span className="text-[13px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
                   {group.group}
                 </span>
-                <span aria-hidden className="flex items-baseline gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-500">
+                <span aria-hidden className="flex items-baseline gap-1.5 text-[11px] text-zinc-500 dark:text-zinc-500">
                   <span className="font-mono tabular-nums">{items.length}</span>
                   <span className="transition-transform duration-200 group-open/cat:rotate-90">▶</span>
                 </span>
               </summary>
               {group.desc && (
-                <p className="mt-1 px-1.5 text-[12px] leading-snug text-zinc-500">{group.desc}</p>
+                <p className="mt-1 px-1.5 text-[12.5px] leading-snug text-zinc-500">{group.desc}</p>
               )}
-              <ul className="mt-2 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
+              <ul className="mt-2 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[15px] dark:border-white/[0.08]">
                 {items.map((item) => {
                   const meta = STATUS_META[item.status];
                   const isClickable = item.status === "ready";
@@ -995,12 +1053,12 @@ const HEADING_ROWS: TokenRow[] = [
   {
     token: "displayLg",
     label: 'HeroHeading size="hero" · 메인 hero · 40~64px · 사이트당 1회',
-    sample: "1인 운영자의 무기를 만드는 1인 랩.",
+    sample: "서비스 운영자의 무기를 만드는 랩.",
   },
   {
     token: "display",
     label: 'HeroHeading default · 페이지 타이틀 · 30~48px',
-    sample: "큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.",
+    sample: "큰 프로젝트들의 깊이를 랩으로 옮긴다.",
   },
   {
     token: "h2",
@@ -1719,7 +1777,34 @@ function ComponentPage({ def }: { def: ComponentDef }) {
           </div>
         )}
 
-        <p className="mt-4 text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">{def.desc}</p>
+        {/* 본문 설명 — intro가 있으면 풍부한 설명, 없으면 desc fallback.
+            카탈로그 사이드바·NAV는 desc(짧은 줄)를 그대로 사용. */}
+        <p className="mt-4 max-w-[64ch] text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+          {def.intro ?? def.desc}
+        </p>
+
+        {/* 주로 어디에 쓰나요 — 단독 영역. 데이터 없으면 자동 숨김.
+            안티 카드 5원칙 일관성 — border-t만 (박스 거부, 아래는 공간으로 분리). */}
+        {def.useCases && def.useCases.length > 0 && (
+          <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-white/[0.06] md:pt-7">
+            <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+              주로 어디에 쓰나요
+            </p>
+            <ul className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-x-12">
+              {def.useCases.map((u, i) => (
+                <li
+                  key={i}
+                  className="flex items-baseline gap-2 text-[14px] leading-relaxed text-zinc-700 dark:text-zinc-300"
+                >
+                  <span aria-hidden className="shrink-0 text-emerald-500/80 dark:text-emerald-400/80">
+                    ·
+                  </span>
+                  <span>{u}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Examples — 각 example이 자체 6탭 */}
@@ -2001,7 +2086,7 @@ function Footer() {
           @freeive/anti-card
         </p>
         <p className="mt-2 max-w-[36ch] text-[12.5px] leading-relaxed">
-          AI 시대 사이트 동질화에 답하는 1인 랩의 UI 라이브러리.
+          AI 시대 사이트 동질화에 답하는 UI 라이브러리.
         </p>
         <p className="mt-3 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-500">
           v{VERSION}
@@ -2103,6 +2188,14 @@ const EYEBROW_DEF: ComponentDef = {
   ko: "아이브로우 라벨",
   en: "Eyebrow",
   desc: "섹션의 카테고리를 작은 라벨로 분리하는 smallcaps 컴포넌트. 카드 박스 없이 영역을 구분하는 가장 가벼운 신호.",
+  intro:
+    "본문이나 큰 제목 위에 살짝 들어가는 11~12px 짜리 작은 글씨 라벨입니다. 영문 대문자 + 자간을 약간 벌려 \"이 영역의 분류는 이거예요\"라고 부드럽게 알려 줍니다. 카드나 박스로 가두지 않고 글자 한 줄만으로 섹션의 시작을 표시합니다.",
+  useCases: [
+    "섹션 큰 제목 바로 위의 카테고리 라벨 (예: \"Heritage · 2016 — Now\")",
+    "블로그 글의 카테고리·연재 표시",
+    "Talk·About 같은 페이지의 \"What·Why·How\" 미니 헤딩",
+    "Hero 위에 들어가는 영역 식별자 (예: \"Solo lab · 실험 중인 것들\")",
+  ],
   examples: [
     {
       index: "01",
@@ -2263,6 +2356,14 @@ const SECTION_FRAME_DEF: ComponentDef = {
   ko: "섹션 프레임",
   en: "SectionFrame",
   desc: "카드 박스 없이 섹션을 짜는 헤어라인 + 여백 + 라벨 묶음. 안티 카드 5원칙 중 세 가지를 한 컴포넌트로.",
+  intro:
+    "한 영역(섹션)을 통째로 만들어 주는 큰 묶음 컴포넌트입니다. 위에 작은 라벨, 그 아래 큰 제목, 보조 한 줄, 본문 — 이 네 가지가 일관된 간격으로 자동 배치됩니다. 박스나 그림자로 영역을 가두지 않고, 위/아래 1픽셀 선과 충분한 여백만으로 \"여기서부터 새 영역\"을 알립니다.",
+  useCases: [
+    "랜딩 페이지의 \"3가지 축\" 같은 큰 영역 묶음",
+    "Heritage·About에서 카테고리별 큰 영역 정리",
+    "FAQ·Pricing 같이 헤더가 필요한 콘텐츠 영역",
+    "한 페이지 안에 여러 영역이 있을 때 위계를 자동으로 통일",
+  ],
   examples: [
     {
       index: "01",
@@ -2431,6 +2532,15 @@ const LIST_ROW_DEF: ComponentDef = {
   ko: "리스트 행",
   en: "ListRow",
   desc: "카드 그리드 대신 행 레이아웃. divide-y + border-y 와 함께 ul 안에서 사용. 안티 카드의 가장 자주 쓰는 컴포넌트.",
+  intro:
+    "카드 박스를 격자로 늘어놓는 대신, 한 줄짜리 행을 위에서 아래로 쌓아 정보를 보여주는 패턴입니다. 행과 행 사이에는 1픽셀 선만 있고, 좌측에는 작은 메타(연도·카테고리 등), 우측에는 보조 정보를 둘 수 있어 한 화면에 더 많은 항목이 자연스럽게 펼쳐집니다. 안티 카드 톤에서 가장 자주 쓰이는 기본 단위입니다.",
+  useCases: [
+    "Heritage의 섹터별 프로젝트 목록 (연도 + 제목 + 클라이언트)",
+    "블로그 글 목록의 단정한 행 (날짜 + 제목 + 카테고리)",
+    "FAQ 같은 단순 목록 + 우측 화살표",
+    "Pricing 페이지의 플랜 비교 행",
+    "안티 카드 프레임워크의 \"5원칙\" 같은 번호 + 제목 + 설명 패턴",
+  ],
   examples: [
     {
       index: "01",
@@ -2633,6 +2743,14 @@ const CONTAINER_DEF: ComponentDef = {
   ko: "컨테이너",
   en: "Container",
   desc: "페이지 본문 너비 통일. 카드로 영역을 가두지 않는 대신 너비로 영역을 정의한다. 안티 카드 5원칙 중 '공간(여백)'.",
+  intro:
+    "본문이 너무 넓게 퍼지지 않도록 가운데로 모아 주는 보이지 않는 틀입니다. 박스나 테두리는 없고, 좌우 여백만으로 영역을 정해 본문이 읽기 좋은 너비에서 멈추게 만듭니다. 모바일에서는 좌우 패딩이 자동으로 줄어 답답하지 않습니다.",
+  useCases: [
+    "랜딩·Heritage·Lab 같은 일반 페이지 본문 (1200px 표준)",
+    "블로그 본문처럼 글자가 메인일 때는 좁은 너비(640~720px)로 가독성 우선",
+    "히어로·갤러리처럼 풍부한 시각이 필요한 화면은 넓은 너비(1440px+)",
+    "약관·정책 페이지의 긴 텍스트를 한 호흡으로 읽히게",
+  ],
   examples: [
     {
       index: "01",
@@ -2858,6 +2976,14 @@ const HAIRLINE_DEF: ComponentDef = {
   ko: "헤어라인 구분선",
   en: "Hairline",
   desc: "박스 거부 영역 분리. border 1px 한 줄로 영역의 시작/끝을 표시. 안티 카드 5원칙 중 '헤어라인'.",
+  intro:
+    "본문 사이에 들어가는 가장 가벼운 구분선입니다. 박스로 묶거나 큰 빈 공간을 만들지 않고, 1픽셀 짜리 한 줄만으로 \"여기까지 한 영역, 여기부터 다른 영역\"이라고 부드럽게 알려 줍니다.",
+  useCases: [
+    "긴 페이지에서 섹션과 섹션 사이의 자연스러운 분리",
+    "블로그 본문 안에서 화제가 바뀌는 지점 표시",
+    "Footer 위처럼 본문이 끝났음을 알리는 마무리 선",
+    "한 줄짜리 메뉴 아래 가벼운 underline 대안",
+  ],
   examples: [
     {
       index: "01",
@@ -2953,6 +3079,14 @@ const HERO_HEADING_DEF: ComponentDef = {
   ko: "히어로 큰 제목",
   en: "HeroHeading",
   desc: "페이지 첫 화면의 큰 제목. 두 단계 위계 — size='hero'(40~64px, 메인 1회) / default(30~48px, 일반 페이지).",
+  intro:
+    "페이지에 들어가자마자 가장 먼저 눈에 띄는 큰 제목입니다. 사이트 메인 첫 화면(hero)에서는 더 크게, 그 외 페이지(Lab / Heritage / Blog)에서는 살짝 작은 사이즈로 자동 조절됩니다. 화면이 좁아지면 글자 크기가 부드럽게 줄어 모바일에서도 답답하지 않습니다.",
+  useCases: [
+    "사이트 메인 첫 화면의 가장 큰 한 줄 (한 사이트당 1번만)",
+    "Lab·Heritage·Blog·Talk 같은 영역 페이지의 첫 화면 제목",
+    "특정 캠페인/이벤트 랜딩의 메인 메시지",
+    "어디서 어떤 페이지에 들어왔는지 한눈에 알리는 위계의 시작",
+  ],
   examples: [
     {
       index: "01",
@@ -2960,7 +3094,7 @@ const HERO_HEADING_DEF: ComponentDef = {
       title: "기본 — 일반 페이지 타이틀 (30~48px)",
       description: "Lab / Heritage / Blog 등 일반 페이지의 첫 화면. typography.display 토큰.",
       preview: (
-        <HeroHeading>큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.</HeroHeading>
+        <HeroHeading>큰 프로젝트들의 깊이를 랩으로 옮긴다.</HeroHeading>
       ),
       prompt: `일반 페이지(Lab / Heritage / Blog)의 첫 화면 큰 제목이 필요해. 사이트 메인이 아닌 페이지 단위 hero.
 
@@ -2972,13 +3106,13 @@ const HERO_HEADING_DEF: ComponentDef = {
 - 색: text-zinc-900 dark:text-zinc-50
 - 너비: max-w-[20ch] — 자연스러운 줄바꿈
 - 줄간격: leading-[1.1]
-- 1인 랩 차분 톤 — shadcn식 거대 hero(64~80px+) 거부.
+- 차분 톤 — shadcn식 거대 hero(64~80px+) 거부.
 
 사이트 메인의 최상위 hero가 필요하면 size="hero" (다음 example 참조).`,
       html: `<h1 class="font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-50 text-[clamp(1.875rem,4vw,3rem)] leading-[1.1] max-w-[20ch]">
-  큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.
+  큰 프로젝트들의 깊이를 랩으로 옮긴다.
 </h1>`,
-      react: `<HeroHeading>큰 프로젝트들의 깊이를 1인 랩으로 옮긴다.</HeroHeading>`,
+      react: `<HeroHeading>큰 프로젝트들의 깊이를 랩으로 옮긴다.</HeroHeading>`,
     },
     {
       index: "02",
@@ -2986,7 +3120,7 @@ const HERO_HEADING_DEF: ComponentDef = {
       title: "size='hero' — 사이트 메인 (40~64px)",
       description: "사이트 최상위 hero. typography.displayLg 토큰. 사이트당 1번만.",
       preview: (
-        <HeroHeading size="hero">1인 운영자의 무기를 만드는 1인 랩.</HeroHeading>
+        <HeroHeading size="hero">서비스 운영자의 무기를 만드는 랩.</HeroHeading>
       ),
       prompt: `사이트 메인 페이지의 가장 큰 hero가 필요해. 페이지 단위 hero(default, 30~48px)보다 한 단계 큰 위계.
 
@@ -3001,12 +3135,12 @@ const HERO_HEADING_DEF: ComponentDef = {
 
 원칙: size="hero"는 사이트당 1번만. 모든 페이지 첫 화면을 size="hero"로 하면 위계가 사라진다. 메인=hero, 그 외=default.
 
-이게 1인 랩 사이트의 표준 위계 — 메인 1번 강조 + 나머지는 차분.`,
+이게 안티 카드 사이트의 표준 위계 — 메인 1번 강조 + 나머지는 차분.`,
       html: `<h1 class="font-semibold tracking-[-0.025em] text-zinc-900 dark:text-zinc-50 text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] max-w-[20ch]">
-  1인 운영자의 무기를 만드는 1인 랩.
+  서비스 운영자의 무기를 만드는 랩.
 </h1>`,
       react: `<HeroHeading size="hero">
-  1인 운영자의 무기를 만드는 1인 랩.
+  서비스 운영자의 무기를 만드는 랩.
 </HeroHeading>`,
     },
     {
@@ -3068,6 +3202,14 @@ const SECTION_HEADING_DEF: ComponentDef = {
   ko: "섹션 제목",
   en: "SectionHeading",
   desc: "섹션 제목. SectionFrame 내부에서 쓰는 그 톤을 외부에서도 사용. h2: 2xl md:3xl, h3: xl md:2xl.",
+  intro:
+    "페이지 안에서 영역(섹션)이 바뀔 때 다시 시작을 알리는 중간 크기의 제목입니다. 페이지 첫 화면의 큰 제목보다는 작고, 본문 글자보다는 큰 — 위계의 두 번째 단계라고 보면 됩니다. 한 페이지에 여러 번 등장할 수 있습니다.",
+  useCases: [
+    "랜딩 페이지의 \"3가지 축\" 같은 영역 제목",
+    "Heritage의 \"진행 중\" / \"섹터별\" 같은 큰 그룹 제목",
+    "블로그 글 안에서 큰 단원의 시작",
+    "FAQ·Pricing 같은 콘텐츠 영역의 머리말",
+  ],
   examples: [
     {
       index: "01",
@@ -3140,6 +3282,14 @@ const LEAD_DEF: ComponentDef = {
   ko: "리드 카피",
   en: "Lead",
   desc: "헤딩 직후의 보조 카피. 본문보다 살짝 흐린 회색으로 위계가 자연스럽게 만들어진다.",
+  intro:
+    "큰 제목 바로 아래에 들어가는 부연 한두 문장입니다. 본문 글자보다 살짝 크고 색은 살짝 흐려서, \"이 제목을 한 번 더 풀어 설명하는 도움말\"이라는 느낌을 자연스럽게 줍니다. 사용자가 페이지에 들어왔을 때 \"여기서 무엇을 보게 되는지\"를 빠르게 잡아 줍니다.",
+  useCases: [
+    "사이트 메인 첫 화면 큰 제목 아래 한두 문장",
+    "Lab·Heritage·Blog 같은 영역 페이지의 인트로 문장",
+    "Talk 페이지의 \"왜 이런 의뢰만 받는지\" 같은 부연",
+    "블로그 카테고리·태그 페이지의 짧은 안내",
+  ],
   examples: [
     {
       index: "01",
@@ -3198,14 +3348,14 @@ const LEAD_DEF: ComponentDef = {
       description: "사이드 카피, 푸터 description처럼 좁은 영역.",
       preview: (
         <Lead width="narrow">
-          1인 랩의 실험 기록. 작게, 자주, 솔직하게.
+          랩의 실험 기록. 작게, 자주, 솔직하게.
         </Lead>
       ),
       prompt: `사이드 영역 / 푸터 description처럼 좁은 너비의 보조 카피. max-w-[44ch].`,
       html: `<p class="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300 max-w-[44ch]">
-  1인 랩의 실험 기록. 작게, 자주, 솔직하게.
+  랩의 실험 기록. 작게, 자주, 솔직하게.
 </p>`,
-      react: `<Lead width="narrow">1인 랩의 실험 기록. 작게, 자주, 솔직하게.</Lead>`,
+      react: `<Lead width="narrow">랩의 실험 기록. 작게, 자주, 솔직하게.</Lead>`,
     },
   ],
   props: [
@@ -3221,6 +3371,14 @@ const LINK_ROW_DEF: ComponentDef = {
   ko: "링크 행",
   en: "LinkRow",
   desc: "박스 거부형 CTA 링크. 한 줄 텍스트 + 화살표 + hover 시 emerald. '버튼 박스' 대안.",
+  intro:
+    "버튼처럼 둥근 박스 안에 가두지 않고, 텍스트 옆에 화살표만 달아 \"여기를 누르면 이동합니다\"라고 알려 주는 가벼운 링크입니다. 마우스를 올리면 글자색이 살짝 강조되어 클릭 가능한 영역임이 자연스럽게 드러납니다. 큰 버튼이 부담스러운 자리에서 단정한 강조로 자주 씁니다.",
+  useCases: [
+    "본문 끝에서 \"자세히 보기\" 같은 다음 페이지로의 안내",
+    "히어로 아래 메인 CTA를 박스 없이 가볍게 두고 싶을 때",
+    "리스트 항목 안의 \"보기·열기\" 같은 행 단위 액션",
+    "Footer / 하단 CTA 영역의 부담 없는 행동 유도",
+  ],
   examples: [
     {
       index: "01",
@@ -3306,6 +3464,14 @@ const HEADER_DEF: ComponentDef = {
   ko: "헤더",
   en: "Header",
   desc: "사이트 상단. 박스 거부, 헤어라인 1px 하단만. 브랜드 + 메뉴 + 단일 CTA의 표준 구성.",
+  intro:
+    "모든 페이지의 가장 위에 들어가는 띠입니다. 사이트 이름 / 메뉴 / 가장 중요한 단 하나의 액션(예: 의뢰)을 한 줄에 정리해 줍니다. 박스나 그림자로 영역을 가두지 않고, 아래쪽 1px 선만 그어 가볍게 본문과 분리합니다.",
+  useCases: [
+    "사이트 모든 페이지 최상단 (메인·블로그·Heritage·Talk 등 공통)",
+    "메뉴를 4~6개로 압축해 한 줄에 보여줄 때",
+    "가장 중요한 액션 하나(의뢰·구독·시작하기)를 우측에 강조할 때",
+    "모바일에서 햄버거 메뉴로 자동 접혀야 할 때",
+  ],
   examples: [
     {
       index: "01",
@@ -3412,6 +3578,15 @@ const FOOTER_DEF: ComponentDef = {
   ko: "푸터",
   en: "Footer",
   desc: "사이트 하단. 헤어라인 1px 상단 + 충분한 공간. 컬럼 단위 정보 + smallcaps 헤딩.",
+  intro:
+    "모든 페이지의 가장 아래에 들어가는 영역입니다. 사이트 이름과 한 줄 설명, 그리고 분류된 링크들(Pillars / Talk / Open / Legal 등)을 컬럼으로 정돈해 보여줍니다. 위쪽 1px 선으로 본문과 구분하고, 아래에는 충분한 여백으로 페이지를 자연스럽게 마무리합니다.",
+  useCases: [
+    "모든 페이지 최하단 (공통 마무리)",
+    "회사·서비스 한 줄 소개 + 설립 연도 노출",
+    "주요 링크들을 카테고리별 컬럼으로 정리할 때 (메뉴/연락/오픈소스/약관)",
+    "약관·개인정보·쿠키 정책 같은 법적 링크 묶음",
+    "저작권 표기 라인",
+  ],
   examples: [
     {
       index: "01",
@@ -3422,7 +3597,7 @@ const FOOTER_DEF: ComponentDef = {
         <div className="-mx-6 md:-mx-8">
           <ACFooter
             brand="Freeive"
-            description="1인 랩. 안티 카드 톤으로 만든 사이트와 라이브러리."
+            description="안티 카드 톤으로 만든 사이트와 라이브러리."
             columns={[
               {
                 heading: "Pillars",
@@ -3479,7 +3654,7 @@ const FOOTER_DEF: ComponentDef = {
 박스 거부, 시선 끌지 않고, 정보는 컬럼으로 충분히 펼친다.`,
       react: `<Footer
   brand="Freeive"
-  description="1인 랩."
+  description="안티 카드 톤 사이트."
   columns={[
     { heading: "Pillars", links: [...] },
     { heading: "Talk", links: [...] },
@@ -3498,14 +3673,14 @@ const FOOTER_DEF: ComponentDef = {
         <div className="-mx-6 md:-mx-8">
           <ACFooter
             brand="Freeive"
-            description="1인 랩."
+            description="안티 카드 톤 사이트."
             copyright="© 2026 Freeive"
           />
         </div>
       ),
       prompt: `1페이지 랜딩이나 단순한 사이트의 미니멀 푸터.
 columns 생략하고 brand + description + copyright만. 동일한 헤어라인 + 공간 톤은 유지.`,
-      react: `<Footer brand="Freeive" description="1인 랩." copyright="© 2026 Freeive" />`,
+      react: `<Footer brand="Freeive" description="안티 카드 톤 사이트." copyright="© 2026 Freeive" />`,
     },
   ],
   props: [
@@ -3522,6 +3697,14 @@ const QUOTE_DEF: ComponentDef = {
   ko: "인용구",
   en: "Quote",
   desc: "본문 안의 인용. 박스 거부, 좌측 헤어라인 1px + 본문 한 단계 흐림. blockquote + figcaption.",
+  intro:
+    "본문 흐름 안에서 \"이건 누군가의 말이거나 다른 글에서 가져온 문장입니다\"라고 알려 주는 인용 영역입니다. 큰 박스로 가두지 않고, 왼쪽에 1픽셀 짜리 짧은 선만 그어 본문보다 살짝 흐린 글자색으로 구분합니다.",
+  useCases: [
+    "블로그 글에서 책·외부 글의 한 문장을 인용할 때",
+    "사용자 후기·인터뷰에서 한 줄을 강조할 때",
+    "안티 카드 매니페스토 같은 신념을 짧게 강조",
+    "FAQ나 사례에서 \"고객이 이런 말을 했다\"는 직접 인용",
+  ],
   examples: [
     {
       index: "01",
@@ -3583,6 +3766,14 @@ const HIGHLIGHT_DEF: ComponentDef = {
   ko: "강조 문장",
   en: "Highlight",
   desc: "본문 안 한 줄 강조. 형광펜 거부 — 색 또는 굵기 변경만으로 강조.",
+  intro:
+    "본문 흐름 안에서 한 단어나 짧은 구절만 살짝 진하게 만들어 \"여기 핵심\"이라고 알려 주는 인라인 강조입니다. 형광펜처럼 큰 면적을 칠하지 않고, 굵기나 색만 살짝 바꿔 글의 흐름을 깨지 않는 방식입니다.",
+  useCases: [
+    "블로그·아티클 본문에서 한 줄을 잠깐 강조",
+    "약관·정책 페이지에서 핵심 문구를 단정하게 강조",
+    "Lab/Heritage 설명에서 핵심 키워드(브랜드·기간 등) 강조",
+    "긴 문단 안에서 시각적 호흡을 만들 때",
+  ],
   examples: [
     {
       index: "01",
@@ -3610,7 +3801,7 @@ const HIGHLIGHT_DEF: ComponentDef = {
       description: "섹션 안 큰 한 줄 강조. emerald 색 + 18~24px.",
       preview: (
         <ACHighlight tone="accent" size="large">
-          1인 랩의 가장 강력한 자산은 살아있는 사이트다.
+          랩의 가장 강력한 자산은 살아있는 사이트다.
         </ACHighlight>
       ),
       prompt: `섹션 안에서 가장 강한 한 줄 메시지. tone="accent" + size="large" 조합.
@@ -3618,7 +3809,7 @@ const HIGHLIGHT_DEF: ComponentDef = {
 용도: 매니페스토 인용, 핵심 원칙, 섹션 결론.
 페이지당 1~2번만.`,
       react: `<Highlight tone="accent" size="large">
-  1인 랩의 가장 강력한 자산은 살아있는 사이트다.
+  랩의 가장 강력한 자산은 살아있는 사이트다.
 </Highlight>`,
     },
   ],
@@ -3634,6 +3825,14 @@ const IMAGE_DEF: ComponentDef = {
   ko: "이미지",
   en: "Image",
   desc: "본문 이미지 + caption. figure + figcaption. 살짝 rounded, 12.5px caption.",
+  intro:
+    "본문 흐름 안에 들어가는 단일 이미지입니다. 모서리만 살짝 둥글고, 아래쪽에 12.5px 짜리 작은 설명(caption)을 붙일 수 있습니다. 이미지 옆에 큰 박스나 테두리를 두지 않고, 본문과 자연스럽게 어우러지게 합니다.",
+  useCases: [
+    "블로그 글 본문 안의 스크린샷·삽화",
+    "Lab 페이지에서 데모·실험 이미지 한 장",
+    "Heritage 사례의 대표 이미지 + 짧은 설명",
+    "About·Story 페이지의 분위기 이미지",
+  ],
   examples: [
     {
       index: "01",
@@ -3698,6 +3897,14 @@ const VIDEO_DEF: ComponentDef = {
   ko: "비디오 플레이어",
   en: "Video",
   desc: "본문 비디오 + caption. controls 기본. ratio 강제.",
+  intro:
+    "본문 안에 영상 한 편을 자연스럽게 끼워 넣는 컴포넌트입니다. 화면 비율(16:9, 4:3 등)을 강제해 깨지지 않게 하고, 표준 컨트롤(재생·일시정지·음소거)이 자동으로 붙습니다. 영상 아래에는 짧은 caption을 달아 맥락을 보충합니다.",
+  useCases: [
+    "Lab 데모 영상 (손가락 그리기, 카메라 인터랙션 등)",
+    "블로그 튜토리얼 영상 (예: \"이렇게 동작해요\")",
+    "사례·후기에 들어가는 짧은 비디오",
+    "사용 가이드·온보딩의 핵심 동작 시연",
+  ],
   examples: [
     {
       index: "01",
@@ -3747,6 +3954,14 @@ const DEF_LIST_DEF: ComponentDef = {
   ko: "정의 리스트",
   en: "DefList",
   desc: "term ↔ definition 페어. 시맨틱 dl + dt + dd. 박스 거부, 헤어라인 행 구분.",
+  intro:
+    "용어와 그 설명을 짝지어 보여 주는 리스트입니다. 왼쪽에 짧은 용어, 오른쪽에 풀이 — 이런 식으로 행마다 1px 선으로 구분되어 한 화면에 많은 페어를 정리할 수 있습니다. 본문보다 형식적이지만 표만큼 무겁지 않은 \"개념 정리\" 톤입니다.",
+  useCases: [
+    "블로그 글 끝의 \"용어 정리\" 영역",
+    "Pricing·FAQ에서 핵심 정의 빠르게 설명",
+    "About·서비스 페이지의 메타 정보 (창립 / 위치 / 라이선스 등)",
+    "Talk 페이지의 응답 시간·연락 채널 같은 한 줄 정보 묶음",
+  ],
   examples: [
     {
       index: "01",
@@ -3810,6 +4025,14 @@ const STAT_LIST_DEF: ComponentDef = {
   ko: "통계 숫자 행",
   en: "StatList",
   desc: "큰 숫자 + smallcaps 라벨. Heritage 카운터(10+/30+/150+) 패턴. 카드 박스 거부.",
+  intro:
+    "큰 숫자 몇 개를 한 줄로 늘어놓아 \"우리는 이만큼 했어요\"를 한눈에 보여 주는 컴포넌트입니다. 카드 박스로 가두지 않고 숫자 자체의 크기와 작은 라벨만으로 자랑하는 톤이 부담스럽지 않게 정돈됩니다.",
+  useCases: [
+    "About·Heritage의 핵심 카운터 (예: 10년차 / 30곳+ / 150건+)",
+    "랜딩 페이지의 사용자·매출·다운로드 수 강조",
+    "회사 소개 페이지의 직원 수·국가 수·연혁 등",
+    "투자·IR 관련 페이지의 핵심 지표 요약",
+  ],
   examples: [
     {
       index: "01",
@@ -3877,6 +4100,14 @@ const TIMELINE_DEF: ComponentDef = {
   ko: "타임라인",
   en: "Timeline",
   desc: "시간 순 행. ListRow와 비슷하지만 좌측 when에 특화. ol 시맨틱.",
+  intro:
+    "왼쪽에 시점(연도·날짜), 오른쪽에 그 시점의 사건을 순서대로 쌓는 시간 흐름 리스트입니다. ListRow와 비슷하지만 \"언제\" 영역이 항상 왼쪽에 고정되어, 사용자가 시간 흐름을 한 눈에 따라갈 수 있게 합니다.",
+  useCases: [
+    "Heritage·About의 회사 연혁",
+    "Lab 실험의 진행 일지 / 마일스톤",
+    "릴리즈 노트·CHANGELOG의 시간 순 정리",
+    "프로젝트 단계별 진척도 (시작 → 발표 → 정식 출시 등)",
+  ],
   examples: [
     {
       index: "01",
@@ -3950,6 +4181,15 @@ const PILL_DEF: ComponentDef = {
   ko: "필 · 태그 · 뱃지",
   en: "Pill / Tag / Badge",
   desc: "작은 라벨·태그·필터 칩·상태 뱃지 통일 어휘. shape='rounded' (rounded-md, 태그 톤) / shape='pill' (rounded-full, badge 톤).",
+  intro:
+    "작은 라벨·태그·상태 뱃지를 모두 같은 모양으로 통일해 주는 컴포넌트입니다. 둥근 사각(태그 느낌) / 완전 둥근(뱃지 느낌) 두 가지 형태로 글자나 숫자를 살짝 감싸서 \"이건 분류·상태·카운트 정보\"라고 한눈에 알려 줍니다. 색은 살짝만 칠해 본문 흐름을 깨지 않습니다.",
+  useCases: [
+    "블로그 글의 카테고리·태그 표시 (학습 일지, AI 워크플로우 등)",
+    "Heritage·Talk 페이지의 섹터·필터 칩",
+    "NEW · BETA · Live 같은 상태 뱃지",
+    "받은 메시지 수, 알림 수 같은 카운트 뱃지",
+    "버전(v0.10.0) 같은 메타 정보를 본문 옆에 살짝 붙일 때",
+  ],
   examples: [
     {
       index: "01",
@@ -4047,6 +4287,79 @@ shadcn Badge처럼 화려한 색 거부. 본문에 자연스럽게 섞이는 가
   99+
 </Pill>`,
     },
+    {
+      index: "05",
+      badge: "icon",
+      title: "아이콘 포함 — 라벨 강조",
+      description: "좌측 lucide 아이콘. 카테고리·상태 시각화. children으로 넣으면 gap-1.5가 자동 정렬.",
+      preview: (
+        <div className="flex flex-wrap items-center gap-2">
+          <Pill tone="accent">
+            <Sparkles className="h-3 w-3" strokeWidth={1.5} />
+            AI Skill
+          </Pill>
+          <Pill>
+            <Check className="h-3 w-3" strokeWidth={1.5} />
+            검수 완료
+          </Pill>
+          <Pill tone="muted">
+            <Info className="h-3 w-3" strokeWidth={1.5} />
+            안내
+          </Pill>
+          <Pill shape="pill" tone="accent" active>
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+            Live
+          </Pill>
+          <Pill shape="pill">
+            <AlertTriangle className="h-3 w-3" strokeWidth={1.5} />
+            BETA
+          </Pill>
+          <Pill shape="pill" tone="accent">
+            <Mail className="h-3 w-3" strokeWidth={1.5} />
+            12
+          </Pill>
+          <Pill as="a" href="#" tone="accent">
+            <Sparkles className="h-3 w-3" strokeWidth={1.5} />
+            새 글 보기
+          </Pill>
+        </div>
+      ),
+      prompt: `Pill 안에 lucide 아이콘 + 텍스트.
+스타일:
+- 아이콘 크기: h-3 w-3 (Pill 12.5px 텍스트와 시각 균형)
+- strokeWidth={1.5} — anti-card 가는 stroke 톤
+- gap-1.5는 Pill 컴포넌트가 자동 (children에 그대로 넣으면 됨)
+
+사용처:
+- 카테고리 라벨 (Sparkles + AI Skill / Check + 완료 / Info + 안내)
+- Live indicator (작은 emerald dot + animate-pulse)
+- 카운트 + 의미 아이콘 (Mail + 12 = 새 메일 12개)
+- 강조 CTA pill (as="a" + 화살표 또는 leading 아이콘)
+
+dot indicator는 <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />로 단순.
+색상 자동 상속(bg-current).`,
+      react: `<Pill tone="accent">
+  <Sparkles className="h-3 w-3" strokeWidth={1.5} />
+  AI Skill
+</Pill>
+
+<Pill>
+  <Check className="h-3 w-3" strokeWidth={1.5} />
+  검수 완료
+</Pill>
+
+{/* Live with pulse dot */}
+<Pill shape="pill" tone="accent" active>
+  <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
+  Live
+</Pill>
+
+{/* count + meaning icon */}
+<Pill shape="pill" tone="accent">
+  <Mail className="h-3 w-3" strokeWidth={1.5} />
+  12
+</Pill>`,
+    },
   ],
   props: [
     { name: "as", type: '"span" | "a"', default: '"span"', desc: "시맨틱 태그" },
@@ -4063,6 +4376,14 @@ const HERO_PATTERN_DEF: ComponentDef = {
   ko: "히어로 (메인 첫 화면)",
   en: "HeroPattern",
   desc: "Eyebrow + HeroHeading + Lead + LinkRow×N 조합 패턴. 페이지 첫 화면을 한 번에.",
+  intro:
+    "페이지에 들어왔을 때 가장 먼저 보이는 \"첫 화면 영역\"을 한 번에 만들어 주는 큰 묶음입니다. 작은 라벨 → 큰 제목 → 보조 한 줄 설명 → 1~2개의 행동 버튼이 일관된 간격으로 자동 배치되어, 메인·서브 페이지 어디든 균일한 첫인상을 만듭니다.",
+  useCases: [
+    "사이트 메인의 첫 화면 (가장 큰 hero 사이즈)",
+    "Lab·Heritage·Blog 같은 영역 페이지의 진입 화면",
+    "캠페인/이벤트 랜딩 페이지의 메인 메시지 영역",
+    "About·Story 페이지의 인트로",
+  ],
   examples: [
     {
       index: "01",
@@ -4075,9 +4396,8 @@ const HERO_PATTERN_DEF: ComponentDef = {
           eyebrow="Freeive — Solo lab, est. 2016"
           title={
             <>
-              1인 운영자의<br />
-              <span className="text-zinc-400 dark:text-zinc-400">무기를 만드는</span><br />
-              1인 랩.
+              서비스 운영자의<br />
+              <span className="text-zinc-400 dark:text-zinc-400">무기를 만드는 랩.</span>
             </>
           }
           lead="외주 에이전시가 아닙니다. 자체 UI 라이브러리와 카메라 기반 공간 UI 연구."
@@ -4092,7 +4412,7 @@ const HERO_PATTERN_DEF: ComponentDef = {
       react: `<HeroPattern
   size="hero"
   eyebrow="Freeive — Solo lab, est. 2016"
-  title="1인 운영자의 무기를 만드는 1인 랩."
+  title="서비스 운영자의 무기를 만드는 랩."
   lead="외주 에이전시가 아닙니다."
   ctas={[
     { label: "안티 카드", href: "/anti-card", tone: "accent" },
@@ -4108,7 +4428,7 @@ const HERO_PATTERN_DEF: ComponentDef = {
       preview: (
         <HeroPattern
           eyebrow="Heritage · 2016 — Now"
-          title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
+          title="큰 프로젝트들의 깊이를 랩으로 옮긴다."
           lead="텔레콤·금융·교육·기업시스템·미디어의 큰 싸움을 거친 깊이."
         />
       ),
@@ -4116,7 +4436,7 @@ const HERO_PATTERN_DEF: ComponentDef = {
 ctas 생략하면 hero 영역에 CTA 없이 제목 + 본문만.`,
       react: `<HeroPattern
   eyebrow="Heritage · 2016 — Now"
-  title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
+  title="큰 프로젝트들의 깊이를 랩으로 옮긴다."
   lead="..."
 />`,
     },
@@ -4137,6 +4457,14 @@ const SECTORS_PATTERN_DEF: ComponentDef = {
   ko: "섹터 리스트 페이지",
   en: "SectorsPattern",
   desc: "Heritage 표준 — 좌측 섹터(smallcaps) + 우측 ListRow 행. 카드 그리드 거부.",
+  intro:
+    "분류(섹터·카테고리)와 그 안의 항목들을 좌·우 2열로 정리해 보여 주는 페이지 단위 패턴입니다. 왼쪽엔 작은 카테고리 라벨, 오른쪽엔 그 안의 행 목록이 길게 이어져, 한 페이지에 여러 분류와 다수 항목을 동시에 볼 수 있게 합니다.",
+  useCases: [
+    "Heritage 페이지의 섹터(통신·금융·교육 등)별 프로젝트 정리",
+    "회사 사업부·서비스별 포트폴리오 정렬",
+    "도서관·아카이브의 카테고리별 자료 목록",
+    "Pricing의 플랜 카테고리별 기능 비교",
+  ],
   examples: [
     {
       index: "01",
@@ -4191,6 +4519,14 @@ const TALK_PATTERN_DEF: ComponentDef = {
   ko: "Talk·Contact",
   en: "TalkPattern",
   desc: "Talk 페이지 — Hero + 받음/안받음 체크리스트 + 연락 채널.",
+  intro:
+    "의뢰·문의를 받기 전에 \"어떤 일이 잘 맞고, 어떤 일은 다른 분께 더 잘 맞는지\"를 명시하는 페이지 단위 패턴입니다. 첫 화면 + 받는 의뢰 / 다른 분께 더 잘 맞는 의뢰(선택) + 연락 채널이 한 번에 만들어집니다. 일반 폼 페이지를 거부하고, 서로 시간을 아끼는 안내 페이지를 만드는 데 적합합니다.",
+  useCases: [
+    "에이전시·랩·프리랜서의 의뢰 안내 페이지",
+    "컨설팅·코칭의 신청 가이드 (대상·기간 명시)",
+    "오픈소스 메인테이너의 협업 가이드 (받는 PR / 안 받는 PR)",
+    "스피커·강연 요청 페이지 (수락 기준 안내)",
+  ],
   examples: [
     {
       index: "01",
@@ -4201,10 +4537,10 @@ const TALK_PATTERN_DEF: ComponentDef = {
         <TalkPattern
           eyebrow="Talk · 의뢰·문의"
           title="이기는 싸움만 받습니다."
-          lead="외주 에이전시가 아닙니다. 단 1인 랩의 깊이가 필요한 일에만."
+          lead="외주 에이전시가 아닙니다. 단 깊이가 필요한 일에만."
           acceptList={[
             "B2B 의뢰 (계약·법인 사업)",
-            "1인 랩과의 협업 / 공동 프로젝트",
+            "공동 프로젝트 / 협업",
             "AI UI / 안티 카드 톤 컨설팅",
           ]}
           declineList={[
@@ -4225,10 +4561,10 @@ const TALK_PATTERN_DEF: ComponentDef = {
 - 받음(accept) / 안 받음(decline) 2열 체크리스트 (받음=emerald ✓, 안받음=zinc ✕)
 - 연락 채널 (Email, GitHub 등) DefList 패턴
 
-1인 랩 정체성 — "이기는 싸움만"을 의사결정자에게 직접 알리는 페이지.`,
+안티 카드 정체성 — "이기는 싸움만"을 의사결정자에게 직접 알리는 페이지.`,
       react: `<TalkPattern
   title="이기는 싸움만 받습니다."
-  acceptList={["B2B 의뢰", "1인 랩 협업"]}
+  acceptList={["B2B 의뢰", "공동 프로젝트"]}
   declineList={["가격 경쟁", "양산형 사이트"]}
   channels={[{ label: "Email", value: "ive@...", href: "mailto:..." }]}
 />`,
@@ -4247,6 +4583,14 @@ const EMPTY_STATE_DEF: ComponentDef = {
   ko: "빈 상태 / 404",
   en: "EmptyState",
   desc: "빈 상태·404·error 페이지. 큰 code(숫자) + 짧은 메시지 + LinkRow 액션.",
+  intro:
+    "사용자가 비어 있는 화면이나 잘못된 경로를 마주했을 때 보여 주는 \"막다른 페이지\"입니다. 큰 숫자(404 / 500) 또는 큰 메시지 + 짧은 설명 + 다음으로 갈 수 있는 작은 링크 한두 개로, 사용자를 자연스럽게 다른 곳으로 안내합니다.",
+  useCases: [
+    "404 페이지 (없는 주소로 들어왔을 때)",
+    "500 / 에러 페이지 (서버에 문제가 생겼을 때)",
+    "데이터가 아직 없을 때의 \"비어 있어요\" 안내",
+    "검색 결과 0개·필터로 거른 결과가 없을 때의 안내",
+  ],
   examples: [
     {
       index: "01",
@@ -4312,6 +4656,14 @@ const CTA_SECTION_DEF: ComponentDef = {
   ko: "CTA 섹션",
   en: "CTASection",
   desc: "페이지 하단 CTA. 헤어라인 + h2 제목 + Lead + LinkRow 묶음.",
+  intro:
+    "페이지를 다 본 사용자에게 \"다음 행동\"을 자연스럽게 권하는 마무리 영역입니다. 위쪽 1픽셀 선 → 짧은 한 줄 제목 → 보조 한 줄 → 1~2개 링크 — 이 흐름으로 본문이 끝났음을 알리고 동시에 \"의뢰\"·\"가입\" 같은 다음 단계로 부드럽게 연결합니다.",
+  useCases: [
+    "랜딩 페이지 마지막의 \"의뢰하기 / 둘러보기\" 영역",
+    "블로그 글 끝의 \"다음 글 / 구독\" 안내",
+    "소개 페이지 마지막의 \"문의하기 / 자료 받기\"",
+    "Footer 직전의 자연스러운 행동 유도",
+  ],
   examples: [
     {
       index: "01",
@@ -4322,7 +4674,7 @@ const CTA_SECTION_DEF: ComponentDef = {
         <CTASection
           eyebrow="Talk"
           title="이기는 싸움이 있다면 알려주세요."
-          lead="간단한 의뢰 메모로 충분합니다. 1인 랩이 직접 응답합니다."
+          lead="간단한 의뢰 메모로 충분합니다. 운영자가 직접 응답합니다."
           actions={[
             { label: "Talk 페이지로", href: "#", tone: "accent" },
             { label: "이메일", href: "#" },
@@ -4361,6 +4713,14 @@ const BANNER_DEF: ComponentDef = {
   ko: "알림 배너",
   en: "Banner",
   desc: "작은 알림 띠. 페이지 상단 또는 본문 사이. 큰 박스 X, 헤어라인 + 살짝 톤 배경.",
+  intro:
+    "사용자에게 짧게 알리고 싶은 한 줄을 가로 띠 모양으로 보여 주는 알림 컴포넌트입니다. 큰 박스로 화면을 가리지 않고, 위·아래 1픽셀 선과 살짝 칠한 색상만으로 \"이건 일시적 안내\"라는 느낌을 줍니다. 닫기 버튼이나 액션 링크를 우측에 추가할 수 있습니다.",
+  useCases: [
+    "사이트 전체 공지 (예: 새 버전 출시, 점검 안내)",
+    "블로그 글 위쪽의 \"이 글은 학습 일지입니다\" 같은 짧은 컨텍스트",
+    "Talk 페이지의 \"현재 신규 의뢰 받는 중\" 상태 표시",
+    "에러·경고·성공 같은 가벼운 피드백 (form 제출 후 등)",
+  ],
   examples: [
     {
       index: "01",
@@ -4405,6 +4765,14 @@ const BUTTON_PRIMARY_DEF: ComponentDef = {
   ko: "기본 버튼",
   en: "Button (Primary)",
   desc: "채워진 박스 버튼. 폼 submit, 모달 confirm 등 진짜 button. variant='primary'.",
+  intro:
+    "사용자가 가장 먼저 누르길 기대하는 \"진짜 버튼\"입니다. 색이 채워진 단단한 박스 형태로, 한 화면에 보통 한 개만 두어 \"가장 중요한 다음 행동\"을 명확히 알려 줍니다. 폼 제출, 결제, 다이얼로그 확정 등 결과가 분명한 자리에 씁니다.",
+  useCases: [
+    "회원가입·로그인·문의 폼의 제출 버튼",
+    "삭제 확인·결제 진행 같은 다이얼로그의 확정 버튼",
+    "히어로의 가장 중요한 단 하나의 액션 (예: \"의뢰하기\")",
+    "긴 폼 마지막의 \"저장\" 같은 명확한 종료 행동",
+  ],
   examples: [
     {
       index: "01",
@@ -4501,6 +4869,14 @@ const BUTTON_SECONDARY_DEF: ComponentDef = {
   ko: "보조 버튼",
   en: "Button (Secondary)",
   desc: "헤어라인 only 버튼. 채움 X, border만. variant='secondary'.",
+  intro:
+    "기본 버튼 옆에 두는 \"두 번째 선택지\" 버튼입니다. 색을 채우지 않고 1픽셀 테두리만 있어, 시선을 빼앗지 않으면서도 클릭 가능한 영역임을 알려 줍니다. 다이얼로그의 \"취소\"처럼 결과가 덜 중요한 행동에 적합합니다.",
+  useCases: [
+    "다이얼로그·모달의 \"취소\" 버튼 (확정 버튼 옆)",
+    "폼 페이지의 \"임시 저장\" 또는 \"이전\" 버튼",
+    "Pricing의 \"무료 플랜\" 같은 부수 액션",
+    "히어로의 \"자세히 보기\" 같은 보조 행동",
+  ],
   examples: [
     {
       index: "01",
@@ -4598,6 +4974,14 @@ const BUTTON_GHOST_DEF: ComponentDef = {
   ko: "고스트 버튼",
   en: "Button (Ghost)",
   desc: "박스 X, hover 시에만 배경. 인라인 액션·툴바·드롭다운 trigger 등 가벼운 액션. variant='ghost'.",
+  intro:
+    "평소엔 박스가 보이지 않다가, 마우스를 올렸을 때만 살짝 배경이 깔리는 가벼운 버튼입니다. 본문 옆이나 도구막대처럼 \"여기에 버튼이 잔뜩 있어요\" 느낌을 주고 싶지 않을 때 적합합니다.",
+  useCases: [
+    "도구막대(툴바)의 자잘한 액션 버튼들",
+    "드롭다운·팝오버의 트리거 버튼",
+    "테이블 행의 \"수정 / 삭제\" 같은 인라인 액션",
+    "헤더의 다크/라이트 토글 같은 가벼운 컨트롤",
+  ],
   examples: [
     {
       index: "01",
@@ -4668,6 +5052,14 @@ const BUTTON_PLAIN_DEF: ComponentDef = {
   ko: "플레인 버튼",
   en: "Button (Plain)",
   desc: "텍스트만 — 박스 거부 가장 강함. 인라인 토글·edit·미니 액션. hover 시 underline. variant='plain'.",
+  intro:
+    "박스도 배경도 없이 글자만으로 동작하는 가장 가벼운 버튼입니다. 마우스를 올리면 밑줄이 살짝 그어져 클릭 가능한 영역임을 알려 줍니다. 본문 흐름을 거의 깨지 않으면서 짧은 행동을 거는 자리에 씁니다.",
+  useCases: [
+    "본문 옆의 \"편집·되돌리기\" 같은 미니 액션",
+    "긴 글에서 \"전체 보기 / 접기\" 토글",
+    "댓글의 \"답글·신고\" 같은 인라인 행동",
+    "Footer의 가벼운 텍스트 링크",
+  ],
   examples: [
     {
       index: "01",
@@ -4750,6 +5142,14 @@ const FEATURE_ROW_DEF: ComponentDef = {
   ko: "특징 나열 행",
   en: "FeatureRow",
   desc: "특징·장점 나열. 카드 그리드 거부, 좌측 라벨/번호 + 우측 본문.",
+  intro:
+    "서비스의 특징·장점을 카드 그리드 대신 행으로 풀어 보여 주는 컴포넌트입니다. 왼쪽엔 작은 라벨이나 번호, 오른쪽엔 제목 + 짧은 설명이 행마다 1픽셀 선으로 구분되어, 한 화면에 더 많은 항목을 자연스럽게 펼칩니다.",
+  useCases: [
+    "랜딩 페이지의 \"3가지 핵심 특징\" 영역",
+    "About·Story 페이지의 가치·원칙 정리",
+    "제품 소개의 기능 하이라이트 (4~6개)",
+    "튜토리얼의 \"이 글에서 배울 것\" 미리보기",
+  ],
   examples: [
     {
       index: "01",
@@ -4761,7 +5161,7 @@ const FEATURE_ROW_DEF: ComponentDef = {
           items={[
             {
               label: "Speed",
-              title: "1인 랩의 속도",
+              title: "랩의 속도",
               description: "결정자가 직접 의사결정. 이메일 한 통이면 시작.",
             },
             {
@@ -4788,7 +5188,7 @@ const FEATURE_ROW_DEF: ComponentDef = {
 
 설명이 ListRow보다 길어도 OK (max-w-[58ch]).`,
       react: `<FeatureRow items={[
-  { label: "Speed", title: "1인 랩의 속도", description: "..." },
+  { label: "Speed", title: "랩의 속도", description: "..." },
   { label: "Depth", title: "큰 싸움의 깊이", description: "..." },
 ]} />`,
     },
@@ -4801,7 +5201,7 @@ const FEATURE_ROW_DEF: ComponentDef = {
         <FeatureRow
           layout="numbered"
           items={[
-            { title: "정체성 정리", description: "1인 랩 / 안티 카드 / Lab / Heritage 4축." },
+            { title: "정체성 정리", description: "Freeive / 안티 카드 / Lab / Heritage 4축." },
             { title: "사이트 골격", description: "anti-card 컴포넌트로 메인 hero + 4축 ListRow." },
             { title: "콘텐츠 채우기", description: "블로그 첫 글, Heritage 사례 정리." },
           ]}
@@ -4826,6 +5226,14 @@ const CLIENT_LOGOS_DEF: ComponentDef = {
   ko: "클라이언트 로고 띠",
   en: "ClientLogos",
   desc: "박스 거부, grayscale 로고. hover 시 컬러. 로고 없으면 텍스트로 대체.",
+  intro:
+    "함께 일했던 클라이언트·파트너의 로고를 한 줄(또는 두 줄)로 깔끔하게 늘어놓는 컴포넌트입니다. 평소엔 흑백으로 차분하게 보이다가 마우스를 올리면 원래 색이 살짝 들어와 \"이 로고들이 실제 우리 클라이언트\"라는 신뢰를 자연스럽게 만듭니다. 로고 이미지가 없으면 회사명 텍스트로도 대체됩니다.",
+  useCases: [
+    "Heritage·About의 \"함께한 클라이언트\" 영역",
+    "랜딩 페이지의 \"이 회사들이 우리를 신뢰합니다\" 신뢰 시그널",
+    "제품 페이지의 \"사용 중인 회사들\" 띠",
+    "포트폴리오·에이전시의 클라이언트 로고 갤러리",
+  ],
   examples: [
     {
       index: "01",
@@ -4892,6 +5300,14 @@ const TESTIMONIAL_DEF: ComponentDef = {
   ko: "사용자 후기",
   en: "Testimonial",
   desc: "박스 거부, 좌측 헤어라인 + 인용 + 작성자 묶음. Quote의 확장.",
+  intro:
+    "사용자나 클라이언트의 후기를 인용 + 작성자 정보로 묶어 보여 주는 컴포넌트입니다. 단순 인용보다 풍부해서 \"누가 / 어느 회사·역할에서 한 말인지\"가 함께 들어가, 후기의 신뢰감이 자연스럽게 올라갑니다.",
+  useCases: [
+    "랜딩 페이지의 핵심 사용자 후기 1~3개",
+    "Heritage·About의 클라이언트 인용",
+    "사례 연구(Case Study) 안의 의사결정자 한 마디",
+    "Pricing 페이지의 \"이 플랜을 쓰는 사람들\" 코멘트",
+  ],
   examples: [
     {
       index: "01",
@@ -4900,7 +5316,7 @@ const TESTIMONIAL_DEF: ComponentDef = {
       description: "본문 인용 + 작성자 정보 (avatar / name / title·company).",
       preview: (
         <Testimonial author={{ name: "김OO", title: "PM", company: "EBS" }}>
-          1인 랩이 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
+          운영자가 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
           그리고 결과물의 깊이가 다릅니다.
         </Testimonial>
       ),
@@ -4913,7 +5329,7 @@ const TESTIMONIAL_DEF: ComponentDef = {
 
 박스 안에 후기를 가두지 않는다 — 인용은 본문 안의 확장.`,
       react: `<Testimonial author={{ name: "김OO", title: "PM", company: "EBS" }}>
-  1인 랩이 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
+  운영자가 대형 에이전시 PM보다 빠르게 결정해서 놀랐습니다.
 </Testimonial>`,
     },
     {
@@ -4952,6 +5368,14 @@ const STAT_BLOCK_DEF: ComponentDef = {
   ko: "큰 통계 블록",
   en: "StatBlock",
   desc: "단일 큰 통계. StatList(여러 행)과 다름 — 한 영역을 큰 숫자로 채움.",
+  intro:
+    "한 영역 전체를 거대한 숫자 하나로 채우는 강조 컴포넌트입니다. 여러 카운터를 행으로 늘어놓는 StatList와 달리, \"이 한 숫자가 핵심\"이라고 단언할 때 씁니다.",
+  useCases: [
+    "Heritage 첫 화면의 핵심 한 숫자 (예: 150건+)",
+    "회사 IR 페이지의 가장 중요한 지표 강조",
+    "사례 연구의 \"매출 200% 증가\" 결과 강조",
+    "캠페인 결과 페이지의 임팩트 한 줄",
+  ],
   examples: [
     {
       index: "01",
@@ -5016,7 +5440,7 @@ const STAT_BLOCK_DEF: ComponentDef = {
           align="center"
           value="10+"
           label="Years of solo lab"
-          description="2016 Preive 첫 외주 → 2026 1인 랩 정체성 정리. 10년의 큰 싸움."
+          description="2016 Preive 첫 외주 → 2026 안티 카드 정체성 정리. 10년의 큰 싸움."
         />
       ),
       prompt: `페이지 hero급 거대 숫자. size="xl" + align="center". clamp(3rem, 9vw, 7rem) — 48~112px.
@@ -5039,6 +5463,14 @@ const CASE_STUDY_DEF: ComponentDef = {
   ko: "케이스 스터디",
   en: "CaseStudy",
   desc: "Problem → Solution → Outcome 3단 구조 + 메타 정보. 단일 프로젝트 사례.",
+  intro:
+    "한 프로젝트의 사례를 \"문제 → 해결 → 결과\" 3단 구조로 정리해 주는 컴포넌트입니다. 어떤 문제가 있었고 어떻게 풀었으며 그래서 어떤 결과가 났는지를 같은 시각 위계로 보여 줘서, 읽는 사람이 사례의 흐름을 자연스럽게 따라가게 합니다.",
+  useCases: [
+    "Heritage·Portfolio의 단일 프로젝트 상세 페이지",
+    "회사 \"성공 사례\" 영역 (B2B 마케팅 자산)",
+    "에이전시·스튜디오의 작업물 소개",
+    "오픈소스 프로젝트의 \"Why & What\" 정리",
+  ],
   examples: [
     {
       index: "01",
@@ -5133,6 +5565,14 @@ const WAVE_CARD_DEF: ComponentDef = {
   ko: "물결 진행 카드",
   en: "WaveCard",
   desc: "물결이 차오르는 진척도 시각화. variant=frame(헤어라인) / card(rounded box).",
+  intro:
+    "진행 중인 프로젝트의 진척도를 물결이 차오르는 비주얼로 보여 주는 카드입니다. 일반 진행 막대보다 살아있는 느낌이라 \"이게 지금 만들어지고 있다\"를 강하게 전합니다. 가로형(위→아래로 채움) / 세로형(좌→우로 채움) 두 방향을 지원합니다.",
+  useCases: [
+    "Heritage·About의 \"지금 만들고 있는 것들\" 영역",
+    "출시 예정 페이지의 마일스톤 진행도",
+    "프로젝트 대시보드의 단계별 진척",
+    "캠페인 카운트다운·진행률 시각화",
+  ],
   examples: [
     {
       index: "01",
@@ -5177,7 +5617,7 @@ wave는 0~90% 권장 (90+는 거의 완료라 시각이 어색).`,
           variant="card"
           title="freeive.com 메인 리뉴얼"
           client="Freeive"
-          summary="외주 에이전시 → 1인 랩 정체성으로 교체."
+          summary="외주 에이전시 → 안티 카드 정체성으로 교체."
           progress={78}
           waveColor="#7cf2c4"
           year="2026"
@@ -5187,6 +5627,43 @@ wave는 0~90% 권장 (90+는 거의 완료라 시각이 어색).`,
 박스 정체성 강하지만 단일 컴포넌트로서 특수 시각이라 인정.`,
       react: `<WaveCard variant="card" title="..." progress={78} waveColor="#7cf2c4" />`,
     },
+    {
+      index: "03",
+      badge: "orientation · vertical",
+      title: "세로형 물결 — 좌→우 진행",
+      description: "wave path 90° 회전. 가로 진행 게이지로 동작 — 우측 가장자리에서 출렁이며 좌측이 채워짐.",
+      preview: (
+        <WaveCard
+          orientation="vertical"
+          title="0.12.0 릴리즈 진행"
+          client="anti-card"
+          summary="FormField / DataTable / DatePicker / Combobox 4개 마일스톤. 시각 검증 단계."
+          progress={45}
+          waveColor="#34d399"
+          year="2026"
+        />
+      ),
+      prompt: `세로형 wave — orientation="vertical".
+기존 가로형(위→아래 채움)을 90° 회전한 형태. 좌→우로 진행.
+
+차이:
+- horizontal (default): 물 채워지는 게이지. 위 wave 출렁 + 아래 채움 (수직 진행).
+- vertical: 가로 진행 바. 우측 wave 출렁 + 좌측 채움 (수평 진행).
+
+사용처:
+- 릴리즈 / 작업 단계 등 "단계의 진행률"을 가로로 강조하고 싶을 때
+- 카드가 가로로 길 때 (시각적으로 가로 wave가 더 시원함)
+- 0~90% 권장 (90+는 거의 끝이라 wave 출렁임이 어색)`,
+      react: `<WaveCard
+  orientation="vertical"
+  title="0.12.0 릴리즈 진행"
+  client="anti-card"
+  summary="..."
+  progress={45}
+  waveColor="#34d399"
+  year="2026"
+/>`,
+    },
   ],
   props: [
     { name: "title", type: "ReactNode", desc: "제목 (필수)" },
@@ -5195,6 +5672,7 @@ wave는 0~90% 권장 (90+는 거의 완료라 시각이 어색).`,
     { name: "waveColor", type: "string (hex)", default: '"#34d399"', desc: "wave 색" },
     { name: "variant", type: '"card" | "frame"', default: '"frame"', desc: "card=rounded box / frame=헤어라인" },
     { name: "label", type: "ReactNode", default: '"In progress"', desc: "좌측 상단 smallcaps" },
+    { name: "orientation", type: '"horizontal" | "vertical"', default: '"horizontal"', desc: "wave 진행 방향 (수직 채움 / 수평 채움)" },
   ],
 };
 
@@ -5203,6 +5681,14 @@ const FADE_IN_DEF: ComponentDef = {
   ko: "부드러운 등장",
   en: "FadeIn",
   desc: "스크롤 시 in-view 감지 → opacity + translate 등장. prefers-reduced-motion 자동 반응.",
+  intro:
+    "페이지를 스크롤하다가 해당 영역이 화면에 들어오는 순간, 자식 콘텐츠가 살짝 아래에서 올라오며 부드럽게 등장하는 효과를 줍니다. 화려하지 않고 짧게 한 번만 — \"여기 새로 등장했어요\" 정도의 절제된 모션입니다. 시스템 설정에서 \"애니메이션 줄이기\"를 켠 사용자는 자동으로 비활성됩니다.",
+  useCases: [
+    "랜딩 페이지의 섹션이 자연스럽게 등장하길 원할 때",
+    "긴 사례 페이지에서 영역마다 시선이 자연스럽게 머무르도록",
+    "stagger(시간차)로 리스트 항목이 줄지어 등장",
+    "About·Story의 단계별 콘텐츠 부드러운 진입",
+  ],
   examples: [
     {
       index: "01",
@@ -5276,6 +5762,14 @@ const HOVER_ACCENT_DEF: ComponentDef = {
   ko: "호버 강조",
   en: "HoverAccent",
   desc: "자식에 hover 시 색·밑줄·이동 효과. group 패턴 wrapper.",
+  intro:
+    "마우스를 올렸을 때 자식 콘텐츠(텍스트·아이콘 등)에 색 변화·밑줄·살짝 이동 같은 강조 효과를 주는 wrapper입니다. \"이 영역 전체가 클릭 가능하다\"는 느낌을 자연스럽게 전합니다.",
+  useCases: [
+    "리스트 행에 마우스 올렸을 때 전체 행 강조",
+    "카드 없는 링크 영역의 미세한 시각 피드백",
+    "포트폴리오 프로젝트 행이 호버 시 살짝 우측으로 이동",
+    "Footer 링크 묶음의 호버 강조",
+  ],
   examples: [
     {
       index: "01",
@@ -5344,6 +5838,14 @@ const SCROLL_PROGRESS_DEF: ComponentDef = {
   ko: "스크롤 진행",
   en: "ScrollProgress",
   desc: "페이지 스크롤 진행을 1~3px 막대로 표시. fixed 위/아래.",
+  intro:
+    "사용자가 페이지의 어디까지 스크롤했는지를 화면 위(또는 아래) 가장자리에 1~3픽셀 짜리 가는 띠로 보여 줍니다. 긴 글이나 긴 페이지에서 \"얼마나 남았는지\" 직관적인 진행감을 줘서 끝까지 읽도록 유도합니다.",
+  useCases: [
+    "긴 블로그 글·매뉴얼의 읽기 진행도",
+    "Heritage·About 같은 깊이 있는 페이지의 위치 감지",
+    "튜토리얼·가이드 문서의 단계 진행 표시",
+    "랜딩 페이지의 \"끝까지 보세요\" 시각 신호",
+  ],
   examples: [
     {
       index: "01",
@@ -5392,6 +5894,14 @@ const MARQUEE_DEF: ComponentDef = {
   ko: "흐르는 띠",
   en: "Marquee",
   desc: "끊김 없이 흐르는 띠. 클라이언트 로고, 알림 등. children 자동 복제 무한 루프.",
+  intro:
+    "왼쪽에서 오른쪽으로 끊김 없이 흘러가는 가로 띠 컴포넌트입니다. 안에 넣은 콘텐츠가 자동으로 복제되어 무한 반복되며, 마우스를 올리면 일시정지됩니다. \"여기 많은 것이 있다\"는 풍성한 느낌을 한 줄로 만들어 줍니다.",
+  useCases: [
+    "클라이언트 로고가 끊임없이 흐르는 신뢰 시그널",
+    "공지·새 글 알림의 가로 흐름 띠",
+    "기능 키워드·태그가 흘러가는 개념 강조",
+    "이벤트·프로모션의 \"~중\" 안내 띠",
+  ],
   examples: [
     {
       index: "01",
@@ -5463,6 +5973,15 @@ const CALLOUT_DEF: ComponentDef = {
   ko: "강조 박스",
   en: "Callout",
   desc: "본문 안의 인라인 강조. Banner와 다름 — 풀폭 띠 X, 본문 흐름 안의 영역.",
+  intro:
+    "본문 글 흐름 한가운데에 짧게 들어가는 \"여기 잠깐 주목\" 영역입니다. 큰 박스로 가두는 대신 왼쪽 1px 선과 살짝 톤만 있는 배경으로, \"참고\"·\"성공\"·\"주의\"·\"위험\" 4가지 톤을 색으로 구분합니다. 글을 읽다 자연스럽게 마주치되 흐름은 끊기지 않습니다.",
+  useCases: [
+    "블로그·문서에서 \"참고\" 박스 (info 톤)",
+    "튜토리얼 끝의 \"잘했어요\" 같은 성공 안내 (accent 톤)",
+    "약관·환불 정책의 주의 사항 (warning 톤)",
+    "결제 실패·계정 위험 같은 위험 알림 (danger 톤)",
+    "FAQ에서 한 항목의 핵심 답을 본문 중간에 강조",
+  ],
   examples: [
     {
       index: "01",
@@ -5515,6 +6034,14 @@ const FAQ_DEF: ComponentDef = {
   ko: "FAQ 아코디언",
   en: "FAQ",
   desc: "자주 묻는 질문. details/summary 시맨틱 — JS 없이 native 동작. 박스 거부, 헤어라인 행.",
+  intro:
+    "자주 묻는 질문(FAQ)을 \"질문 클릭 → 답이 펼쳐짐\" 방식의 아코디언으로 정리해 줍니다. 카드 박스로 가두지 않고 행마다 1픽셀 선만 두어, 글의 흐름을 유지하면서 사용자가 궁금한 항목만 펼쳐 보게 합니다.",
+  useCases: [
+    "Pricing·서비스 페이지의 FAQ 영역",
+    "About·정책 페이지의 자주 묻는 질문",
+    "튜토리얼 끝의 \"문제가 생겼다면\" 섹션",
+    "제품 페이지의 기능별 짧은 Q&A",
+  ],
   examples: [
     {
       index: "01",
@@ -5526,7 +6053,7 @@ const FAQ_DEF: ComponentDef = {
           items={[
             {
               question: "anti-card는 어디에 사용하나요?",
-              answer: "랜딩 페이지·콘텐츠 사이트·블로그·1인 랩 사이트 등 end-user UI 영역. shadcn(admin 강함)과 정반대 영역을 채웁니다.",
+              answer: "랜딩 페이지·콘텐츠 사이트·블로그·작은 랩 사이트 등 end-user UI 영역. shadcn(admin 강함)과 정반대 영역을 채웁니다.",
               defaultOpen: true,
             },
             {
@@ -5565,6 +6092,14 @@ const PRICING_TABLE_DEF: ComponentDef = {
   ko: "가격 표",
   en: "PricingTable",
   desc: "가격 plan 비교. 카드 박스 최소화 — 1px gap grid + highlighted plan만 살짝 강조.",
+  intro:
+    "가격 플랜 2~4개를 나란히 비교해 보여 주는 표입니다. 큰 카드 박스 없이 1픽셀 gap grid로 분리되고, 추천 플랜 하나만 살짝 강조되어 \"이 플랜을 보세요\"가 자연스럽게 시선이 갑니다.",
+  useCases: [
+    "Pricing 페이지의 핵심 플랜 비교 (Free / Pro / Team)",
+    "B2B 서비스의 라이선스·구독 비교",
+    "에이전시·컨설팅의 패키지 옵션",
+    "이벤트·티켓의 등급별 가격 안내",
+  ],
   examples: [
     {
       index: "01",
@@ -5586,7 +6121,7 @@ const PRICING_TABLE_DEF: ComponentDef = {
               name: "Pro",
               price: "₩9,900",
               priceHint: "월 / VAT 별도",
-              tagline: "1인 팀·프리랜서.",
+              tagline: "작은 팀·프리랜서.",
               features: ["모든 컴포넌트", "AI Skill 사용권", "이메일 지원"],
               highlighted: true,
               cta: { label: "Pro 시작하기", href: "#", tone: "accent" },
@@ -5628,6 +6163,14 @@ const PRICING_PATTERN_DEF: ComponentDef = {
   ko: "가격 페이지",
   en: "PricingPattern",
   desc: "가격 페이지 통째로 — Hero(center) + PricingTable + FAQ + CTASection 조합.",
+  intro:
+    "가격 페이지 전체를 한 번에 만들어 주는 큰 묶음 패턴입니다. 중앙 정렬 첫 화면 + 플랜 비교 표 + 자주 묻는 질문 + 마무리 CTA가 일관된 톤으로 자동 배치되어, \"가격 페이지 하나가 통째로\" 들어옵니다.",
+  useCases: [
+    "SaaS 제품의 Pricing 페이지 전체",
+    "구독·라이선스 모델의 비교 페이지",
+    "에이전시·컨설팅의 패키지 안내",
+    "이벤트·강연 티켓 등급 페이지",
+  ],
   examples: [
     {
       index: "01",
@@ -5696,6 +6239,14 @@ const STEPS_DEF: ComponentDef = {
   ko: "단계 (3·4단계)",
   en: "Steps",
   desc: "절차 단계. 자동 번호(01/02/03) + 제목 + 설명. vertical / horizontal layout.",
+  intro:
+    "절차를 \"1단계 → 2단계 → 3단계\"로 정리해 보여 주는 컴포넌트입니다. 번호가 자동으로 매겨지고 각 단계마다 제목 + 짧은 설명이 동일한 형식으로 들어가, 사용자가 따라가야 하는 흐름을 한눈에 잡게 합니다. 세로(긴 단계) / 가로(짧은 단계) 레이아웃을 선택할 수 있습니다.",
+  useCases: [
+    "온보딩·튜토리얼의 \"가입 → 설정 → 시작\" 단계",
+    "서비스 이용 절차 안내 (\"신청 → 검토 → 응답\")",
+    "How it works / Process 페이지",
+    "프로젝트 단계별 진행 흐름 시각화",
+  ],
   examples: [
     {
       index: "01",
@@ -5774,6 +6325,14 @@ const COMPARE_TABLE_DEF: ComponentDef = {
   ko: "비교 표",
   en: "CompareTable",
   desc: "기능·플랜 비교 표. 박스 거부 — 헤어라인 only. boolean 값 ✓/− 자동.",
+  intro:
+    "여러 옵션·플랜·제품을 나란히 두고 \"이건 되고 저건 안 됩니다\"를 한눈에 보여 주는 비교 표입니다. 박스 없이 1픽셀 헤어라인으로만 행을 나누며, 가능/불가능 같은 단순 값은 ✓/− 기호로 자동 변환됩니다.",
+  useCases: [
+    "Pricing의 플랜별 기능 비교 표",
+    "제품 A vs B vs C 비교 (제품 상세)",
+    "라이브러리·도구의 기능 매트릭스",
+    "정책·약관의 \"이전 버전 vs 새 버전\" 변경점 비교",
+  ],
   examples: [
     {
       index: "01",
@@ -5836,6 +6395,14 @@ const GRID_DEF: ComponentDef = {
   ko: "그리드·컬럼",
   en: "Grid",
   desc: "균등 grid wrapper (1~6 columns). 자유 layout(좌측 3, 우측 9 등)은 GridSystem 사용.",
+  intro:
+    "여러 항목을 같은 너비의 칸들로 나란히 배치할 때 쓰는 가장 단순한 격자입니다. 1~6 컬럼을 prop으로 정하면 자식 항목이 균등하게 들어가고, 모바일에서는 자동으로 1열로 접힙니다. 칸마다 너비를 다르게 주려면 GridSystem이 더 적합합니다.",
+  useCases: [
+    "이미지 그리드(Gallery 외 자유 자식)",
+    "팀·멤버 카드 등 같은 형식의 항목 나열",
+    "Pricing 플랜처럼 같은 너비 카드 비교",
+    "랜딩 페이지의 균등한 특징 그리드",
+  ],
   examples: [
     {
       index: "01",
@@ -5967,6 +6534,14 @@ const GRID_SYSTEM_DEF: ComponentDef = {
   ko: "그리드 시스템 (12 col)",
   en: "GridSystem / GridCol",
   desc: "12 column grid system. Bootstrap·Material 표준 — 자식이 자유롭게 col-span 지정.",
+  intro:
+    "한 페이지를 12개의 가는 컬럼으로 나누고, 자식 영역마다 \"몇 칸 차지할지\"를 자유롭게 정할 수 있는 큰 그리드입니다. 4 + 8, 3 + 6 + 3 같은 비대칭 레이아웃을 만들 수 있어, 좀 더 \"디자인된\" 화면을 짤 때 적합합니다.",
+  useCases: [
+    "About·서비스 페이지의 좌측 좁은 메뉴 + 우측 넓은 본문",
+    "랜딩 페이지의 비대칭 영역 (텍스트 4 + 이미지 8 등)",
+    "복잡한 대시보드의 다중 영역 레이아웃",
+    "포트폴리오 상세의 자유로운 콘텐츠 배치",
+  ],
   examples: [
     {
       index: "01",
@@ -6121,6 +6696,14 @@ const INPUT_DEF: ComponentDef = {
   ko: "입력 필드",
   en: "Input",
   desc: "텍스트 입력. label/hint/error 자동, focus시 emerald 헤어라인.",
+  intro:
+    "사용자가 한 줄짜리 텍스트(이름·이메일·전화번호 등)를 입력하는 칸입니다. 평소엔 1픽셀 헤어라인 박스이고, 칸을 클릭해 입력 중일 땐 emerald 색으로 살짝 강조되어 \"여기 입력 중\"임이 명확해집니다.",
+  useCases: [
+    "Talk·Contact 페이지의 이름·이메일 입력",
+    "Admin 글 작성·수정 페이지의 제목 입력",
+    "검색창",
+    "회원가입·로그인 폼의 단일 줄 필드",
+  ],
   examples: [
     {
       index: "01",
@@ -6168,6 +6751,14 @@ const TEXTAREA_DEF: ComponentDef = {
   ko: "여러 줄 입력",
   en: "Textarea",
   desc: "여러 줄 입력. Input과 동일 톤 + resize-y.",
+  intro:
+    "여러 줄 텍스트(메시지·메모·본문)를 입력하는 큰 칸입니다. 기본 입력 칸과 같은 톤이지만, 사용자가 모서리를 끌어 세로 크기를 조절할 수 있게 되어 있어 긴 글을 쓰기 편합니다.",
+  useCases: [
+    "Talk·Contact의 의뢰 내용 입력",
+    "Admin 블로그 글의 본문(MDX)·요약 입력",
+    "사용자 후기·문의 메시지",
+    "긴 코멘트·메모 작성",
+  ],
   examples: [
     {
       index: "01",
@@ -6199,6 +6790,14 @@ const SELECT_DEF: ComponentDef = {
   ko: "드롭다운",
   en: "Select",
   desc: "native select. 커스텀 dropdown 거부 — 접근성·모바일 OS 통합.",
+  intro:
+    "옵션 목록 중 하나를 고르는 드롭다운입니다. 화려한 커스텀 메뉴 대신 브라우저·운영체제가 제공하는 표준 select를 그대로 활용해, 모바일에서도 익숙한 시스템 메뉴로 열립니다.",
+  useCases: [
+    "Talk·Contact의 \"의뢰 종류\" 선택",
+    "Admin 글 작성의 카테고리·상태 선택",
+    "프로필·설정의 언어·국가 선택",
+    "정렬 기준 선택(최신순·인기순 등)",
+  ],
   examples: [
     {
       index: "01",
@@ -6238,6 +6837,14 @@ const CHECKBOX_RADIO_DEF: ComponentDef = {
   ko: "체크박스·라디오",
   en: "Checkbox / Radio",
   desc: "체크박스 + 라디오. label + description 묶음, checked시 emerald.",
+  intro:
+    "여러 항목 중 \"여러 개를 선택\"(체크박스)하거나 \"하나만 선택\"(라디오)하게 해 주는 입력 컴포넌트입니다. 라벨 옆에 짧은 부연 설명도 같이 묶을 수 있어, 옵션마다 의미를 분명히 전할 수 있습니다.",
+  useCases: [
+    "Pricing 플랜 선택 (라디오: Free / Pro / Team)",
+    "Talk 폼의 \"아래 항목 동의\" 체크박스",
+    "Admin 설정의 \"알림 받을 이벤트\" 다중 선택",
+    "필터 패널의 카테고리 다중 선택",
+  ],
   examples: [
     {
       index: "01",
@@ -6270,7 +6877,7 @@ checked시 bg-emerald + ✓ SVG (data URL).`,
       preview: (
         <fieldset className="max-w-md space-y-3">
           <Radio name="plan" value="free" label="Free" description="개인용." defaultChecked />
-          <Radio name="plan" value="pro" label="Pro" description="1인 팀." />
+          <Radio name="plan" value="pro" label="Pro" description="작은 팀." />
           <Radio name="plan" value="team" label="Team" description="팀·기업." />
         </fieldset>
       ),
@@ -6293,6 +6900,14 @@ const GALLERY_DEF: ComponentDef = {
   ko: "갤러리",
   en: "Gallery",
   desc: "이미지 그리드. Image 패턴 + 균등 grid + caption 자동.",
+  intro:
+    "여러 장의 이미지를 같은 비율의 격자로 한 번에 보여 주는 갤러리입니다. 각 이미지마다 짧은 caption을 달 수 있고, 클릭 시 상세 페이지로 이동하는 링크도 옵션입니다. 모바일은 1열, 데스크톱은 2~4열로 자동 조절됩니다.",
+  useCases: [
+    "Lab 데모 이미지 미리보기 갤러리",
+    "Heritage 프로젝트의 작업물 이미지 모음",
+    "포트폴리오·갤러리 페이지",
+    "블로그·매거진의 사진 모음",
+  ],
   examples: [
     {
       index: "01",
@@ -6340,6 +6955,150 @@ href시 살짝 scale + opacity-90.`,
   ],
 };
 
+const CAROUSEL_DEF: ComponentDef = {
+  id: "carousel",
+  ko: "캐러셀·슬라이드",
+  en: "Carousel",
+  desc: "한 장씩 큰 슬라이드 — 좌우 화살표 + emerald dot. fade(default) / slide 트랜지션, autoPlay·loop·키보드 ←/→.",
+  intro:
+    "한 번에 한 장씩 큰 화면으로 보여 주는 슬라이드 컴포넌트입니다. 좌우 화살표·하단 점·키보드 ←/→·모바일 스와이프 모두 지원하며, 자동 재생 옵션도 있습니다. 마우스를 올리면 자동 재생이 일시정지되어 사용자 시선을 존중합니다.",
+  useCases: [
+    "히어로 영역의 메인 비주얼 슬라이드",
+    "포트폴리오 상세의 스크린샷 모음",
+    "이벤트·캠페인의 주요 이미지 회전",
+    "About·Story의 장면 전환 (스토리 슬라이드)",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "이미지 캐러셀 — fade 트랜지션 + autoPlay",
+      description: "3장 16:9 + 호버 시 자동재생 일시정지. dots 누르면 즉시 이동.",
+      preview: (
+        <Carousel
+          autoPlay
+          interval={4000}
+          slides={[
+            {
+              id: "s1",
+              content: (
+                <img
+                  src="https://placehold.co/1280x720/0a0a0a/34d399?text=Slide+1"
+                  alt="슬라이드 1"
+                  className="h-full w-full object-cover"
+                />
+              ),
+            },
+            {
+              id: "s2",
+              content: (
+                <img
+                  src="https://placehold.co/1280x720/0a0a0a/64748b?text=Slide+2"
+                  alt="슬라이드 2"
+                  className="h-full w-full object-cover"
+                />
+              ),
+            },
+            {
+              id: "s3",
+              content: (
+                <img
+                  src="https://placehold.co/1280x720/0a0a0a/a3a3a3?text=Slide+3"
+                  alt="슬라이드 3"
+                  className="h-full w-full object-cover"
+                />
+              ),
+            },
+          ]}
+        />
+      ),
+      prompt: `캐러셀 / 슬라이드. 한 장씩 큰 콘텐츠 (이미지·문구).
+스타일: shadow X, 1px 헤어라인 border, rounded-md, overflow-hidden.
+화살표: 좌우 가장자리 ghost 버튼 (white/80 + backdrop-blur, hover 진하게).
+dots: 하단 중앙, 비활성 작은 zinc-400 1px 동그라미, active emerald 채움 + 가로 늘어남(w-5).
+모션: fade(default, opacity 500ms) / slide(translateX 500ms).
+인터랙션: 호버 시 autoPlay 일시정지, 키보드 ←/→ 지원, 모바일 좌우 스와이프(40px threshold, 세로 스크롤 우세 시 양보), role=region aria-roledescription="carousel".`,
+      react: `<Carousel
+  autoPlay
+  interval={4000}
+  slides={[
+    { id: "s1", content: <img src="/1.jpg" className="h-full w-full object-cover" /> },
+    { id: "s2", content: <img src="/2.jpg" className="h-full w-full object-cover" /> },
+    { id: "s3", content: <img src="/3.jpg" className="h-full w-full object-cover" /> },
+  ]}
+/>`,
+    },
+    {
+      index: "02",
+      badge: "transition",
+      title: "slide 트랜지션 + 비율 4:3",
+      description: "translateX 슬라이드. autoPlay 끄고 화살표·dots만으로 제어.",
+      preview: (
+        <Carousel
+          transition="slide"
+          aspect="4/3"
+          slides={[
+            {
+              id: "a",
+              content: (
+                <div className="flex h-full w-full items-center justify-center bg-emerald-500/10 px-8 text-center">
+                  <p className="text-[18px] font-medium text-emerald-700 dark:text-emerald-300">
+                    안티 카드 정체성
+                  </p>
+                </div>
+              ),
+            },
+            {
+              id: "b",
+              content: (
+                <div className="flex h-full w-full items-center justify-center bg-zinc-100 px-8 text-center dark:bg-white/[0.04]">
+                  <p className="text-[18px] font-medium text-zinc-700 dark:text-zinc-200">
+                    AI 동질화 거부
+                  </p>
+                </div>
+              ),
+            },
+            {
+              id: "c",
+              content: (
+                <div className="flex h-full w-full items-center justify-center bg-yellow-500/10 px-8 text-center">
+                  <p className="text-[18px] font-medium text-yellow-800 dark:text-yellow-200">
+                    헤어라인의 미감
+                  </p>
+                </div>
+              ),
+            },
+          ]}
+        />
+      ),
+      prompt: `slide 트랜지션 — translateX 기반 옆으로 미는 모션.
+fade와 차이: 슬라이드 사이 직접적 연결감 (앨범 페이지 넘기듯).
+autoPlay 없이 사용자 능동 조작 위주 (히어로보단 스토리 슬라이드 적합).`,
+      react: `<Carousel
+  transition="slide"
+  aspect="4/3"
+  slides={[
+    { id: "a", content: <div className="flex h-full items-center justify-center">안티 카드 정체성</div> },
+    { id: "b", content: <div className="flex h-full items-center justify-center">AI 동질화 거부</div> },
+    { id: "c", content: <div className="flex h-full items-center justify-center">헤어라인의 미감</div> },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "slides", type: "CarouselSlide[]", desc: "{id, content, label?}[]" },
+    { name: "defaultIndex", type: "number", default: "0", desc: "시작 슬라이드" },
+    { name: "autoPlay", type: "boolean", default: "false", desc: "자동재생 (호버 시 일시정지)" },
+    { name: "interval", type: "number", default: "5000", desc: "자동재생 간격(ms)" },
+    { name: "showArrows", type: "boolean", default: "true", desc: "좌우 화살표" },
+    { name: "showDots", type: "boolean", default: "true", desc: "하단 dots" },
+    { name: "loop", type: "boolean", default: "true", desc: "마지막→처음 순환" },
+    { name: "aspect", type: '"16/9" | "4/3" | "1/1" | "21/9"', default: '"16/9"', desc: "비율" },
+    { name: "transition", type: '"fade" | "slide"', default: '"fade"', desc: "전환 모션" },
+    { name: "onIndexChange", type: "(i: number) => void", desc: "인덱스 변경 콜백" },
+  ],
+};
+
 /* ================================================================
  * 내비게이션 (Breadcrumb / Pagination / Tabs)
  * ================================================================ */
@@ -6349,6 +7108,14 @@ const BREADCRUMB_DEF: ComponentDef = {
   ko: "브레드크럼",
   en: "Breadcrumb",
   desc: "사용자 위치 표시. 12.5px, 마지막 항목은 진한 색 + aria-current. ChevronRight 자동.",
+  intro:
+    "사용자가 사이트 안에서 \"지금 어디에 있는지\"를 한 줄로 알려 주는 경로 표시입니다. \"홈 > 카테고리 > 현재 페이지\" 식으로 작은 글씨로 펼쳐지며, 마지막 항목은 진하게 강조되어 현재 위치임을 분명히 합니다.",
+  useCases: [
+    "블로그 글의 \"홈 > 학습 일지 > 글 제목\" 경로",
+    "문서·매뉴얼의 페이지 위치 안내",
+    "Admin 화면의 다단계 페이지 경로",
+    "이커머스의 카테고리 깊은 페이지 경로",
+  ],
   examples: [
     {
       index: "01",
@@ -6398,6 +7165,14 @@ const PAGINATION_DEF: ComponentDef = {
   ko: "페이지네이션",
   en: "Pagination",
   desc: "페이지 이동. 헤어라인 박스 + 활성만 emerald 배경. 1 ... siblings ... last 패턴.",
+  intro:
+    "긴 목록을 여러 페이지로 나누어 보여 줄 때 \"이전 / 1 2 3 / 다음\" 식으로 페이지를 이동하게 해 주는 컴포넌트입니다. 현재 페이지만 emerald 색으로 살짝 강조되고, 페이지가 많을 땐 자동으로 \"...\"으로 줄여 보여 줍니다.",
+  useCases: [
+    "블로그 목록 페이지 (글 N개씩)",
+    "검색 결과 페이지",
+    "Admin 데이터 테이블의 페이지 이동",
+    "이커머스의 상품 목록 페이지",
+  ],
   examples: [
     {
       index: "01",
@@ -6432,6 +7207,14 @@ const TABS_DEF: ComponentDef = {
   ko: "탭 메뉴",
   en: "Tabs",
   desc: "탭 패널 전환. variant=line(헤어라인+emerald 언더라인) / pills(Pill 톤).",
+  intro:
+    "한 영역에서 여러 화면을 \"탭으로 전환\"해 가며 보여 주는 컴포넌트입니다. 활성 탭에는 emerald 색 짧은 밑줄이 그어지고, 클릭 시 해당 콘텐츠로 부드럽게 전환됩니다. 두 가지 톤(헤어라인 라인 / Pill 형태)을 선택할 수 있습니다.",
+  useCases: [
+    "제품 상세의 \"개요·스펙·리뷰·FAQ\" 탭",
+    "Admin 대시보드의 \"통계·로그·설정\" 화면 전환",
+    "포트폴리오 사례의 \"문제·해결·결과\" 탭",
+    "Settings 페이지의 카테고리 분리",
+  ],
   examples: [
     {
       index: "01",
@@ -6517,6 +7300,14 @@ const DIALOG_DEF: ComponentDef = {
   ko: "다이얼로그·모달",
   en: "Dialog",
   desc: "native <dialog> 사용 — focus trap·ESC·backdrop 자동. shadow X, 헤어라인. footer slot.",
+  intro:
+    "본문 위에 떠서 사용자에게 \"확인이 필요한 한 가지\"에 집중하게 하는 모달 창입니다. 뒤 배경은 살짝 어두워져 다른 곳을 클릭할 수 없게 되고, ESC 키나 배경 클릭으로 자연스럽게 닫힙니다. 키보드 포커스도 모달 안에서만 움직이도록 자동 제어됩니다.",
+  useCases: [
+    "삭제·결제처럼 중요한 행동의 확인 다이얼로그",
+    "짧은 폼 (예: 빠른 로그인·이메일 구독)",
+    "이미지·동영상 라이트박스",
+    "단계별 설명·안내 모달 (튜토리얼)",
+  ],
   examples: [
     {
       index: "01",
@@ -6593,6 +7384,14 @@ const DRAWER_DEF: ComponentDef = {
   ko: "서랍·사이드 패널",
   en: "Drawer",
   desc: "옆에서 슬라이드 패널. side=left/right. Dialog보다 긴 콘텐츠·폼에 적합.",
+  intro:
+    "화면의 옆(왼쪽 또는 오른쪽)에서 미끄러져 들어오는 큰 패널입니다. 다이얼로그보다 세로로 길게 사용할 수 있어 긴 폼이나 상세 콘텐츠를 띄우기에 적합합니다. ESC·배경 클릭으로 자연스럽게 닫힙니다.",
+  useCases: [
+    "모바일·태블릿의 메뉴(햄버거 → 사이드 메뉴)",
+    "쇼핑몰의 장바구니·주문 요약 패널",
+    "Admin의 빠른 편집 폼 (목록은 그대로 두고 옆에서 편집)",
+    "필터 패널 (긴 카테고리·다중 옵션)",
+  ],
   examples: [
     {
       index: "01",
@@ -6633,6 +7432,14 @@ const POPOVER_DEF: ComponentDef = {
   ko: "팝오버",
   en: "Popover",
   desc: "트리거 옆 floating 패널. 클릭으로 열고 닫음. 인터랙티브 콘텐츠 OK (Tooltip과 차이).",
+  intro:
+    "어떤 버튼·아이콘 옆에 붙어 떠 있는 작은 패널입니다. 호버가 아니라 클릭으로 열고 닫으며, 그 안에 폼·메뉴·설정 같은 인터랙티브 콘텐츠도 둘 수 있습니다. 외부 클릭이나 ESC로 자연스럽게 닫힙니다.",
+  useCases: [
+    "헤더의 사용자 메뉴(프로필·로그아웃)",
+    "필터·정렬 옵션이 들어가는 작은 설정 패널",
+    "표 헤더의 \"이 컬럼 옵션\" 미니 메뉴",
+    "공유 버튼의 \"링크 복사·SNS\" 패널",
+  ],
   examples: [
     {
       index: "01",
@@ -6686,6 +7493,14 @@ const TOOLTIP_DEF: ComponentDef = {
   ko: "툴팁",
   en: "Tooltip",
   desc: "호버 시 작은 정보. CSS group-hover로 작동, JS 불필요. focus 시에도 노출 (a11y).",
+  intro:
+    "마우스를 올리거나 키보드 포커스를 받았을 때 살짝 떠오르는 작은 정보 띠입니다. 본문 흐름을 거의 깨지 않으면서 \"이 아이콘은 무엇인지\", \"이 단어의 의미는 무엇인지\" 같은 짧은 보충 설명을 줍니다.",
+  useCases: [
+    "도구 모음 아이콘 버튼의 이름 안내",
+    "표 헤더 옆의 \"이 지표가 무엇인지\" 정의",
+    "약어·전문 용어의 풀이",
+    "비활성 버튼의 비활성 이유 안내",
+  ],
   examples: [
     {
       index: "01",
@@ -6776,6 +7591,14 @@ const TOAST_DEF: ComponentDef = {
   ko: "토스트 알림",
   en: "Toast",
   desc: "ToastProvider + useToast로 누적(stack) 알림. 4 tones × 6 positions. 자동 닫힘 + aria-live.",
+  intro:
+    "사용자의 행동에 대한 결과(성공·경고·오류 등)를 화면 한쪽 구석에 잠깐 떠올랐다 사라지는 작은 카드로 알립니다. 여러 알림이 짧은 시간에 쌓이면 자동으로 stack 되어 자연스럽게 표시됩니다. 본문 흐름을 끊지 않으면서 \"방금 무슨 일이 있었어요\"를 부드럽게 전합니다.",
+  useCases: [
+    "글 저장·삭제·복사 같은 단순 행동 후 결과 알림",
+    "폼 제출 성공/실패 피드백",
+    "백그라운드 작업(업로드·내보내기) 진행 알림",
+    "에러 알림 (네트워크 실패·권한 부족 등)",
+  ],
   examples: [
     {
       index: "01",
@@ -6878,6 +7701,14 @@ const DROPDOWN_DEF: ComponentDef = {
   ko: "드롭다운 메뉴",
   en: "Dropdown Menu",
   desc: "트리거 클릭 → 메뉴 리스트. 외부 클릭 + ESC로 자동 닫힘. icon / separator / danger 지원.",
+  intro:
+    "어떤 버튼을 클릭하면 그 아래 짧은 액션 목록이 펼쳐지는 메뉴입니다. 각 항목엔 작은 아이콘을 붙이거나 위험한 액션(예: 삭제)을 빨간 톤으로 강조할 수 있고, 외부를 클릭하면 자연스럽게 닫힙니다.",
+  useCases: [
+    "리스트 행 우측의 \"⋯\" 더 보기 메뉴 (편집·공유·삭제)",
+    "헤더의 사용자 프로필 메뉴 (설정·로그아웃)",
+    "글·게시물의 액션 메뉴",
+    "Admin 테이블의 행 단위 액션",
+  ],
   examples: [
     {
       index: "01",
@@ -6923,5 +7754,468 @@ each item: px-3 py-1.5, hover bg-zinc-50.
     { name: "trigger", type: "ReactNode", desc: "클릭 트리거 (button 권장)" },
     { name: "items", type: "DropdownItem[]", desc: "{label, onClick?, href?, icon?, separator?, danger?, disabled?}[]" },
     { name: "align", type: '"start" | "end"', default: '"start"', desc: "트리거 기준 정렬" },
+  ],
+};
+
+/* ================================================================
+ * 폼·데이터 (0.11.0~)
+ * FormField / DataTable / DatePicker / Combobox
+ * ================================================================ */
+
+function FormFieldDemo() {
+  const [email, setEmail] = useState("");
+  const [touched, setTouched] = useState(false);
+  const error = touched && email.length > 0 && !email.includes("@") ? "이메일 형식이 올바르지 않습니다." : undefined;
+  return (
+    <div className="space-y-5 max-w-md">
+      <FormField label="이름" htmlFor="ff-name" required hint="실명 또는 닉네임">
+        <Input id="ff-name" placeholder="홍길동" />
+      </FormField>
+      <FormField label="이메일" htmlFor="ff-email" required error={error} hint="회신 받을 주소">
+        <Input
+          id="ff-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => setTouched(true)}
+          placeholder="you@example.com"
+          className={error ? "border-rose-500/60 dark:border-rose-400/40" : undefined}
+        />
+      </FormField>
+      <FormField label="메모" htmlFor="ff-memo" hint="간단히 적어주세요. 1~3줄.">
+        <Textarea id="ff-memo" rows={3} placeholder="..." />
+      </FormField>
+    </div>
+  );
+}
+
+const FORM_FIELD_DEF: ComponentDef = {
+  id: "form-field",
+  ko: "폼 필드 (라벨·검증)",
+  en: "Form Field",
+  desc: "label / control / hint / error wrapper. 11px smallcaps 라벨, error 시 rose 톤. label-top / label-left 두 레이아웃.",
+  intro:
+    "입력 칸 하나 위·아래에 들어가는 \"라벨·도움말·에러 메시지\"를 한꺼번에 묶어 주는 wrapper입니다. 어떤 입력 칸이든(텍스트 / 여러 줄 / 드롭다운 / 날짜) 그 안에 자식으로 넣으면, 라벨과 에러가 동일한 톤으로 자동 정렬됩니다. 에러가 있을 땐 라벨도 rose 색으로 살짝 강조됩니다.",
+  useCases: [
+    "Talk·Contact 폼의 모든 입력 칸",
+    "Admin 글 작성·설정 폼의 라벨링",
+    "회원가입·로그인의 일관된 폼 톤",
+    "긴 폼에서 \"이 칸이 잘못됐어요\"를 친절하게 알릴 때",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "기본 — 이메일 검증",
+      description: "이메일에 @가 없으면 blur 시 error 표시. label·hint가 rose로 자동 전환.",
+      preview: <FormFieldDemo />,
+      prompt: `FormField — label / control / hint / error wrapper.
+스타일: 박스 X. label = 11px uppercase smallcaps zinc-500.
+- required: label 옆 emerald 점
+- error: hint 자리에 rose-600 메시지 + label도 rose
+- 자식 input의 border 색은 직접 className으로 (FormField는 wrapper만)
+- layout="label-top" (default) / "label-left" (md:140px 라벨 좌측)
+
+검증 패턴: onBlur로 touched 추적 → 에러 메시지 표시. controlled state.`,
+      react: `<FormField label="이메일" htmlFor="email" required hint="회신 받을 주소" error={errors.email}>
+  <Input id="email" type="email" value={email} onChange={...} />
+</FormField>`,
+    },
+  ],
+  props: [
+    { name: "label", type: "ReactNode", desc: "라벨 (smallcaps)" },
+    { name: "htmlFor", type: "string", desc: "자식 control id 매핑" },
+    { name: "hint", type: "ReactNode", desc: "보조 설명" },
+    { name: "error", type: "ReactNode", desc: "에러 메시지 (있으면 hint 대신 표시)" },
+    { name: "required", type: "boolean", desc: "필수 표시 (emerald 점)" },
+    { name: "layout", type: '"label-top" | "label-left"', default: '"label-top"', desc: "레이아웃" },
+  ],
+};
+
+interface DataTableProject {
+  name: string;
+  year: number;
+  sector: string;
+  hits: number;
+}
+
+const DT_DATA: DataTableProject[] = [
+  { name: "Preive 정수기 캠페인", year: 2018, sector: "F&B", hits: 320 },
+  { name: "휴대폰 보조금 안내", year: 2017, sector: "통신", hits: 180 },
+  { name: "마트 1+1 할인", year: 2019, sector: "유통", hits: 540 },
+  { name: "택배 픽업 알림", year: 2020, sector: "물류", hits: 240 },
+  { name: "스마트팜 모니터링", year: 2022, sector: "농업", hits: 95 },
+  { name: "어린이 손짓 학습", year: 2026, sector: "교육", hits: 12 },
+];
+
+function DataTableDemo() {
+  return (
+    <DataTable
+      data={DT_DATA}
+      rowKey={(r) => r.name}
+      columns={[
+        { key: "name", header: "이름", sortable: true },
+        { key: "sector", header: "섹터", sortable: true, width: "w-[100px]" },
+        { key: "year", header: "연도", sortable: true, align: "right", width: "w-[80px]" },
+        { key: "hits", header: "조회", sortable: true, align: "right", width: "w-[80px]" },
+      ]}
+      caption="Heritage 대표 사례 6개"
+    />
+  );
+}
+
+const DATA_TABLE_DEF: ComponentDef = {
+  id: "data-table",
+  ko: "데이터 테이블",
+  en: "Data Table",
+  desc: "정렬 가능한 표. 박스 X, 행 사이 1px 헤어라인. 헤더 smallcaps zinc-500. generic 타입.",
+  intro:
+    "데이터를 행과 열로 정리해서 보여 주고, 컬럼 헤더를 클릭하면 정렬되는 인터랙티브 표입니다. 박스로 둘러싸지 않고 행 사이에 1픽셀 선만 있어 안티 카드 톤과 잘 맞으며, 한 행을 클릭해 상세로 이동하는 것도 가능합니다.",
+  useCases: [
+    "Admin의 글·미디어·사용자 목록",
+    "Heritage 사례를 정렬·필터해서 보는 표",
+    "데이터 분석·대시보드의 결과 행",
+    "긴 정보(스펙·로그·이력)의 정렬 가능한 정리",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "정렬 가능 컬럼",
+      description: "헤더 클릭 → asc/desc/none 순환. lucide ChevronUp/Down 자동 표시.",
+      preview: <DataTableDemo />,
+      prompt: `DataTable — 인터랙티브 표.
+스타일:
+- 헤더: 11.5px uppercase smallcaps zinc-500, bottom 1px 헤어라인
+- 행: 1px 헤어라인 (zinc-200/70 — 더 옅게)
+- shadow 없음 / 줄무늬 없음 — 안티 카드 행 미감
+- 셀 13.5px, density tight/default/loose
+
+정렬: column.sortable=true, key 기반 자동 비교 (number / string).
+column.compare 커스텀 비교도 가능. row.onClick으로 인터랙티브 행.`,
+      react: `<DataTable
+  data={projects}
+  columns={[
+    { key: "name", header: "이름", sortable: true },
+    { key: "year", header: "연도", sortable: true, align: "right" },
+  ]}
+  rowKey={(r) => r.name}
+/>`,
+    },
+  ],
+  props: [
+    { name: "data", type: "T[]", desc: "행 데이터 (generic)" },
+    { name: "columns", type: "DataTableColumn<T>[]", desc: "{key, header, cell?, sortable?, sortKey?, compare?, width?, align?}" },
+    { name: "rowKey", type: "(row, i) => string", desc: "행 unique key (default: index)" },
+    { name: "onRowClick", type: "(row) => void", desc: "행 클릭 (인터랙티브 행)" },
+    { name: "empty", type: "ReactNode", default: '"데이터 없음"', desc: "빈 상태 메시지" },
+    { name: "density", type: '"tight" | "default" | "loose"', default: '"default"', desc: "셀 패딩" },
+    { name: "caption", type: "ReactNode", desc: "표 위 caption" },
+  ],
+};
+
+function DatePickerDemo() {
+  const [date, setDate] = useState<Date | null>(null);
+  return (
+    <div className="space-y-3">
+      <DatePicker value={date} onChange={setDate} />
+      <p className="text-[12.5px] text-zinc-500">
+        선택값: {date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}` : "(없음)"}
+      </p>
+    </div>
+  );
+}
+
+const DATE_PICKER_DEF: ComponentDef = {
+  id: "date-picker",
+  ko: "날짜 선택",
+  en: "Date Picker",
+  desc: "Popover + 캘린더 grid. 1px 헤어라인 셀, smallcaps 요일, emerald 선택 / emerald-outline 오늘.",
+  intro:
+    "날짜를 직접 타이핑하지 않고, 트리거 버튼을 클릭해 펼쳐지는 미니 달력에서 한 날짜를 고르게 해 주는 컴포넌트입니다. 오늘 날짜는 살짝 강조되고 선택한 날짜는 emerald 색으로 표시되어 직관적입니다.",
+  useCases: [
+    "Talk 폼의 \"희망 시작일\" 입력",
+    "Admin 글·미디어의 \"발행일\" 선택",
+    "예약·일정 신청 폼",
+    "데이터 필터의 시작/종료 날짜",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "기본 — 한글",
+      description: "트리거 클릭 → popover. 요일 smallcaps, ←/→로 달 이동, 오늘·지우기 푸터.",
+      preview: <DatePickerDemo />,
+      prompt: `DatePicker — Popover 위 캘린더.
+스타일: shadow X, 1px 헤어라인 popover. p-3, w-[280px].
+- 요일 헤더: 10.5px uppercase smallcaps zinc-400
+- 셀: h-7, 12.5px
+- 선택일: bg-emerald-500 + text-white
+- 오늘: border emerald-500/40 + text-emerald-700
+- 푸터: 오늘 / 지우기 (1px 헤어라인 위)
+
+locale="ko"|"en". disabledDate(date)=>boolean으로 비활성 날짜.`,
+      react: `const [date, setDate] = useState<Date | null>(null);
+<DatePicker value={date} onChange={setDate} />`,
+    },
+  ],
+  props: [
+    { name: "value", type: "Date | null", desc: "선택 날짜 (controlled)" },
+    { name: "onChange", type: "(date: Date | null) => void", desc: "변경 콜백" },
+    { name: "defaultViewDate", type: "Date", desc: "처음 열렸을 때 보이는 달" },
+    { name: "disabledDate", type: "(date) => boolean", desc: "비활성 판정 함수" },
+    { name: "placeholder", type: "string", default: '"날짜 선택"', desc: "트리거 placeholder" },
+    { name: "width", type: "string", default: '"w-[160px]"', desc: "트리거 너비 (Tailwind)" },
+    { name: "locale", type: '"ko" | "en"', default: '"ko"', desc: "요일·월 라벨" },
+    { name: "disabled", type: "boolean", desc: "트리거 비활성" },
+  ],
+};
+
+function ComboboxDemo() {
+  const [value, setValue] = useState<string | null>(null);
+  return (
+    <div className="space-y-3">
+      <Combobox
+        value={value}
+        onChange={setValue}
+        placeholder="섹터 선택"
+        options={[
+          { value: "fnb", label: "F&B" },
+          { value: "telecom", label: "통신·이동통신" },
+          { value: "retail", label: "유통·마트" },
+          { value: "logistics", label: "물류·택배" },
+          { value: "agri", label: "농업·스마트팜" },
+          { value: "edu", label: "교육·어린이" },
+          { value: "fashion", label: "패션", disabled: true },
+          { value: "auto", label: "자동차" },
+          { value: "med", label: "의료" },
+        ]}
+      />
+      <p className="text-[12.5px] text-zinc-500">선택값: {value ?? "(없음)"}</p>
+    </div>
+  );
+}
+
+const COMBOBOX_DEF: ComponentDef = {
+  id: "combobox",
+  ko: "콤보박스 (검색 select)",
+  en: "Combobox",
+  desc: "Input + Dropdown 결합. 검색 가능 select. ↑↓ 키보드, Enter 선택, ESC 닫기.",
+  intro:
+    "옵션이 많아 단순 드롭다운으로는 찾기 어려울 때, 입력 칸과 목록을 결합해 \"검색하면서 고르는\" 선택 컴포넌트입니다. 글자를 타이핑하면 일치 항목만 좁혀지고, 키보드 ↑↓·Enter로도 빠르게 고를 수 있습니다.",
+  useCases: [
+    "사이트 내 검색·자동완성 입력",
+    "Heritage 섹터·태그 같이 옵션이 많은 필터",
+    "회사·도시·국가처럼 항목이 수십 개인 선택",
+    "Admin의 글 카테고리·태그 선택",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "기본 — 검색 가능 옵션",
+      description: "트리거 클릭 → 검색 input + 옵션 listbox. 선택 시 우측 emerald check.",
+      preview: <ComboboxDemo />,
+      prompt: `Combobox — 검색 가능 select.
+스타일:
+- 트리거: rounded-md 1px 헤어라인, 우측 ChevronDown(open 시 rotate-180), 클리어 X
+- popover: 1px 헤어라인, 검색 input top + listbox bottom
+- 옵션 활성(↑↓): bg-zinc-100, hover: bg-zinc-50, 선택: 우측 emerald Check
+
+키보드: ↑↓ 이동 / Enter 선택 / ESC 닫기.
+options에 disabled / searchText (label이 ReactNode일 때).`,
+      react: `<Combobox
+  value={brand}
+  onChange={setBrand}
+  options={[
+    { value: "preive", label: "Preive (2016~2022)" },
+    { value: "freeive", label: "Freeive (2023~)" },
+  ]}
+  placeholder="브랜드 선택"
+/>`,
+    },
+  ],
+  props: [
+    { name: "options", type: "ComboboxOption[]", desc: "{value, label, searchText?, disabled?}" },
+    { name: "value", type: "string | null", desc: "선택값 (controlled)" },
+    { name: "onChange", type: "(value: string | null) => void", desc: "변경 콜백" },
+    { name: "placeholder", type: "string", default: '"선택"', desc: "트리거 placeholder" },
+    { name: "searchPlaceholder", type: "string", default: '"검색…"', desc: "검색 input placeholder" },
+    { name: "empty", type: "ReactNode", default: '"결과 없음"', desc: "결과 없을 때" },
+    { name: "width", type: "string", default: '"w-[220px]"', desc: "전체 너비" },
+    { name: "clearable", type: "boolean", default: "true", desc: "X 버튼 표시" },
+    { name: "disabled", type: "boolean", desc: "비활성화" },
+  ],
+};
+
+const TEXT_LIST_DEF: ComponentDef = {
+  id: "text-list",
+  ko: "텍스트 리스트 (블릿·하이픈·번호)",
+  en: "TextList",
+  desc: "본문 안의 ul/ol 리스트. 6 variant — bullet · hyphen · number · number-padded · check · dot-accent.",
+  intro:
+    "본문 흐름 안에 들어가는 일반 글머리 리스트입니다. 카드나 행 박스가 아닌 단순한 ul/ol — 점·하이픈·번호·체크 같은 마커를 골라 쓸 수 있습니다. 블로그·About·약관 같은 텍스트 위주 페이지에서 가장 자주 쓰입니다.",
+  useCases: [
+    "블로그 본문의 \"세 가지 이유\" 같은 짧은 글머리 리스트",
+    "About·정책 페이지의 항목 나열",
+    "튜토리얼의 단계 (number / number-padded)",
+    "Pricing의 플랜 포함 사항 (check)",
+    "FAQ 답변 안의 작은 부연 리스트",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "bullet",
+      title: "기본 — 점 (•) 글머리",
+      description: "가장 일반적인 ul. 회색 점, 본문 글자색.",
+      preview: (
+        <TextList
+          items={[
+            "안티 카드 톤은 박스보다 공간으로 위계를 만든다.",
+            "한 화면에 더 많은 정보를 자연스럽게 펼친다.",
+            "본문 흐름을 끊지 않는 가벼운 마커가 핵심.",
+          ]}
+        />
+      ),
+      prompt: `본문 안에서 가장 자주 쓰는 글머리 리스트.
+스타일:
+- ul 시맨틱
+- 회색 점(•) + 본문 글자색
+- text-[14.5px] leading-relaxed
+- space-y-1.5 (default density)`,
+      react: `<TextList items={[
+  "첫 번째 항목",
+  "두 번째 항목",
+  "세 번째 항목",
+]} />`,
+    },
+    {
+      index: "02",
+      badge: "hyphen",
+      title: "하이픈 (—) 마커",
+      description: "분류·인용 톤의 가벼운 ul. lucide Minus 아이콘.",
+      preview: (
+        <TextList
+          variant="hyphen"
+          items={[
+            "박스보다 공간",
+            "장식보다 위계",
+            "동질화보다 정체성",
+          ]}
+        />
+      ),
+      prompt: `bullet보다 가벼운 톤의 글머리. 분류·키워드 나열에 적합.
+- variant="hyphen"
+- lucide Minus h-3 w-3 strokeWidth=1.5`,
+      react: `<TextList variant="hyphen" items={[
+  "박스보다 공간",
+  "장식보다 위계",
+]} />`,
+    },
+    {
+      index: "03",
+      badge: "number",
+      title: "번호 (1. 2. 3.) — 순서 있는 ol",
+      description: "절차나 순서가 의미 있을 때. ol 시맨틱.",
+      preview: (
+        <TextList
+          variant="number"
+          items={[
+            "사용자 인터뷰로 문제 정의",
+            "최소 단위로 시안 제작",
+            "한 화면에서 검증",
+            "결과 기반으로 다시 짠다",
+          ]}
+        />
+      ),
+      prompt: `순서가 의미 있는 절차·단계.
+- variant="number" → ol 자동
+- "1. 2. 3." 자동 표시 (tabular-nums)`,
+      react: `<TextList variant="number" items={[
+  "문제 정의",
+  "시안",
+  "검증",
+]} />`,
+    },
+    {
+      index: "04",
+      badge: "number-padded",
+      title: "번호 (01 02 03) — 차분한 mono 톤",
+      description: "원칙·매니페스토·연혁 같은 차분한 ol. 0 패딩 + font-mono.",
+      preview: (
+        <TextList
+          variant="number-padded"
+          items={[
+            "박스 거부",
+            "헤어라인",
+            "smallcaps 라벨",
+            "공간 (여백)",
+            "행 레이아웃",
+          ]}
+        />
+      ),
+      prompt: `차분한 톤의 번호 — \"5원칙\" \"5단계\" 같은 매니페스토용.
+- variant="number-padded"
+- font-mono + tabular-nums + 12.5px
+- 01 02 03 형태 (0 패딩)`,
+      react: `<TextList variant="number-padded" items={[
+  "박스 거부",
+  "헤어라인",
+  "smallcaps 라벨",
+  "공간 (여백)",
+  "행 레이아웃",
+]} />`,
+    },
+    {
+      index: "05",
+      badge: "check",
+      title: "체크 (✓) — emerald lucide",
+      description: "긍정 강조 ul. 받는 의뢰·플랜 포함 사항 등.",
+      preview: (
+        <TextList
+          variant="check"
+          items={[
+            "MVP 컨설팅 및 제작",
+            "연구된 서비스의 기술 서포트",
+            "공동 프로젝트 / 협업",
+          ]}
+        />
+      ),
+      prompt: `긍정·포함 강조.
+- variant="check"
+- lucide Check h-3.5 w-3.5 strokeWidth=1.5
+- emerald-600 / dark emerald-400`,
+      react: `<TextList variant="check" items={[
+  "MVP 컨설팅 및 제작",
+  "연구된 서비스의 기술 서포트",
+]} />`,
+    },
+    {
+      index: "06",
+      badge: "dot-accent",
+      title: "강조 점 (•) — emerald",
+      description: "기본 점과 같지만 emerald 색. 강조된 글머리.",
+      preview: (
+        <TextList
+          variant="dot-accent"
+          items={[
+            "anti-card v0.10.0 출시",
+            "DataTable / FormField 추가",
+            "TextList 6종 variant",
+          ]}
+        />
+      ),
+      prompt: `bullet과 같지만 emerald 색.
+강조된 글머리 — 핵심 항목 나열, 릴리즈 노트 등.`,
+      react: `<TextList variant="dot-accent" items={[
+  "릴리즈 1",
+  "릴리즈 2",
+]} />`,
+    },
+  ],
+  props: [
+    { name: "items", type: "ReactNode[]", desc: "리스트 항목" },
+    { name: "variant", type: '"bullet" | "hyphen" | "number" | "number-padded" | "check" | "dot-accent"', default: '"bullet"', desc: "마커 종류" },
+    { name: "density", type: '"tight" | "default" | "loose"', default: '"default"', desc: "행 간격" },
   ],
 };

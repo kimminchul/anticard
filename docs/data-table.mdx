@@ -1,0 +1,75 @@
+---
+title: DataTable
+description: 정렬 가능한 표. 박스 X, 행 사이 1px 헤어라인. 헤더 smallcaps. generic 타입.
+group: components
+order: 51
+published: true
+updated: 2026-05-08
+---
+
+`<DataTable>`은 anti-card 톤의 **인터랙티브 표**입니다. 행 + 헤어라인 = anti-card 시그니처. shadow / 줄무늬 X.
+
+```tsx
+import { DataTable } from "@freeive/anti-card";
+
+interface Project {
+  name: string;
+  year: number;
+  sector: string;
+}
+
+<DataTable
+  data={projects}
+  rowKey={(r) => r.name}
+  columns={[
+    { key: "name", header: "이름", sortable: true },
+    { key: "sector", header: "섹터", sortable: true },
+    { key: "year", header: "연도", sortable: true, align: "right" },
+  ]}
+  caption="Heritage 대표 사례"
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `T[]` | — | 행 데이터 (generic) |
+| `columns` | `DataTableColumn<T>[]` | — | 컬럼 정의 |
+| `rowKey` | `(row, i) => string` | `index` | 행 unique key |
+| `onRowClick` | `(row) => void` | — | 행 클릭 (인터랙티브 행) |
+| `empty` | `ReactNode` | `"데이터 없음"` | 빈 상태 메시지 |
+| `density` | `"tight" \| "default" \| "loose"` | `"default"` | 셀 패딩 |
+| `caption` | `ReactNode` | — | 표 위 caption (smallcaps) |
+
+### DataTableColumn
+
+| Prop | Type | Description |
+|---|---|---|
+| `key` | `string` | 컬럼 식별자 + `row[key]` 자동 렌더 |
+| `header` | `ReactNode` | 헤더 라벨 |
+| `cell` | `(row, i) => ReactNode` | 셀 렌더 (key fallback 무시) |
+| `sortable` | `boolean` | 정렬 가능 |
+| `sortKey` | `keyof T` | 정렬용 키 (key와 다를 때) |
+| `compare` | `(a, b) => number` | 커스텀 비교 함수 |
+| `width` | `string` | Tailwind 너비 클래스 |
+| `align` | `"left" \| "right" \| "center"` | 정렬 |
+
+## 디자인
+
+- 헤더: 11.5px uppercase smallcaps zinc-500, bottom 1px 헤어라인
+- 행: 1px 헤어라인 (zinc-200/70 — 더 옅게)
+- 셀: 13.5px, density `tight`(py-2) / `default`(py-3) / `loose`(py-4)
+- 정렬 아이콘: lucide ChevronUp/Down/ChevronsUpDown (1.5 stroke)
+- 정렬: 클릭 → asc → desc → none 순환
+
+## CompareTable과의 차이
+
+- `<CompareTable>`: 정적 비교 표 (제품 A vs B). 정렬 없음
+- `<DataTable>`: 인터랙티브 표 (admin / 데이터). 정렬 + 행 클릭
+
+## 관련
+
+- [CompareTable](/anti-card/compare-table) — 정적 비교
+- [ListRow](/anti-card/list-row) — 단일 행
+- [Pagination](/anti-card/pagination) — 페이지 단위 이동

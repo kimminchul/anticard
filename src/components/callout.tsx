@@ -55,12 +55,15 @@ export function Callout({
       {icon && (
         <div
           className={cn(
-            "shrink-0 text-[18px] leading-none",
+            // 본문 첫 줄(text-[14.5px] leading-relaxed ≈ 23.5px line-box)과 시각적 중앙 정렬을 위해
+            // 동일 line-box 높이를 갖고 그 안에서 글리프를 inline-flex 중앙에 둠.
+            "inline-flex shrink-0 items-center text-[18px] leading-[1.625]",
             tone === "info" && "text-zinc-500 dark:text-zinc-400",
             tone === "accent" && "text-emerald-600 dark:text-emerald-400",
             tone === "warning" && "text-yellow-700 dark:text-yellow-400",
             tone === "danger" && "text-rose-600 dark:text-rose-400"
           )}
+          style={{ height: "calc(14.5px * 1.625)" }}
           aria-hidden
         >
           {icon}

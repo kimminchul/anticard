@@ -3,8 +3,8 @@ import * as React from "react";
 import { cn } from "../utils/cn";
 
 export interface PopoverProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "content"> {
-  /** Trigger 요소 (button 권장) */
-  trigger: React.ReactNode;
+  /** Trigger 요소 (button 권장 — 키보드 동작 위해 button 또는 button-like 권장) */
+  trigger: React.ReactElement;
   /** Popover 본문 */
   content: React.ReactNode;
   /** 위치 */
@@ -58,6 +58,22 @@ export function Popover({
     };
   }, [open, closeOnOutside]);
 
+  // trigger element에 onClick / aria 주입 — outer span 제거로 키보드 trigger 가능
+  // (사용자가 button이 아닌 element를 넘겨도 button으로 권장됨)
+  const triggerProps = (trigger as React.ReactElement<Record<string, unknown>>).props ?? {};
+  const userOnClick = triggerProps.onClick as ((e: React.MouseEvent) => void) | undefined;
+  const triggerEl = React.cloneElement(
+    trigger as React.ReactElement<Record<string, unknown>>,
+    {
+      onClick: (e: React.MouseEvent) => {
+        userOnClick?.(e);
+        setOpen((v) => !v);
+      },
+      "aria-expanded": open,
+      "aria-haspopup": "dialog",
+    } as Record<string, unknown>
+  );
+
   return (
     <div
       ref={ref}
@@ -66,7 +82,7 @@ export function Popover({
       className={cn("relative inline-flex", className)}
       {...props}
     >
-      <span onClick={() => setOpen((v) => !v)}>{trigger}</span>
+      {triggerEl}
       {open && (
         <div
           role="dialog"

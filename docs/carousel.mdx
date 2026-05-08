@@ -1,0 +1,73 @@
+---
+title: Carousel
+description: 한 장씩 큰 슬라이드. 화살표 + emerald dots + autoPlay + 키보드 ←/→.
+group: components
+order: 49
+published: true
+updated: 2026-05-08
+---
+
+`<Carousel>`은 한 장씩 큰 콘텐츠를 보여주는 슬라이드 컴포넌트입니다. 안티 카드 톤: shadow X, 헤어라인 1px, emerald active dot, ghost 화살표.
+
+```tsx
+import { Carousel } from "@freeive/anti-card";
+
+<Carousel
+  autoPlay
+  interval={4000}
+  slides={[
+    { id: "s1", content: <img src="/1.jpg" className="h-full w-full object-cover" /> },
+    { id: "s2", content: <img src="/2.jpg" className="h-full w-full object-cover" /> },
+    { id: "s3", content: <img src="/3.jpg" className="h-full w-full object-cover" /> },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `slides` | `CarouselSlide[]` | — | `{id, content, label?}[]` |
+| `defaultIndex` | `number` | `0` | 시작 슬라이드 |
+| `autoPlay` | `boolean` | `false` | 자동재생 (호버 시 일시정지) |
+| `interval` | `number` | `5000` | 자동재생 간격(ms) |
+| `showArrows` | `boolean` | `true` | 좌우 화살표 |
+| `showDots` | `boolean` | `true` | 하단 dots |
+| `loop` | `boolean` | `true` | 마지막→처음 순환 |
+| `aspect` | `"16/9" \| "4/3" \| "1/1" \| "21/9"` | `"16/9"` | 비율 |
+| `transition` | `"fade" \| "slide"` | `"fade"` | 전환 모션 |
+| `onIndexChange` | `(i: number) => void` | — | 인덱스 변경 콜백 |
+
+## 디자인
+
+- 컨테이너: `rounded-md border border-zinc-200`, `overflow-hidden`, focus ring emerald
+- 슬라이드 영역: `aspect-[16/9]` 등 비율 강제
+- fade 트랜지션: 모든 슬라이드 absolute 겹침, 활성 1 / 비활성 0 opacity (500ms)
+- slide 트랜지션: flex + `translateX(-N * 100%)` (500ms)
+- 화살표: 좌우 가장자리 `bg-white/80 backdrop-blur-sm`, 1px 헤어라인, hover `bg-white`
+- dots: 하단 중앙, 비활성 1.5px zinc-400 동그라미, active emerald + `w-5` 가로 늘어남
+
+## 인터랙션
+
+- 호버 시 autoPlay 일시정지 (사용자 시선 존중)
+- 키보드: ←/→ 화살표 키로 이동 (focus 받았을 때)
+- 모바일: 좌우 스와이프 (40px threshold). 세로 스와이프가 더 크면 페이지 스크롤로 양보
+- ARIA: `role="region"`, `aria-roledescription="carousel"`, 각 슬라이드 `role="group"`
+
+## fade vs slide
+
+| 트랜지션 | 사용처 |
+|---|---|
+| `fade` (default) | 이미지 갤러리, 히어로 — 슬라이드 사이 끊어진 느낌 |
+| `slide` | 스토리/단계 — 페이지 넘기듯 연결감 |
+
+## Gallery와의 차이
+
+- `<Gallery>`: 여러 이미지 동시 grid 노출 (한눈에 보기)
+- `<Carousel>`: 한 장씩 시간순 노출 (집중·스토리)
+
+## 관련
+
+- [Gallery](/anti-card/gallery) — 동시 grid
+- [Marquee](/anti-card/marquee) — 끊임없이 흐르는 띠
+- [Pagination](/anti-card/pagination) — 페이지 단위 이동

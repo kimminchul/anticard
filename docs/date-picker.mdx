@@ -1,0 +1,64 @@
+---
+title: DatePicker
+description: Popover 위 캘린더. 1px 헤어라인 셀, smallcaps 요일, emerald 선택 / emerald-outline 오늘.
+group: components
+order: 52
+published: true
+updated: 2026-05-08
+---
+
+`<DatePicker>`는 트리거 버튼을 클릭하면 **Popover 위 캘린더 grid**가 펼쳐지는 날짜 선택 컴포넌트입니다.
+
+```tsx
+import { DatePicker } from "@freeive/anti-card";
+
+const [date, setDate] = useState<Date | null>(null);
+
+<DatePicker value={date} onChange={setDate} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `Date \| null` | — | 선택 날짜 (controlled) |
+| `onChange` | `(date) => void` | — | 변경 콜백 |
+| `defaultViewDate` | `Date` | `new Date()` | 처음 열렸을 때 보이는 달 |
+| `disabledDate` | `(date) => boolean` | — | 비활성 판정 함수 |
+| `placeholder` | `string` | `"날짜 선택"` | 트리거 placeholder |
+| `width` | `string` | `"w-[160px]"` | 트리거 너비 (Tailwind) |
+| `locale` | `"ko" \| "en"` | `"ko"` | 요일·월 라벨 |
+| `disabled` | `boolean` | `false` | 트리거 비활성 |
+| `id` | `string` | — | FormField htmlFor 매칭 |
+
+## 디자인
+
+- 트리거: 1px 헤어라인 button, 우측 lucide Calendar 아이콘
+- Popover: w-[280px], p-3, 1px 헤어라인, `animate-anti-scale-in`
+- 요일 헤더: 10.5px uppercase smallcaps zinc-400
+- 셀: h-7, 12.5px
+- 선택일: `bg-emerald-500 text-white`
+- 오늘: `border-emerald-500/40 text-emerald-700` (라이트), `text-emerald-400` (다크)
+- 푸터: "오늘" / "지우기" — 1px 헤어라인 위
+
+## 인터랙션
+
+- 트리거 클릭 → Popover 열림
+- ←/→ 헤더 버튼으로 달 이동
+- 셀 클릭 → onChange + 자동 닫힘
+- ESC / 외부 클릭 → 닫힘
+- `disabledDate(d) => true`인 셀은 30% opacity + 클릭 불가
+
+## 비활성 날짜 예시
+
+```tsx
+<DatePicker
+  disabledDate={(d) => d < new Date()} // 과거 날짜 비활성
+/>
+```
+
+## 관련
+
+- [Popover](/anti-card/popover) — Popover 패턴
+- [FormField](/anti-card/form-field) — label/error wrapper
+- [Combobox](/anti-card/combobox) — 검색 가능 select
