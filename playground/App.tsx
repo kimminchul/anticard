@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
-import { Moon, Sun, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Moon, Sun, ArrowUpRight, ChevronDown, Search, X } from "lucide-react";
 import {
   Eyebrow,
   SectionFrame,
@@ -426,8 +426,27 @@ interface SidebarProps {
 }
 
 function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+
   const readyCount = NAV.flatMap((g) => g.items).filter((i) => i.status === "ready").length;
   const totalCount = NAV.flatMap((g) => g.items).length;
+
+  const matchQuery = (item: NavItem, group: NavGroup) =>
+    !q ||
+    item.ko.toLowerCase().includes(q) ||
+    item.en.toLowerCase().includes(q) ||
+    item.id.toLowerCase().includes(q) ||
+    group.group.toLowerCase().includes(q);
+
+  // 검색 결과 카운트 (filter + query 결합)
+  const filteredGroups = NAV.map((group) => {
+    const items = (filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items)
+      .filter((i) => matchQuery(i, group));
+    return { group, items };
+  }).filter((g) => g.items.length > 0);
+
+  const totalMatches = filteredGroups.reduce((sum, g) => sum + g.items.length, 0);
 
   return (
     <aside className="thin-scroll self-start md:sticky md:top-10 md:max-h-[calc(100vh-5rem)] md:overflow-y-auto md:pr-6">
@@ -442,6 +461,30 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         개요
       </a>
 
+      {/* Search */}
+      <div className="relative mb-3">
+        <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="검색 (한글 / 영문 / 카테고리)"
+          aria-label="컴포넌트 검색"
+          className="w-full rounded-md border border-zinc-200 bg-transparent py-1.5 pl-8 pr-7 text-[12.5px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/15"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            aria-label="검색 지우기"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-white/[0.06] dark:hover:text-zinc-200"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        )}
+      </div>
+
+      {/* Filter (전체 / 준비됨) */}
       <div className="flex items-center gap-1 rounded-md border border-zinc-200 p-0.5 dark:border-white/[0.08]">
         <button type="button" onClick={() => onFilterChange("all")} className={`flex-1 rounded px-2 py-1.5 text-[12px] transition-colors ${filter === "all" ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.08] dark:text-zinc-100" : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"}`}>
           전체 {totalCount}
@@ -451,9 +494,29 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         </button>
       </div>
 
+      {/* Search result count */}
+      {q && (
+        <p className="mt-2 text-[11.5px] text-zinc-500 dark:text-zinc-400">
+          “{query}” — {totalMatches}개 결과
+        </p>
+      )}
+
+      {/* No results */}
+      {q && totalMatches === 0 && (
+        <div className="mt-6 rounded-md border border-dashed border-zinc-200 px-3 py-4 text-[12.5px] text-zinc-500 dark:border-white/[0.08] dark:text-zinc-500">
+          “{query}”에 해당하는 컴포넌트가 없습니다.
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            className="mt-2 block text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+          >
+            검색 지우기
+          </button>
+        </div>
+      )}
+
       <div className="mt-7 space-y-7">
-        {NAV.map((group) => {
-          const items = filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items;
+        {filteredGroups.map(({ group, items }) => {
           if (items.length === 0) return null;
           return (
             <div key={group.group}>
