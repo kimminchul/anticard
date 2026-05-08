@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
+import { Moon, Sun, ArrowUpRight, ChevronDown } from "lucide-react";
 import {
   Eyebrow,
   SectionFrame,
@@ -317,16 +318,14 @@ export default function App() {
         data-mobile-sidebar
         className="mt-5 border-y border-zinc-200/60 dark:border-white/[0.06] md:hidden"
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
+        <summary className="group flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
           <span className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100">
             메뉴 / Components
           </span>
-          <span
+          <ChevronDown
             aria-hidden
-            className="text-[12px] text-zinc-500 transition-transform group-open:rotate-180"
-          >
-            ▼
-          </span>
+            className="h-4 w-4 text-zinc-500 transition-transform group-open:rotate-180"
+          />
         </summary>
         <div className="pb-4 pt-2">
           <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
@@ -371,17 +370,19 @@ function Header() {
           href="https://github.com/kimminchul/anticard"
           target="_blank"
           rel="noopener noreferrer"
-          className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+          className="inline-flex items-center gap-1 transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
         >
-          Github
+          <span>Github</span>
+          <ArrowUpRight aria-hidden className="h-3 w-3 opacity-60" />
         </a>
         <a
           href="https://freeive.com/anti-card"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden transition-colors hover:text-zinc-900 sm:inline dark:hover:text-zinc-100"
+          className="hidden items-center gap-1 transition-colors hover:text-zinc-900 sm:inline-flex dark:hover:text-zinc-100"
         >
-          freeive.com/anti-card
+          <span>freeive.com/anti-card</span>
+          <ArrowUpRight aria-hidden className="h-3 w-3 opacity-60" />
         </a>
       </nav>
     </header>
@@ -408,7 +409,11 @@ function ThemeToggle() {
       className="flex items-center gap-1.5 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] transition-colors hover:border-emerald-500/50 hover:text-emerald-600 dark:border-white/15 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
       title={theme === "dark" ? "라이트 모드로" : "다크 모드로"}
     >
-      <span aria-hidden>{theme === "dark" ? "☾" : "☀"}</span>
+      {theme === "dark" ? (
+        <Moon aria-hidden className="h-3 w-3" />
+      ) : (
+        <Sun aria-hidden className="h-3 w-3" />
+      )}
       <span>{theme === "dark" ? "Dark" : "Light"}</span>
     </button>
   );
@@ -524,14 +529,15 @@ function Intro() {
           href="https://freeive.com/anti-card"
           target="_blank"
           rel="noopener noreferrer"
-          className="group mt-3 inline-flex items-baseline gap-2 text-[15px] font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+          className="group mt-3 inline-flex items-center gap-2 text-[15px] font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
         >
           <span className="border-b border-current/30 group-hover:border-current">
             freeive.com/anti-card
           </span>
-          <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-            ↗
-          </span>
+          <ArrowUpRight
+            aria-hidden
+            className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
         </a>
       </div>
 

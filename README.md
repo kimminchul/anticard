@@ -194,6 +194,17 @@ npm run sync
 - **v1.1.0+** — Tailwind preset 패키지화, Headless 모드 (Tailwind 없이도)
 - **v2.0.0+** — AI Skill 정식 install 명령 (`claude skill install`), Vue/Svelte 포트
 
+## Acknowledgements
+
+- [**lucide-react**](https://lucide.dev) — ISC License · playground 아이콘 (Sun/Moon/ArrowUpRight/ChevronDown). 1px stroke 미니멀 톤이 anti-card 헤어라인 정체성과 일치.
+- [**prism-react-renderer**](https://github.com/FormidableLabs/prism-react-renderer) — MIT License · playground 코드 syntax highlight.
+- [**Tailwind CSS**](https://tailwindcss.com) — MIT License · 5원칙 적용 base.
+
+## 브랜치 정책
+
+- **`main`** — 안정 배포 브랜치. push 시 GitHub Actions가 GitHub Pages 자동 배포.
+- **`develop`** — 작업 브랜치. 새 컴포넌트·실험은 모두 develop에서 → 안정화 후 main merge.
+
 ## 라이선스
 
 MIT — © Kim Min Chul (Freeive)
