@@ -201,3 +201,6 @@ export { cn } from "./utils/cn";
 
 export { typography } from "./tokens/typography";
 export type { TypographyToken } from "./tokens/typography";
+
+export { motion } from "./tokens/motion";
+export type { MotionDuration, MotionEasing } from "./tokens/motion";

@@ -1,0 +1,96 @@
+---
+title: 모션 (Motion)
+description: anti-card motion 토큰 — 5 duration + 3 easing + 5원칙
+group: start
+order: 4
+published: true
+updated: 2026-05-08
+---
+
+anti-card는 **절제된 모션**을 추구합니다. bounce·rotate·dramatic zoom 같은 화려한 표현을 거부하고, 위계와 상태 변경을 **빠르고 단조롭게** 표시합니다.
+
+## 5원칙
+
+1. **절제** — bounce / rotate / shake / dramatic zoom 거부 (5원칙 박스 거부 정신과 일관)
+2. **빠름** — 150ms hover · 200ms 상태 변경 기본. 300ms 이상은 페이지 진입만
+3. **단방향** — opacity + 작은 transform (1~4px). `scale > 1.05` 거부
+4. **존중** — `prefers-reduced-motion: reduce` 자동 인식 (transition: 0)
+5. **CSS first** — JS transition은 in-view, focus trap, virtualized 같이 필요할 때만
+
+## Duration 토큰 (5단계)
+
+| 토큰 | 값 | Tailwind 클래스 | 사용처 |
+|---|---|---|---|
+| `instant` | 75ms | `duration-instant` | focus ring 같은 micro 반응 |
+| `fast` | 150ms | `duration-fast` | 호버, color 전환 (가장 자주) |
+| `DEFAULT` | 200ms | `duration-200` | 일반 상태 변경 |
+| `slow` | 300ms | `duration-slow` | 모달 fade, sliding panel |
+| `slower` | 500ms | `duration-slower` | 페이지 in-view, 누적 stagger |
+
+## Easing (3개 — Tailwind 기본 그대로)
+
+| 토큰 | cubic-bezier | Tailwind | 의미 |
+|---|---|---|---|
+| `standard` | (0.4, 0, 0.2, 1) | `ease-in-out` | 양방향 상태 전환 (default) |
+| `decelerate` | (0, 0, 0.2, 1) | `ease-out` | UI 진입 (in) — 끝부분 부드럽게 멈춤 |
+| `accelerate` | (0.4, 0, 1, 1) | `ease-in` | UI 퇴장 (out) — 빠르게 사라짐 |
+
+> Tailwind 기본 easing이 이미 동일한 베지어를 갖고 있어 별도 추가 클래스 없음.
+
+## 권장 매트릭스
+
+| 상황 | duration | easing |
+|---|---|---|
+| Hover (color/border) | `duration-fast` (150ms) | `ease-in-out` |
+| Button press / state | `duration-200` (200ms) | `ease-in-out` |
+| Modal/Drawer enter | `duration-slow` (300ms) | `ease-out` |
+| Modal/Drawer exit | `duration-fast` (150ms) | `ease-in` |
+| 페이지 in-view fade | `duration-slower` (500ms) | `ease-out` |
+| Tooltip 등장 | `duration-fast` (150ms) | `ease-out` |
+
+## Reduced motion (필수)
+
+사용자 설정에서 "모션 줄이기"가 활성화되면 transition·animation을 거의 즉각으로 단축. 앱 root CSS에 다음 1번 추가:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+playground는 이미 적용됨 (`playground/styles.css`). freeive.com도 권장.
+
+## JS 토큰 사용
+
+```ts
+import { motion } from "@freeive/anti-card";
+
+// inline style
+<div style={{ transitionDuration: motion.duration.fast }}>...</div>
+
+// custom CSS-in-JS
+const style = {
+  transition: `opacity ${motion.duration.slow} ${motion.easing.decelerate}`,
+};
+```
+
+대부분 Tailwind 클래스로 충분하지만, 동적 값 / non-Tailwind 환경에서 직접 import.
+
+## 안티 패턴
+
+- ❌ `scale(1.5)` 같은 큰 zoom — 안티 카드 정신과 충돌
+- ❌ `rotate(360deg)` 같은 회전 — loading spinner는 예외 (필요 시 단조로운 1바퀴)
+- ❌ `bounce` keyframes — 카드 그리드 거부와 동일하게 거부
+- ❌ duration > 700ms — 답답함 유발
+- ❌ `prefers-reduced-motion` 무시 — 접근성 위반
+
+## 다음에 읽을 것
+
+- [Manifesto](/anti-card/manifesto) — 안티 카드 5원칙 (전체 디자인 정신)
+- [FadeIn](/anti-card/fade-in) — 스크롤 in-view 등장 (motion 토큰 적용)
+- [WaveCard](/anti-card/wave-card) — 진척도 시각화 (signature motion)

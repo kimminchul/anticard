@@ -51,6 +51,15 @@ export default {
           "sans-serif",
         ],
       },
+      // Motion — anti-card 모션 토큰 (src/tokens/motion.ts와 동기화)
+      // Tailwind 기본 ease-in-out / ease-out / ease-in이 이미 standard/decelerate/accelerate와
+      // 동일한 cubic-bezier라서 별도 easing 클래스는 추가 안 함.
+      transitionDuration: {
+        instant: "75ms",
+        fast: "150ms",
+        slow: "300ms",
+        slower: "500ms",
+      },
     },
   },
   plugins: [],

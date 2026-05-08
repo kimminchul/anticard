@@ -41,6 +41,14 @@
     - 단일 `<Toast>` 컴포넌트도 그대로 — 단순 사례용
   - `Dropdown` — 메뉴 리스트 (icon / separator / danger 지원)
 - 모든 오버레이는 anti-card 톤: shadow X, 헤어라인 1px, smallcaps 라벨, 큰 패딩
+- **Motion 토큰 시스템** (NEW):
+  - `src/tokens/motion.ts` — 5 duration (instant/fast/DEFAULT/slow/slower) + 3 easing (standard/decelerate/accelerate)
+  - Tailwind config 확장: `duration-instant` / `duration-fast` / `duration-slow` / `duration-slower`
+  - Easing은 Tailwind 기본 ease-in-out / ease-out / ease-in이 동일 베지어라 추가 안 함
+  - `prefers-reduced-motion: reduce` 글로벌 CSS (playground/styles.css)
+  - `docs/motion.mdx` — 5원칙 + 권장 매트릭스 + 안티 패턴
+  - Playground "리소스 → 모션 토큰" 페이지 신규 (interactive demo)
+  - JS import: `import { motion } from "@freeive/anti-card"`
 
 ### Changed
 - Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)

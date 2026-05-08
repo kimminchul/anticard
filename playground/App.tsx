@@ -88,6 +88,7 @@ import {
   Toast,
   ToastProvider,
   useToast,
+  motion,
 } from "@freeive/anti-card";
 
 /**
@@ -251,6 +252,7 @@ const NAV: NavGroup[] = [
     desc: "참조 표준 — 컴포넌트 사용 시 함께 보는 자료",
     items: [
       { id: "typography-tokens", ko: "타이포 토큰", en: "Typography Tokens", status: "ready" },
+      { id: "motion-tokens", ko: "모션 토큰", en: "Motion Tokens", status: "ready" },
       { id: "icons", ko: "아이콘 (lucide)", en: "Icons", status: "ready" },
     ],
   },
@@ -407,6 +409,7 @@ interface ComponentDef {
 const READY_SECTIONS: Record<string, () => JSX.Element> = {
   intro: Intro,
   "typography-tokens": TypographyTokens,
+  "motion-tokens": MotionTokens,
   icons: Icons,
   eyebrow: () => <ComponentPage def={EYEBROW_DEF} />,
   "section-frame": () => <ComponentPage def={SECTION_FRAME_DEF} />,
@@ -1250,6 +1253,184 @@ function TypographyTokens() {
 <h2 className={cn(typography.h2, "text-emerald-600 dark:text-emerald-400")}>
   강조 섹션 제목
 </h2>`}</code>
+        </pre>
+      </div>
+    </section>
+  );
+}
+
+/* ================ Motion tokens reference ================ */
+
+/** 모션 시연용 — 클릭 시 토글되는 작은 박스. 각 duration / easing 비교. */
+function MotionDemoBox({
+  duration,
+  easing = "ease-in-out",
+  label,
+}: {
+  duration: string;
+  easing?: string;
+  label: string;
+}) {
+  const [on, setOn] = useState(false);
+  return (
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => setOn((v) => !v)}
+        className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-[12px] text-zinc-700 transition-colors hover:border-zinc-300 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300"
+      >
+        {on ? "OFF" : "ON"}
+      </button>
+      <div className="relative h-8 flex-1 overflow-hidden rounded-md border border-dashed border-zinc-300 bg-zinc-50/60 dark:border-white/[0.08] dark:bg-white/[0.02]">
+        <div
+          className="absolute top-0 bottom-0 left-0 bg-emerald-500/30 dark:bg-emerald-400/30"
+          style={{
+            width: on ? "100%" : "0%",
+            transitionProperty: "width",
+            transitionDuration: duration,
+            transitionTimingFunction: easing,
+          }}
+        />
+        <span className="relative flex h-full items-center px-2 text-[11.5px] text-zinc-700 dark:text-zinc-300">
+          {label}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function MotionTokens() {
+  const durationRows: Array<{ token: string; value: string; usage: string }> = [
+    { token: "instant", value: motion.duration.instant, usage: "focus ring · micro 반응" },
+    { token: "fast", value: motion.duration.fast, usage: "호버 · color 전환 (가장 자주)" },
+    { token: "DEFAULT", value: motion.duration.DEFAULT, usage: "일반 상태 변경" },
+    { token: "slow", value: motion.duration.slow, usage: "모달 fade · sliding panel" },
+    { token: "slower", value: motion.duration.slower, usage: "페이지 in-view · 누적 stagger" },
+  ];
+
+  const easingRows: Array<{ token: string; value: string; tw: string; usage: string }> = [
+    { token: "standard", value: motion.easing.standard, tw: "ease-in-out", usage: "양방향 상태 전환 (default)" },
+    { token: "decelerate", value: motion.easing.decelerate, tw: "ease-out", usage: "UI 진입 (in) — 부드럽게 멈춤" },
+    { token: "accelerate", value: motion.easing.accelerate, tw: "ease-in", usage: "UI 퇴장 (out) — 빠르게 사라짐" },
+  ];
+
+  const matrix: Array<{ situation: string; duration: string; easing: string }> = [
+    { situation: "Hover (color/border)", duration: "fast (150ms)", easing: "ease-in-out" },
+    { situation: "Button press / state", duration: "DEFAULT (200ms)", easing: "ease-in-out" },
+    { situation: "Modal/Drawer enter", duration: "slow (300ms)", easing: "ease-out" },
+    { situation: "Modal/Drawer exit", duration: "fast (150ms)", easing: "ease-in" },
+    { situation: "페이지 in-view fade", duration: "slower (500ms)", easing: "ease-out" },
+    { situation: "Tooltip 등장", duration: "fast (150ms)", easing: "ease-out" },
+  ];
+
+  return (
+    <section>
+      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">Resource</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">모션 토큰</h2>
+      <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300">
+        anti-card는 절제된 모션을 추구합니다. bounce·rotate·dramatic zoom 거부, 빠른 hover (150ms) + 단조로운 transform.
+        <strong>5 duration + 3 easing</strong> 토큰으로 통일합니다.
+      </p>
+
+      {/* 5원칙 */}
+      <div className="mt-10 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">5원칙</p>
+        <ol className="mt-4 grid grid-cols-1 gap-2 text-[14px] text-zinc-700 dark:text-zinc-300 md:grid-cols-2">
+          <li className="flex items-baseline gap-2"><span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">01</span><span><strong>절제</strong> — bounce / rotate / shake 거부</span></li>
+          <li className="flex items-baseline gap-2"><span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">02</span><span><strong>빠름</strong> — 150ms hover · 200ms 상태 변경 기본</span></li>
+          <li className="flex items-baseline gap-2"><span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">03</span><span><strong>단방향</strong> — opacity + 작은 transform (1~4px)</span></li>
+          <li className="flex items-baseline gap-2"><span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">04</span><span><strong>존중</strong> — prefers-reduced-motion 자동 인식</span></li>
+          <li className="flex items-baseline gap-2"><span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">05</span><span><strong>CSS first</strong> — JS는 in-view 등 필요할 때만</span></li>
+        </ol>
+      </div>
+
+      {/* Duration */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Duration (5)</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">
+          ON 버튼 클릭으로 각 duration의 차이 확인. ease-in-out 동일.
+        </p>
+        <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+          {durationRows.map((row) => (
+            <li key={row.token} className="grid grid-cols-1 gap-3 py-4 md:grid-cols-[120px_80px_1fr_240px] md:items-center md:gap-6">
+              <code className="font-mono text-[12.5px] text-emerald-700 dark:text-emerald-400">{row.token}</code>
+              <span className="font-mono text-[12.5px] tabular-nums text-zinc-500 dark:text-zinc-500">{row.value}</span>
+              <MotionDemoBox duration={row.value} label={row.value} />
+              <span className="text-[12.5px] text-zinc-500 dark:text-zinc-500">{row.usage}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-[11.5px] text-zinc-500 dark:text-zinc-500">
+          Tailwind 클래스: <code>duration-instant</code> · <code>duration-fast</code> · <code>duration-200</code> · <code>duration-slow</code> · <code>duration-slower</code>
+        </p>
+      </div>
+
+      {/* Easing */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Easing (3)</p>
+        <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-500">
+          Tailwind 기본 ease-* 와 동일 베지어. 모두 duration: 500ms.
+        </p>
+        <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+          {easingRows.map((row) => (
+            <li key={row.token} className="grid grid-cols-1 gap-3 py-4 md:grid-cols-[120px_180px_1fr_220px] md:items-center md:gap-6">
+              <code className="font-mono text-[12.5px] text-emerald-700 dark:text-emerald-400">{row.token}</code>
+              <code className="text-[11px] text-zinc-500 dark:text-zinc-500">{row.tw}</code>
+              <MotionDemoBox duration="500ms" easing={row.value} label={row.value} />
+              <span className="text-[12.5px] text-zinc-500 dark:text-zinc-500">{row.usage}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 권장 매트릭스 */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">권장 매트릭스</p>
+        <ul className="mt-5 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.08] dark:border-white/[0.08]">
+          {matrix.map((row) => (
+            <li key={row.situation} className="grid grid-cols-1 gap-2 py-3 md:grid-cols-[1fr_180px_140px] md:items-baseline md:gap-6">
+              <span className="text-[14px] text-zinc-900 dark:text-zinc-100">{row.situation}</span>
+              <code className="text-[12px] text-emerald-700 dark:text-emerald-400">{row.duration}</code>
+              <code className="text-[12px] text-zinc-500 dark:text-zinc-400">{row.easing}</code>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Reduced motion */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">접근성 — prefers-reduced-motion</p>
+        <p className="mt-1.5 max-w-[58ch] text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+          OS의 "모션 줄이기"가 활성화된 사용자에게 transition·animation을 거의 즉각으로 단축. 앱 root CSS에 1번 추가:
+        </p>
+        <pre className="mt-4 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50 p-4 text-[12px] dark:border-white/[0.08] dark:bg-white/[0.02]">
+          <code>{`@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}`}</code>
+        </pre>
+        <p className="mt-3 text-[11.5px] text-zinc-500 dark:text-zinc-500">
+          이 playground는 이미 적용됨 (<code>playground/styles.css</code>).
+        </p>
+      </div>
+
+      {/* JS 사용 */}
+      <div className="mt-12 border-t border-zinc-200 pt-8 dark:border-white/[0.08]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">JS 토큰 사용</p>
+        <p className="mt-1.5 max-w-[58ch] text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+          대부분 Tailwind 클래스로 충분. 동적 값 / non-Tailwind 환경에서는 직접 import:
+        </p>
+        <pre className="mt-4 overflow-x-auto rounded-md border border-zinc-200 bg-zinc-50 p-4 text-[12px] dark:border-white/[0.08] dark:bg-white/[0.02]">
+          <code>{`import { motion } from "@freeive/anti-card";
+
+<div style={{
+  transitionDuration: motion.duration.fast,
+  transitionTimingFunction: motion.easing.standard,
+}}>...</div>`}</code>
         </pre>
       </div>
     </section>
