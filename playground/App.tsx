@@ -782,24 +782,6 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
           );
         })}
       </div>
-
-      {/* 외부 가이드 — 하단 별도 섹션 */}
-      <div className="mt-10 border-t border-zinc-200 pt-6 dark:border-white/[0.08]">
-        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">외부 가이드</p>
-        <ul className="mt-3.5 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[14px] dark:border-white/[0.08]">
-          <li>
-            <a
-              href="https://freeive.com/anti-card"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-baseline justify-between gap-2 py-1 text-zinc-700 transition-colors hover:text-emerald-700 dark:text-zinc-300 dark:hover:text-emerald-400"
-            >
-              <span>Manifesto</span>
-              <span aria-hidden className="text-[10px] opacity-50 transition-transform group-hover:translate-x-0.5">↗</span>
-            </a>
-          </li>
-        </ul>
-      </div>
     </aside>
   );
 }
@@ -1451,42 +1433,40 @@ function ComponentPage({ def }: { def: ComponentDef }) {
           </span>
         </div>
 
-        {/* 메타 뱃지 — 버전 (addedIn / updatedIn) + lucide 사용 여부 */}
+        {/* 메타 뱃지 — anti-card Pill 컴포넌트 dogfooding (badge 어휘 = Pill) */}
         {(version || lucideIcons) && (
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             {version && (
-              <a
+              <Pill
+                as="a"
                 href={changelogUrl(version.addedIn)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
+                external
+                tone="default"
                 title="첫 출현 버전 — CHANGELOG로 이동"
               >
-                <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">added</span>
-                <span>v{version.addedIn}</span>
-              </a>
+                added v{version.addedIn}
+              </Pill>
             )}
             {version?.updatedIn && version.updatedIn !== version.addedIn && (
-              <a
+              <Pill
+                as="a"
                 href={changelogUrl(version.updatedIn)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/[0.08] px-2 py-0.5 text-[11px] font-medium tracking-tight text-emerald-700 transition-colors hover:border-emerald-500/50 dark:border-emerald-400/30 dark:text-emerald-400 dark:hover:border-emerald-400/50"
+                external
+                tone="accent"
                 title="마지막 의미 있는 변경 버전 — CHANGELOG로 이동"
               >
-                <span className="text-[10px] uppercase tracking-[0.08em] opacity-70">updated</span>
-                <span>v{version.updatedIn}</span>
-              </a>
+                updated v{version.updatedIn}
+              </Pill>
             )}
             {lucideIcons && (
-              <a
+              <Pill
+                as="a"
                 href="#icons"
-                className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium tracking-tight text-zinc-700 transition-colors hover:border-emerald-500/40 hover:text-emerald-700 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-zinc-300 dark:hover:border-emerald-400/40 dark:hover:text-emerald-400"
+                tone="muted"
                 title={`내부 lucide 아이콘 사용: ${lucideIcons.join(", ")}`}
               >
-                <span className="text-[10px] uppercase tracking-[0.08em] opacity-60">icons</span>
-                <span>lucide · {lucideIcons.length}</span>
-              </a>
+                icons · lucide {lucideIcons.length}
+              </Pill>
             )}
           </div>
         )}
