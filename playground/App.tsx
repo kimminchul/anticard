@@ -1566,9 +1566,9 @@ function ExampleBlock({ example }: { example: Example }) {
   const [tab, setTab] = useState<TabId>("design");
 
   return (
-    <div className="overflow-hidden rounded-lg border border-dashed border-zinc-300 dark:border-white/[0.12]">
+    <div className="rounded-lg border border-dashed border-zinc-300 dark:border-white/[0.12]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-dashed border-zinc-300 bg-zinc-50/60 px-5 py-3 dark:border-white/[0.12] dark:bg-white/[0.02]">
+      <div className="flex items-center justify-between rounded-t-lg border-b border-dashed border-zinc-300 bg-zinc-50/60 px-5 py-3 dark:border-white/[0.12] dark:bg-white/[0.02]">
         <div className="flex items-center gap-3">
           <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400/80">EX. {example.index}</span>
           <span className="text-[11px] uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">Example</span>
@@ -1606,7 +1606,7 @@ function ExampleBlock({ example }: { example: Example }) {
       {/* Tab content */}
       <div className="bg-white dark:bg-zinc-950">
         {tab === "design" && (
-          <div className="canvas-surface relative p-8 md:p-12">
+          <div className="canvas-surface relative min-h-[200px] p-8 md:p-12">
             <span className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-emerald-500/30 dark:border-emerald-400/30" />
             <span className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-emerald-500/30 dark:border-emerald-400/30" />
             <span className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-emerald-500/30 dark:border-emerald-400/30" />
