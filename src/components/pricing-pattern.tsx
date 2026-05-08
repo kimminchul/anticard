@@ -56,10 +56,10 @@ export function PricingPattern({
         title={title}
         lead={lead}
         align="center"
-        padding="default"
+        padding="tight"
       />
 
-      <section className="mt-12">
+      <section className="mt-4">
         <PricingTable plans={plans} />
       </section>
 

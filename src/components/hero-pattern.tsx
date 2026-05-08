@@ -72,10 +72,12 @@ export function HeroPattern({
     <section
       data-anti-card="hero-pattern"
       data-size={size}
+      data-align={align}
       className={cn(
         padding === "tight" && "pt-16 pb-12 md:pt-20 md:pb-16",
         padding === "default" && "pt-20 pb-20 md:pt-28 md:pb-28",
         padding === "loose" && "pt-24 pb-32 md:pt-36 md:pb-40",
+        align === "center" && "text-center",
         className
       )}
       {...props}
@@ -89,7 +91,10 @@ export function HeroPattern({
         {title}
       </HeroHeading>
       {lead && (
-        <Lead size={size === "hero" ? "large" : "default"} className="mt-6">
+        <Lead
+          size={size === "hero" ? "large" : "default"}
+          className={cn("mt-6", align === "center" && "mx-auto")}
+        >
           {lead}
         </Lead>
       )}
