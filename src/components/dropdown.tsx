@@ -87,7 +87,7 @@ export function Dropdown({
         <div
           role="menu"
           className={cn(
-            "absolute top-full z-50 mt-1.5 min-w-[180px] rounded-md border border-zinc-200 bg-white py-1 dark:border-white/[0.12] dark:bg-zinc-900",
+            "absolute top-full z-50 mt-1.5 min-w-[180px] origin-top rounded-md border border-zinc-200 bg-white py-1 animate-anti-scale-in dark:border-white/[0.12] dark:bg-zinc-900",
             align === "start" && "left-0",
             align === "end" && "right-0"
           )}

@@ -48,6 +48,33 @@ anti-card는 **절제된 모션**을 추구합니다. bounce·rotate·dramatic z
 | 페이지 in-view fade | `duration-slower` (500ms) | `ease-out` |
 | Tooltip 등장 | `duration-fast` (150ms) | `ease-out` |
 
+## 애니메이션 레시피 (Tailwind animate 클래스)
+
+토큰(duration + easing)을 합친 자주 쓰는 enter/exit 패턴. **anti-card 라이브러리 + Tailwind config가 함께 제공**.
+
+| 클래스 | duration | easing | 사용처 |
+|---|---|---|---|
+| `animate-anti-fade-in` | 300ms | ease-out | 기본 fade in (general) |
+| `animate-anti-fade-in-fast` | 150ms | ease-out | 빠른 등장 (Tooltip 등) |
+| `animate-anti-fade-out` | 150ms | ease-in | exit fade |
+| `animate-anti-slide-up` | 300ms | ease-out | Toast 등장 (8px ↑ + opacity) |
+| `animate-anti-slide-down` | 300ms | ease-out | Banner 등장 (8px ↓ + opacity) |
+| `animate-anti-slide-in-right` | 300ms | ease-out | Drawer right (100% → 0) |
+| `animate-anti-slide-in-left` | 300ms | ease-out | Drawer left (-100% → 0) |
+| `animate-anti-scale-in` | 200ms | ease-out | Popover/Dropdown/Dialog (0.96 → 1 + opacity) |
+
+```tsx
+<div className="animate-anti-slide-up">새 알림</div>
+<div className="animate-anti-scale-in origin-top">팝오버</div>
+```
+
+라이브러리 내장 컴포넌트(0.11.0~)는 모두 이 레시피를 사용해 일관된 모션:
+- **Drawer** → slide-in-left / slide-in-right (방향 자동)
+- **Dialog** (native) → backdrop fade-in + dialog scale-in
+- **Popover** / **Dropdown** → scale-in
+- **Toast** → slide-up
+- **Tooltip** → opacity transition (200ms)
+
 ## Reduced motion (필수)
 
 사용자 설정에서 "모션 줄이기"가 활성화되면 transition·animation을 거의 즉각으로 단축. 앱 root CSS에 다음 1번 추가:

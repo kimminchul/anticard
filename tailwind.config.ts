@@ -31,6 +31,16 @@ export default {
     "md:grid-cols-6",
     "md:grid-cols-16",
     "md:grid-cols-24",
+    // Motion 애니메이션 레시피 — 동적/조건부 사용 안전망
+    "animate-anti-fade-in",
+    "animate-anti-fade-in-fast",
+    "animate-anti-fade-out",
+    "animate-anti-slide-up",
+    "animate-anti-slide-down",
+    "animate-anti-slide-in-right",
+    "animate-anti-slide-in-left",
+    "animate-anti-scale-in",
+    "backdrop:animate-anti-fade-in",
   ],
   darkMode: "class",
   theme: {
@@ -59,6 +69,49 @@ export default {
         fast: "150ms",
         slow: "300ms",
         slower: "500ms",
+      },
+      // 애니메이션 레시피 — 토큰(duration + easing)을 합친 자주 쓰는 모션 패턴.
+      // 사용: animate-anti-fade-in / animate-anti-slide-up 등.
+      keyframes: {
+        "anti-fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "anti-fade-out": {
+          from: { opacity: "1" },
+          to: { opacity: "0" },
+        },
+        "anti-slide-up": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "anti-slide-down": {
+          from: { opacity: "0", transform: "translateY(-8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "anti-slide-in-right": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(0)" },
+        },
+        "anti-slide-in-left": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(0)" },
+        },
+        "anti-scale-in": {
+          from: { opacity: "0", transform: "scale(0.96)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
+      },
+      animation: {
+        // duration + easing 토큰 매핑된 사용 가능 클래스
+        "anti-fade-in": "anti-fade-in 300ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-fade-in-fast": "anti-fade-in 150ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-fade-out": "anti-fade-out 150ms cubic-bezier(0.4, 0, 1, 1)",
+        "anti-slide-up": "anti-slide-up 300ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-slide-down": "anti-slide-down 300ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-slide-in-right": "anti-slide-in-right 300ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-slide-in-left": "anti-slide-in-left 300ms cubic-bezier(0, 0, 0.2, 1)",
+        "anti-scale-in": "anti-scale-in 200ms cubic-bezier(0, 0, 0.2, 1)",
       },
     },
   },

@@ -40,7 +40,7 @@ export function Tooltip({
       <span
         role="tooltip"
         className={cn(
-          "pointer-events-none absolute z-50 whitespace-nowrap rounded-md border border-zinc-200 bg-white px-2 py-1 text-[11.5px] text-zinc-900 opacity-0 transition-opacity duration-150 group-hover/tt:opacity-100 group-focus-within/tt:opacity-100 dark:border-white/[0.12] dark:bg-zinc-900 dark:text-zinc-100",
+          "pointer-events-none absolute z-50 whitespace-nowrap rounded-md border border-zinc-200 bg-white px-2 py-1 text-[11.5px] text-zinc-900 opacity-0 transition-opacity duration-200 ease-out group-hover/tt:opacity-100 group-focus-within/tt:opacity-100 dark:border-white/[0.12] dark:bg-zinc-900 dark:text-zinc-100",
           side === "top" && "bottom-full left-1/2 mb-1.5 -translate-x-1/2",
           side === "bottom" && "top-full left-1/2 mt-1.5 -translate-x-1/2",
           side === "left" && "right-full top-1/2 mr-1.5 -translate-y-1/2",

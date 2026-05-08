@@ -49,6 +49,17 @@
   - `docs/motion.mdx` — 5원칙 + 권장 매트릭스 + 안티 패턴
   - Playground "리소스 → 모션 토큰" 페이지 신규 (interactive demo)
   - JS import: `import { motion } from "@freeive/anti-card"`
+- **애니메이션 레시피** — Tailwind `animate-anti-*` 클래스 (토큰 + keyframes 결합):
+  - `animate-anti-fade-in` / `-fast` / `animate-anti-fade-out`
+  - `animate-anti-slide-up` / `-down`
+  - `animate-anti-slide-in-right` / `-left`
+  - `animate-anti-scale-in`
+- **오버레이 enter 모션 적용** — 즉각 mount → 부드러운 등장:
+  - Drawer: side에 따라 slide-in-left / slide-in-right
+  - Dialog (native `<dialog>`): backdrop fade-in + dialog scale-in
+  - Popover / Dropdown: scale-in (origin-top)
+  - Toast (큐 / 단일 모두): slide-up
+  - Tooltip: opacity 150ms → 200ms (조금 더 여유)
 
 ### Changed
 - Playground 헤더 VERSION 표기: 0.0.3 → **0.10.0** (실제 버전 동기화)

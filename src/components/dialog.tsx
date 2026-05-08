@@ -81,7 +81,7 @@ export function Dialog({
       onClick={handleClick}
       data-anti-card="dialog"
       className={cn(
-        "rounded-md border border-zinc-200 bg-white p-0 text-zinc-900 backdrop:bg-zinc-900/40 dark:border-white/[0.08] dark:bg-zinc-900 dark:text-zinc-100 dark:backdrop:bg-black/60",
+        "rounded-md border border-zinc-200 bg-white p-0 text-zinc-900 backdrop:bg-zinc-900/40 backdrop:animate-anti-fade-in animate-anti-scale-in dark:border-white/[0.08] dark:bg-zinc-900 dark:text-zinc-100 dark:backdrop:bg-black/60",
         size === "narrow" && "w-[min(92vw,400px)]",
         size === "default" && "w-[min(92vw,520px)]",
         size === "wide" && "w-[min(92vw,720px)]"

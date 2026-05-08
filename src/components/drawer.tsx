@@ -70,7 +70,7 @@ export function Drawer({
       <div
         onClick={() => onOpenChange(false)}
         aria-hidden
-        className="absolute inset-0 bg-zinc-900/40 dark:bg-black/60"
+        className="absolute inset-0 bg-zinc-900/40 animate-anti-fade-in dark:bg-black/60"
       />
       <div
         role="dialog"
@@ -81,8 +81,8 @@ export function Drawer({
           size === "narrow" && "w-[min(92vw,320px)]",
           size === "default" && "w-[min(92vw,420px)]",
           size === "wide" && "w-[min(92vw,560px)]",
-          side === "left" && "left-0 border-r",
-          side === "right" && "right-0 border-l"
+          side === "left" && "left-0 border-r animate-anti-slide-in-left",
+          side === "right" && "right-0 border-l animate-anti-slide-in-right"
         )}
       >
         {(title || showClose) && (

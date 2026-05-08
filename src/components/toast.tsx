@@ -65,7 +65,7 @@ export function Toast({
       data-anti-card="toast"
       data-position={position}
       className={cn(
-        "fixed z-50",
+        "fixed z-50 animate-anti-slide-up",
         position === "top-right" && "top-4 right-4",
         position === "top-left" && "top-4 left-4",
         position === "bottom-right" && "bottom-4 right-4",
@@ -254,7 +254,7 @@ function ToastQueueItem({
   }, [duration, entry.id, onDismiss]);
 
   return (
-    <div className="pointer-events-auto">
+    <div className="pointer-events-auto animate-anti-slide-up">
       <ToastCard
         tone={entry.tone ?? "default"}
         title={entry.title}

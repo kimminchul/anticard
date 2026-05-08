@@ -71,7 +71,7 @@ export function Popover({
         <div
           role="dialog"
           className={cn(
-            "absolute z-50 min-w-[220px] rounded-md border border-zinc-200 bg-white p-4 dark:border-white/[0.12] dark:bg-zinc-900",
+            "absolute z-50 min-w-[220px] origin-top rounded-md border border-zinc-200 bg-white p-4 animate-anti-scale-in dark:border-white/[0.12] dark:bg-zinc-900",
             side === "bottom" && "top-full mt-1.5",
             side === "top" && "bottom-full mb-1.5",
             side === "left" && "right-full top-0 mr-1.5",
