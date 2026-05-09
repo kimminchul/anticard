@@ -33,7 +33,7 @@ Visual previews, props, and usage live in the [Playground](https://kimminchul.gi
 
 ## Design principles
 
-A question and five observations. Can hierarchy work without card boxes?
+A question and five observations. Can hierarchy work with minimal card boxes?
 Longer form on the site.
 
 [5 Principles →](https://freeive.com/anti-card)
