@@ -3,42 +3,12 @@
 이 패키지의 모든 의미 있는 변경사항을 여기에 기록합니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/), 버저닝은 [SemVer](https://semver.org/).
 
-## [0.12.1] - 2026-05-08
-
-### Fixed
-- **Next.js Server Component 호환성** — `tsup.config.ts`에 `banner: { js: '"use client";' }` 추가. 라이브러리 전체를 client boundary로 마킹하여 `createContext` (ToastProvider 등)가 server component에서 import 시 발생하던 `Runtime TypeError: createContext only works in Client Components` 에러 해소.
-
-## [0.12.0] - 2026-05-08
+## [Unreleased]
 
 ### Added
-- **TextList** 컴포넌트 — 본문 텍스트 ul/ol 리스트 (6 variants: bullet · hyphen · number · number-padded · check · dot-accent)
-- **Carousel** 컴포넌트 — 한 장씩 슬라이드 (fade/slide 트랜지션, autoPlay, ←/→ 키보드, 모바일 스와이프)
-- **FormField** wrapper — label / hint / error wrapper (label-top / label-left)
-- **DataTable** — 정렬 가능 표 (generic `<T>`, density 3단계, stable sort)
-- **DatePicker** — Popover 위 캘린더 (ko/en locale, disabledDate)
-- **Combobox** — 검색 가능 select (↑↓ 키보드, Enter, ESC, X 트리거 외부 분리)
-- **데이터 테이블** NAV 카테고리 신설 (1 ready + 6 planned: selectable / expandable / editable / grouped / tree / compact)
-- **focus-trap** 유틸 (`src/utils/focus-trap.ts`) — Dialog/Drawer 공유
+- (비어있음)
 
-### Changed
-- **Dialog** — native `<dialog>` → 커스텀 React 오버레이 전환 (애니메이션 안정성 + focus trap + initial/return focus + aria-labelledby)
-- **Drawer** — Dialog와 동일한 focus 관리 패턴 적용
-- **Popover / Dropdown** — outer `<span onClick>` 제거 → trigger를 `cloneElement`로 받아 키보드 동작 (aria-expanded / aria-haspopup 자동 주입)
-- **Combobox** — 트리거 `<button>` 안 nested `<button>` 제거 (HTML 명세 위반 해소). X 클리어 버튼은 트리거 외부 absolute 분리
-- **Carousel** — autoPlay effect deps에서 `index` 제거 + 함수형 update (timer drift 해소)
-- **Header** — `border-current/40` (Tailwind opacity 미지원) → `border-zinc-900/40 dark:border-zinc-50/40`
-- **Banner** — danger/warning tone에 `role="alert"` 분기 (기존 `role="status"`)
-- **Callout** — 아이콘 박스 높이를 본문 첫 줄 line-box와 일치 + items-center로 시각 중앙 정렬
-- **WaveCard** — `orientation` prop 추가 ("horizontal" default | "vertical" 좌→우 진행)
-- **TalkPattern** — accept/decline 한쪽만 있을 때 1열로 자연 정렬 (md:grid-cols-2 조건부)
-- **카피 톤** — playground 전체 "1인 운영자/1인 랩" 표현 제거 (66 → 0 occurrences)
-
-### Documentation (playground)
-- 모든 ComponentDef(66)에 `intro` + `useCases` 채움 — 비개발자도 이해할 수 있는 풍부한 설명 + 주 사용처
-- ComponentPage 렌더 영역에 desc 자리 intro fallback + "주로 어디에 쓰나요" 단독 영역 추가
-- 카탈로그 사이드바 / NAV는 짧은 desc 그대로 유지 (두 톤 분리)
-
-## [Unreleased]
+## [0.13.0] - 2026-05-09
 
 ### Added
 - `docs/VERSIONING.md` — Hybrid 버전 정책 (라이브러리 SemVer + 컴포넌트 `addedIn`/`updatedIn` 메타)
@@ -105,7 +75,42 @@
 ### Notes
 - `0.x.x`는 GitHub-only release (git tag + GitHub Release). npm publish는 `1.0.0`부터 — 정책 docs/VERSIONING.md §7.
 - 첫 git tag `v0.10.0` 생성됨 (annotated, commit `aab23ef`).
-- 이 [Unreleased] 항목들은 `0.11.0` release 시점에 [0.11.0] 섹션으로 변환 예정.
+- 첫 번째 minor release with 풍부한 신규 컴포넌트 (내비게이션 3 + 오버레이 6 + Motion + Button 확장).
+
+## [0.12.1] - 2026-05-08
+
+### Fixed
+- **Next.js Server Component 호환성** — `tsup.config.ts`에 `banner: { js: '"use client";' }` 추가. 라이브러리 전체를 client boundary로 마킹하여 `createContext` (ToastProvider 등)가 server component에서 import 시 발생하던 `Runtime TypeError: createContext only works in Client Components` 에러 해소.
+
+## [0.12.0] - 2026-05-08
+
+### Added
+- **TextList** 컴포넌트 — 본문 텍스트 ul/ol 리스트 (6 variants: bullet · hyphen · number · number-padded · check · dot-accent)
+- **Carousel** 컴포넌트 — 한 장씩 슬라이드 (fade/slide 트랜지션, autoPlay, ←/→ 키보드, 모바일 스와이프)
+- **FormField** wrapper — label / hint / error wrapper (label-top / label-left)
+- **DataTable** — 정렬 가능 표 (generic `<T>`, density 3단계, stable sort)
+- **DatePicker** — Popover 위 캘린더 (ko/en locale, disabledDate)
+- **Combobox** — 검색 가능 select (↑↓ 키보드, Enter, ESC, X 트리거 외부 분리)
+- **데이터 테이블** NAV 카테고리 신설 (1 ready + 6 planned: selectable / expandable / editable / grouped / tree / compact)
+- **focus-trap** 유틸 (`src/utils/focus-trap.ts`) — Dialog/Drawer 공유
+
+### Changed
+- **Dialog** — native `<dialog>` → 커스텀 React 오버레이 전환 (애니메이션 안정성 + focus trap + initial/return focus + aria-labelledby)
+- **Drawer** — Dialog와 동일한 focus 관리 패턴 적용
+- **Popover / Dropdown** — outer `<span onClick>` 제거 → trigger를 `cloneElement`로 받아 키보드 동작 (aria-expanded / aria-haspopup 자동 주입)
+- **Combobox** — 트리거 `<button>` 안 nested `<button>` 제거 (HTML 명세 위반 해소). X 클리어 버튼은 트리거 외부 absolute 분리
+- **Carousel** — autoPlay effect deps에서 `index` 제거 + 함수형 update (timer drift 해소)
+- **Header** — `border-current/40` (Tailwind opacity 미지원) → `border-zinc-900/40 dark:border-zinc-50/40`
+- **Banner** — danger/warning tone에 `role="alert"` 분기 (기존 `role="status"`)
+- **Callout** — 아이콘 박스 높이를 본문 첫 줄 line-box와 일치 + items-center로 시각 중앙 정렬
+- **WaveCard** — `orientation` prop 추가 ("horizontal" default | "vertical" 좌→우 진행)
+- **TalkPattern** — accept/decline 한쪽만 있을 때 1열로 자연 정렬 (md:grid-cols-2 조건부)
+- **카피 톤** — playground 전체 "1인 운영자/1인 랩" 표현 제거 (66 → 0 occurrences)
+
+### Documentation (playground)
+- 모든 ComponentDef(66)에 `intro` + `useCases` 채움 — 비개발자도 이해할 수 있는 풍부한 설명 + 주 사용처
+- ComponentPage 렌더 영역에 desc 자리 intro fallback + "주로 어디에 쓰나요" 단독 영역 추가
+- 카탈로그 사이드바 / NAV는 짧은 desc 그대로 유지 (두 톤 분리)
 
 ## [0.10.0] — 2026-05-08
 
