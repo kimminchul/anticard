@@ -1,162 +1,62 @@
 # @freeive/anti-card
 
-> **An end-user UI library + AI Skill.**
-> The market has 20 admin libraries and 0 end-user libraries. That empty space.
+> A React UI library tuned for landing pages.
 
-**Current version: 0.10.0**
-🎯 **[View Playground → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
-
-> [한국어 README](./README.md)
+**v0.12.1** · [Playground →](https://kimminchul.github.io/anticard/) · [한글 README](./README.md)
 
 ---
 
-## The market reality
+## Why this exists
 
-`shadcn/ui` · `Mantine` · `MUI` · `Ant Design` · `Chakra UI` —
-most popular UI libraries are **actually admin/dashboard libraries**.
-Card · Sidebar · DataTable · Form-centric.
+Build a web service with AI tools and the features work fine.
+The design, though, often feels off. Pages start to look alike.
 
-Libraries for **end-user screens** like landing, marketing, and content sites are scarce.
-**Bootstrap** comes close but feels too rigid for modern sites.
+Why?
+Look at the popular UI libraries (shadcn/ui, Mantine, MUI, Ant Design, Chakra UI) and you'll notice they're strong at admin and dashboard work. Card, Sidebar, DataTable, Form.
+Use those tools for a landing page, and you often end up with cards stacked inside cards.
 
-→ anti-card fills that empty space.
+So maybe a library tuned for landing pages, one that AI can read more easily, would be useful.
+That's the hypothesis behind this OSS project.
 
-## Admin vs End-user
-
-| | Admin | End-user (anti-card territory) |
-|---|---|---|
-| Priority | Information density, efficiency | Emotion, impression, spaciousness |
-| Card boxes | OK (clear container) | Suffocating — content is form |
-| Heading | Small | Large, signature |
-| Labels | form labels | smallcaps eyebrow |
-| Rhythm | Even grid | Big breath, lists |
-| Interaction | Quick clicks | Smooth transition·scroll |
-
-Details: [Admin vs End-user](https://freeive.com/anti-card/admin-vs-end-user)
-
-## Two layers
-
-### Layer 1 — AI Skill (the real product)
-
-Install as a plugin skill on AI coding tools like Claude · Cursor.
-The AI references anti-card principles, patterns, and HTML when generating screens.
-
-```bash
-# 0.0.x ~ 0.9.x: manual setup
-cat node_modules/@freeive/anti-card/skill/CLAUDE.md > CLAUDE.md
-cat node_modules/@freeive/anti-card/skill/cursorrules > .cursorrules
-
-# 1.0.0+ (planned): claude skill install @freeive/anti-card
-```
-
-Zero code possible. Same tone for React/Vue/Svelte/plain HTML.
-**Result: AI-generated screens that don't look AI-generated.**
-
-Details: [AI Skill](https://freeive.com/anti-card/ai-skill)
-
-### Layer 2 — React components (51)
+## Install
 
 ```bash
 npm install @freeive/anti-card
 ```
 
 ```tsx
-import {
-  HeroPattern, SectionFrame, ListRow, Eyebrow, StatList, ClientLogos
-} from "@freeive/anti-card";
-
-<HeroPattern
-  size="hero"
-  eyebrow="Heritage · 2016 — Now"
-  title="Carrying the depth of big projects into a solo lab."
-  ctas={[{ label: "Talk", href: "/talk", tone: "accent" }]}
-/>
-
-<StatList items={[
-  { value: "10+", label: "Years" },
-  { value: "30+", label: "Clients" },
-  { value: "150+", label: "Projects" },
-]} />
+import { HeroPattern, ListRow, StatList } from "@freeive/anti-card";
 ```
 
-#### Components by category
+Tailwind based. Dark/light auto. 12 typography tokens. Currently 64 components.
+Visual previews, props, and usage live in the [Playground](https://kimminchul.github.io/anticard/).
 
-| Category | Components |
-|---|---|
-| **Layout** | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
-| **Typography** | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
-| **List** | ListRow · DefList · StatList · Timeline · CompareTable |
-| **Action** | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
-| **Content blocks** | Callout · FAQ · PricingTable · Steps · FeatureRow |
-| **Trust / Evidence** | ClientLogos · Testimonial · StatBlock · CaseStudy |
-| **Media** | Image · Video · Gallery |
-| **Interaction** | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
-| **Form** | Input · Textarea · Select · Checkbox · Radio · Pill |
-| **Page patterns** | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
-| **Utils** | `cn()` · `typography` tokens |
+## Design principles
 
-Each component's props/usage is in the **[Playground](https://kimminchul.github.io/anticard/)** —
-visual preview + 6 tabs (Design / Prompt / HTML / CSS / JS / React).
+A question and five observations. Can hierarchy work without card boxes?
+Longer form on the site.
 
-> What's missing in the market is Layer 1 (AI design guidance).
-> Layer 2 component libraries themselves already over-saturated. anti-card differentiates by **tone (5 principles)**.
-
-## The 5 anti-card principles
-
-Five ways to create hierarchy without card boxes:
-
-1. **Space** — 100~160px gaps between sections
-2. **Contrast** — text size, weight, and color steps
-3. **Hairline** — 1px lines feel lighter than boxes
-4. **Smallcaps labels** — Eyebrow
-5. **Rows over grids** — rows instead of card grids
-
-Details: [Manifesto](https://freeive.com/anti-card/manifesto) · [Why not cards](https://freeive.com/anti-card/why-not-cards)
+[5 Principles →](https://freeive.com/anti-card)
 
 ## Playground
 
-Visual previews of components + 6 tabs (Design / Prompt / HTML / CSS / JS / React).
-
-- **Public URL**: **[kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)** (GitHub Pages, auto-deployed on main push)
-- **Local**: `npm run dev:play` → http://localhost:5174
-
-Each component page includes an **AI prompt** — copy it into Claude/Cursor to generate code in the same tone.
-
-GitHub Pages build (local test):
-
 ```bash
-# bash / git bash
-GH_PAGES=1 npm run build:play && npm run preview:play
-
-# PowerShell
-$env:GH_PAGES="1"; npm run build:play; npm run preview:play
+npm run dev:play   # http://localhost:5174
 ```
 
-## What's New
+Each component page has six tabs: design, prompt, HTML, CSS, JS, React.
+The prompt tab text is meant to be copied into Claude or Cursor to generate code in the same tone.
 
-See [CHANGELOG.md](./CHANGELOG.md) for the full change history.
+## Status
 
-**Typography token system**
-Semantic tokens (`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
-All components reference these tokens — adjust the entire site tone from a single source.
+0.x beta. Stabilizing visuals and APIs.
+1.0.0 will freeze the public API and publish to npm.
+Policy: [docs/VERSIONING.md](./docs/VERSIONING.md).
 
-**5 principles consistently applied**
-All components self-verify the 5 principles: box rejection + hairlines + smallcaps + space + rows.
+## In the wild
 
-**Dogfooding** — [freeive.com](https://freeive.com) is itself the living proof:
-- Main — `HeroPattern` + `ListRow` (rejecting the card grid)
-- Heritage — `StatList` + `ClientLogos` + `WaveCard` + `ListRow`
-- Talk — `TalkPattern` (accept/decline checklist)
-
-## ⚠️ Status
-
-**0.x beta.** Visual/functional stabilization phase.
-API freeze and npm publish planned at 1.0.0 — see [docs/VERSIONING.md](./docs/VERSIONING.md).
-
-## Live cases
-
-- **[freeive.com](https://freeive.com)** — the site itself is the first case (all 4 pages use anti-card)
-- Details: `freeive.com/anti-card`
+[freeive.com](https://freeive.com) is the first dogfooding case.
+All four pages (Main, Heritage, Lab, Talk) are built with anti-card.
 
 ## Development (contributors)
 
@@ -165,34 +65,22 @@ git clone https://github.com/kimminchul/anticard.git
 cd anticard
 npm install --legacy-peer-deps
 
-# Isolated dev (vite playground :5174)
-npm run dev:play
-
-# tsup watch (library auto-rebuild only)
-npm run dev
-
-# Sync to site (../new-freeive)
-npm run sync
+npm run dev:play   # vite playground
+npm run dev        # tsup watch
+npm run sync       # sync to ../new-freeive
 ```
 
-## Roadmap
+## Branches
 
-- **v0.x (current)** — Token system + Playground on GitHub Pages, components continuously expanding
-- **v1.0.0** — API freeze, npm publish, solo-lab identity content + first external use cases
-- **v1.1.0+** — Tailwind preset packaged, headless mode (without Tailwind)
-- **v2.0.0+** — AI Skill formal install command (`claude skill install`), Vue/Svelte ports
+- `main`: stable. GitHub Actions auto-deploys Pages on push.
+- `develop`: working. Merge to main when stable.
 
 ## Acknowledgements
 
-- [**lucide-react**](https://lucide.dev) — ISC License · playground icons (Sun/Moon/ArrowUpRight/ChevronDown). 1px stroke aesthetic matches anti-card's hairline principle.
-- [**prism-react-renderer**](https://github.com/FormidableLabs/prism-react-renderer) — MIT License · playground code syntax highlighting.
-- [**Tailwind CSS**](https://tailwindcss.com) — MIT License · base for the 5 principles.
-
-## Branch policy
-
-- **`main`** — stable deploy branch. GitHub Actions auto-deploys to GitHub Pages on push.
-- **`develop`** — work branch. New components / experiments live here, merged to main when stable.
+- [lucide-react](https://lucide.dev) (ISC): playground icons
+- [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) (MIT): playground syntax highlighting
+- [Tailwind CSS](https://tailwindcss.com) (MIT): base
 
 ## License
 
-MIT — © Kim Min Chul (Freeive)
+MIT © Kim Min Chul (Freeive)

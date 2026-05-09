@@ -1,161 +1,62 @@
 # @freeive/anti-card
 
-> **End-user UI를 위한 라이브러리 + AI Skill.**
-> 시장에는 admin lib가 20개고, end-user lib는 0개다. 그 빈 자리.
+> 랜딩에 최적화된 React UI 라이브러리.
 
-**현재 버전: 0.10.0**
-🎯 **[Playground 보기 → kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)**
-
-> [Read in English](./README.en.md)
+**v0.12.1** · [Playground →](https://kimminchul.github.io/anticard/) · [English](./README.en.md)
 
 ---
 
-## 시장의 진짜 그림
+## 왜 시작했나
 
-`shadcn/ui` · `Mantine` · `MUI` · `Ant Design` · `Chakra UI` —
-인기 UI 라이브러리 대부분은 **사실 Admin/Dashboard 라이브러리**입니다.
-Card · Sidebar · DataTable · Form 중심.
+AI로 웹 서비스를 만들어 보면 기능은 잘 돌아간다.
+그런데 디자인은 어딘가 닮은 화면이 나오곤 한다.
 
-랜딩·마케팅·콘텐츠 같은 **End-user 화면**을 위한 라이브러리는 거의 없습니다.
-**부트스트랩 정도**가 그나마 가깝지만 톤이 정형적이라 모던 사이트엔 안 씁니다.
+왜일까.
+인기 있는 UI 라이브러리들(shadcn/ui, Mantine, MUI, Ant Design, Chakra UI)을 살펴보면 대부분 admin·dashboard에 강점이 있다. Card, Sidebar, DataTable, Form.
+이런 도구로 랜딩 화면을 만들 때 카드 안에 카드가 쌓이는 그림이 자주 보인다.
 
-→ 이 빈 자리에 안티 카드.
+그렇다면 랜딩 화면에 좀 더 어울리는, AI가 더 잘 알아듣는 톤의 라이브러리가 따로 있어도 좋지 않을까.
+그 가설로 출발한 OSS 프로젝트.
 
-## Admin vs End-user
-
-| | Admin | End-user (안티 카드 영역) |
-|---|---|---|
-| 우선 | 정보 밀도, 효율 | 정서·인상, 공간감 |
-| 카드 박스 | OK (그릇 명확) | 답답함 — 콘텐츠가 곧 형태 |
-| 헤딩 | 작게 | 크게, 시그니처 |
-| 라벨 | form label | smallcaps eyebrow |
-| 리듬 | 균등 그리드 | 큰 호흡과 리스트 |
-| 인터랙션 | 빠른 클릭 | 부드러운 transition·scroll |
-
-자세히: [Admin vs End-user](https://freeive.com/anti-card/admin-vs-end-user)
-
-## 두 레이어
-
-### Layer 1 — AI Skill (진짜 본체)
-
-Claude · Cursor 같은 AI 코딩 도구에 **플러그인 스킬로 설치**.
-AI가 화면을 만들 때 안티 카드 원칙·패턴·HTML 레퍼런스를 참조합니다.
-
-```bash
-# 0.0.x ~ 0.9.x: 수동 셋업
-cat node_modules/@freeive/anti-card/skill/CLAUDE.md > CLAUDE.md
-cat node_modules/@freeive/anti-card/skill/cursorrules > .cursorrules
-
-# 1.0.0 이후 (예정): claude skill install @freeive/anti-card
-```
-
-코드 0줄도 가능. React/Vue/Svelte/순수 HTML 어디든 같은 톤.
-**결과: AI가 만들었지만 AI가 만든 것 같지 않은 화면.**
-
-자세히: [AI Skill](https://freeive.com/anti-card/ai-skill)
-
-### Layer 2 — React 컴포넌트 (51개)
+## 설치
 
 ```bash
 npm install @freeive/anti-card
 ```
 
 ```tsx
-import {
-  HeroPattern, SectionFrame, ListRow, Eyebrow, StatList, ClientLogos
-} from "@freeive/anti-card";
-
-<HeroPattern
-  size="hero"
-  eyebrow="Heritage · 2016 — Now"
-  title="큰 프로젝트들의 깊이를 1인 랩으로 옮긴다."
-  ctas={[{ label: "Talk", href: "/talk", tone: "accent" }]}
-/>
-
-<StatList items={[
-  { value: "10+", label: "Years" },
-  { value: "30+", label: "Clients" },
-  { value: "150+", label: "Projects" },
-]} />
+import { HeroPattern, ListRow, StatList } from "@freeive/anti-card";
 ```
 
-#### 카테고리별 컴포넌트
+Tailwind 기반. dark/light 자동. 타이포 토큰 12개. 현재 컴포넌트 64개.
+각 컴포넌트의 시각 미리보기·props·사용 예는 [Playground](https://kimminchul.github.io/anticard/)에 있다.
 
-| 카테고리 | 컴포넌트 |
-|---|---|
-| **레이아웃** | Container · Hairline · Header · Footer · SectionFrame · Grid · GridSystem (12 col) |
-| **타이포그래피** | Eyebrow · HeroHeading · SectionHeading · Lead · Quote · Highlight |
-| **리스트** | ListRow · DefList · StatList · Timeline · CompareTable |
-| **액션** | LinkRow · Button (Primary/Secondary) · CTASection · Banner |
-| **콘텐츠 블록** | Callout · FAQ · PricingTable · Steps · FeatureRow |
-| **신뢰·증거** | ClientLogos · Testimonial · StatBlock · CaseStudy |
-| **미디어** | Image · Video · Gallery |
-| **인터랙션** | WaveCard · FadeIn · HoverAccent · ScrollProgress · Marquee |
-| **폼** | Input · Textarea · Select · Checkbox · Radio · Pill |
-| **페이지 패턴** | HeroPattern · SectorsPattern · TalkPattern · EmptyState · PricingPattern |
-| **유틸** | `cn()` · `typography` 토큰 |
+## 설계 원칙
 
-각 컴포넌트의 props·사용법은 **[Playground](https://kimminchul.github.io/anticard/)** 에서 시각 미리보기 + 6 탭(디자인 / 프롬프트 / HTML / CSS / JS / React)으로 확인.
+카드 박스 없이도 위계를 만들 수 있을까, 라는 질문에 다섯 가지 관찰을 모아 본 것.
+풀이는 사이트로.
 
-> 시장에 없던 것은 Layer 1(AI 디자인 가이드)입니다.
-> Layer 2 컴포넌트 라이브러리 자체는 너무 많아요. anti-card는 톤(5원칙)으로 차별.
-
-## 안티 카드 5원칙
-
-위계를 카드 박스 없이 만드는 다섯 가지:
-
-1. **공간** — 섹션 사이 100~160px 여백
-2. **대비** — 텍스트 크기·굵기·색의 단계
-3. **헤어라인** — 1px 라인은 박스보다 가벼움
-4. **smallcaps 라벨** — Eyebrow
-5. **리스트의 행** — 카드 그리드 대신 행
-
-자세히: [Manifesto](https://freeive.com/anti-card/manifesto) · [Why not cards](https://freeive.com/anti-card/why-not-cards)
+[5 Principles →](https://freeive.com/anti-card)
 
 ## Playground
 
-컴포넌트의 시각 미리보기 + 6 탭 (디자인 / 프롬프트 / HTML / CSS / JS / React).
-
-- **공개 URL**: **[kimminchul.github.io/anticard](https://kimminchul.github.io/anticard/)** (GitHub Pages, main push 시 자동 배포)
-- **로컬**: `npm run dev:play` → http://localhost:5174
-
-각 컴포넌트 페이지에 **AI 프롬프트** 포함 — Claude/Cursor에 복사해서 동일 톤으로 코드 생성 가능.
-
-GitHub Pages 빌드 (로컬 테스트):
-
 ```bash
-# bash / git bash
-GH_PAGES=1 npm run build:play && npm run preview:play
-
-# PowerShell
-$env:GH_PAGES="1"; npm run build:play; npm run preview:play
+npm run dev:play   # http://localhost:5174
 ```
 
-## What's New
+각 컴포넌트마다 디자인 / 프롬프트 / HTML / CSS / JS / React 6탭.
+프롬프트 탭 텍스트는 Claude/Cursor에 복사해 같은 톤의 코드를 받아볼 수 있다.
 
-전체 변경 이력은 [CHANGELOG.md](./CHANGELOG.md) 참고.
+## Status
 
-**타이포 토큰 시스템**
-의미 단위 토큰들(`displayLg / display / h2 / h3 / h4 / body / lead / leadLarge / small / eyebrow / eyebrowAccent / code`).
-모든 컴포넌트가 토큰을 참조 — 단일 변경점으로 전체 톤 조정 가능.
+0.x 베타. 시각과 기능을 안정화하는 단계.
+1.0.0에서 API 동결과 npm publish 예정.
+자세한 정책: [docs/VERSIONING.md](./docs/VERSIONING.md).
 
-**5 원칙 일관 적용**
-모든 컴포넌트가 박스 거부 + 헤어라인 + smallcaps + 공간 + 행 5원칙을 자체 검증.
+## 활용 사례
 
-**dogfooding** — [freeive.com](https://freeive.com) 사이트 자체가 살아있는 증거:
-- 메인 — `HeroPattern` + `ListRow` (카드 그리드 거부)
-- Heritage — `StatList` + `ClientLogos` + `WaveCard` + `ListRow`
-- Talk — `TalkPattern` (받음/안받음 체크리스트)
-
-## ⚠️ Status
-
-**0.x 베타.** 시각·기능 안정화 단계.
-1.0.0에서 API 동결, npm publish 예정 — 정책: [docs/VERSIONING.md](./docs/VERSIONING.md).
-
-## 활용사례
-
-- **[freeive.com](https://freeive.com)** — 사이트 자체가 첫 활용사례 (4 페이지 모두 anti-card)
-- 자세히: `freeive.com/anti-card`
+[freeive.com](https://freeive.com)이 첫 dogfooding.
+메인·Heritage·Lab·Talk 4개 페이지가 모두 anti-card 컴포넌트로 만들어져 있다.
 
 ## 개발 (contributors)
 
@@ -164,34 +65,22 @@ git clone https://github.com/kimminchul/anticard.git
 cd anticard
 npm install --legacy-peer-deps
 
-# 격리 dev (vite playground :5174)
-npm run dev:play
-
-# tsup watch (라이브러리만 자동 재빌드)
-npm run dev
-
-# 사이트(../new-freeive)에 sync
-npm run sync
+npm run dev:play   # vite playground
+npm run dev        # tsup watch
+npm run sync       # ../new-freeive에 sync
 ```
 
-## Roadmap
+## 브랜치
 
-- **v0.x (현재)** — 토큰 시스템 + Playground GitHub Pages, 컴포넌트 지속 확장
-- **v1.0.0** — API 동결, npm publish, 1인 랩 정체성 콘텐츠 + 첫 외부 사용 사례
-- **v1.1.0+** — Tailwind preset 패키지화, Headless 모드 (Tailwind 없이도)
-- **v2.0.0+** — AI Skill 정식 install 명령 (`claude skill install`), Vue/Svelte 포트
+- `main`: 안정. push 시 GitHub Actions가 Pages 자동 배포.
+- `develop`: 작업. 안정화 후 main merge.
 
 ## Acknowledgements
 
-- [**lucide-react**](https://lucide.dev) — ISC License · playground 아이콘 (Sun/Moon/ArrowUpRight/ChevronDown). 1px stroke 미니멀 톤이 anti-card 헤어라인 정체성과 일치.
-- [**prism-react-renderer**](https://github.com/FormidableLabs/prism-react-renderer) — MIT License · playground 코드 syntax highlight.
-- [**Tailwind CSS**](https://tailwindcss.com) — MIT License · 5원칙 적용 base.
+- [lucide-react](https://lucide.dev) (ISC): playground 아이콘
+- [prism-react-renderer](https://github.com/FormidableLabs/prism-react-renderer) (MIT): playground syntax highlight
+- [Tailwind CSS](https://tailwindcss.com) (MIT): base
 
-## 브랜치 정책
+## License
 
-- **`main`** — 안정 배포 브랜치. push 시 GitHub Actions가 GitHub Pages 자동 배포.
-- **`develop`** — 작업 브랜치. 새 컴포넌트·실험은 모두 develop에서 → 안정화 후 main merge.
-
-## 라이선스
-
-MIT — © Kim Min Chul (Freeive)
+MIT © Kim Min Chul (Freeive)
