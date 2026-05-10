@@ -50,6 +50,12 @@ export function Dialog({
   const panelRef = React.useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = React.useRef<HTMLElement | null>(null);
 
+  // 매 렌더마다 최신 onOpenChange 참조 보관 (effect re-run 없이 핸들러만 갱신)
+  const onOpenChangeRef = React.useRef(onOpenChange);
+  React.useEffect(() => {
+    onOpenChangeRef.current = onOpenChange;
+  });
+
   // body scroll lock
   React.useEffect(() => {
     if (!open) return;
@@ -77,7 +83,7 @@ export function Dialog({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onOpenChange(false);
+        onOpenChangeRef.current(false);
       } else if (e.key === "Tab" && panelRef.current) {
         trapFocus(panelRef.current, e);
       }
@@ -90,7 +96,7 @@ export function Dialog({
       // close 시 트리거 등 이전 focus로 복원
       previouslyFocusedRef.current?.focus?.();
     };
-  }, [open, onOpenChange]);
+  }, [open]); // onOpenChange는 ref로 분리 — 인라인 화살표 함수 전달 시 매 렌더 effect 재실행 방지
 
   if (!open) return null;
 

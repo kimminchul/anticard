@@ -8,6 +8,11 @@
 ### Added
 - (비어있음)
 
+## [0.13.1] - 2026-05-10
+
+### Fixed
+- **Dialog / Drawer focus useEffect 디펜던시 버그**. `onOpenChange`가 deps에 포함되어 있어 consumer가 인라인 화살표 함수를 넘기면 매 렌더마다 effect cleanup-re-run 사이클로 focus가 트리거 panel을 왕복했다. 결과: 컴포넌트 안의 controlled input이 한 글자 입력 후 focus를 잃어 다음 키스트로크가 무시되는 증상. ref 패턴으로 onOpenChange를 deps에서 분리해 해결.
+
 ## [0.13.0] - 2026-05-09
 
 ### Added
