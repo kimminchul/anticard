@@ -25,6 +25,7 @@
   - `single` (accordion — 한 개만)
   - `toggleOnRowClick` (행 어디든 클릭으로 toggle)
 - **ExpandableTable** (NEW) — DataTable + 행 펼침 wrapper. 카드 그리드의 대안 — 표는 좁게, 깊은 정보는 같은 줄 컨텍스트에 펼침. admin 글/Heritage 사례/주문·로그 리스트에 적합. NAV "데이터 테이블" planned 6개 중 2번째 ready 전환.
+- **EditableTable** (NEW) — DataTable + inline 셀 편집. 셀 클릭 → emerald accent ring input으로 전환, Enter / blur 저장, Esc 취소. 비편집 시 hover에 헤어라인 박스로 편집 가능성 인지. `editable=true` 컬럼만 적용, `editorType: 'text' | 'number'`, `toEditValue`로 표시(포맷팅) ↔ 편집(raw) 분리 가능. DataTable 본체 prop은 추가하지 않고 columns.cell augment 방식 — selection/expansion과 직교 (조합 가능). admin의 빠른 데이터 보정 / Excel-like 패턴. NAV "데이터 테이블" planned 6개 중 3번째 ready 전환.
 - Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10

@@ -220,6 +220,11 @@ export { SelectableTable } from "./components/selectable-table";
 export type { SelectableTableProps } from "./components/selectable-table";
 export { ExpandableTable } from "./components/expandable-table";
 export type { ExpandableTableProps } from "./components/expandable-table";
+export { EditableTable } from "./components/editable-table";
+export type {
+  EditableTableProps,
+  EditableTableColumn,
+} from "./components/editable-table";
 
 export { TextList } from "./components/text-list";
 export type { TextListProps, TextListVariant } from "./components/text-list";

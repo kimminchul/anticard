@@ -82,6 +82,7 @@ import {
   DataTable,
   SelectableTable,
   ExpandableTable,
+  EditableTable,
   DatePicker,
   Combobox,
   TextList,
@@ -165,7 +166,7 @@ const NAV: NavGroup[] = [
       { id: "data-table", ko: "기본 데이터 테이블 (정렬)", en: "DataTable", status: "ready" },
       { id: "selectable-table", ko: "선택 가능 테이블 (체크박스 + 일괄 액션)", en: "SelectableTable", status: "ready" },
       { id: "expandable-table", ko: "펼침 가능 테이블 (행 클릭 → 상세)", en: "ExpandableTable", status: "ready" },
-      { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "planned" },
+      { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "ready" },
       { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "planned" },
       { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "planned" },
       { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "planned" },
@@ -406,6 +407,7 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   "data-table": { addedIn: "0.12.0", updatedIn: "0.14.0" }, // selection prop (선택 컬럼 + 일괄 액션)
   "selectable-table": { addedIn: "0.14.0" }, // SelectableTable wrapper
   "expandable-table": { addedIn: "0.14.0" }, // ExpandableTable + DataTable.expansion prop
+  "editable-table": { addedIn: "0.14.0" }, // EditableTable (columns.cell augment)
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -538,6 +540,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "data-table": () => <ComponentPage def={DATA_TABLE_DEF} />,
   "selectable-table": () => <ComponentPage def={SELECTABLE_TABLE_DEF} />,
   "expandable-table": () => <ComponentPage def={EXPANDABLE_TABLE_DEF} />,
+  "editable-table": () => <ComponentPage def={EDITABLE_TABLE_DEF} />,
   "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
   combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
   // 리스트 / 텍스트
@@ -8340,6 +8343,154 @@ const EXPANDABLE_TABLE_DEF: ComponentDef = {
     { name: "renderExpanded", type: "(row) => ReactNode", desc: "펼침 영역 렌더러 (필수)" },
     { name: "single", type: "boolean", default: "false", desc: "한 번에 하나만 펼침 (accordion)" },
     { name: "toggleOnRowClick", type: "boolean", default: "false", desc: "행 클릭으로도 toggle (chevron 외)" },
+  ],
+};
+
+interface EditableRow {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+}
+function EditableTableDemo() {
+  const [rows, setRows] = useState<EditableRow[]>([
+    { id: 1, name: "안티 카드 가이드 PDF", category: "Lab", price: 0, stock: 999 },
+    { id: 2, name: "MVP 컨설팅 (1세션)", category: "Talk", price: 800000, stock: 4 },
+    { id: 3, name: "Heritage 케이스 회고", category: "Heritage", price: 0, stock: 999 },
+  ]);
+
+  return (
+    <div className="space-y-3">
+      <EditableTable<EditableRow>
+        data={rows}
+        rowKey={(r) => String(r.id)}
+        columns={[
+          { key: "name", header: "이름", editable: true, sortable: true },
+          {
+            key: "category",
+            header: "카테고리",
+            editable: true,
+            sortable: true,
+            width: "w-[110px]",
+          },
+          {
+            key: "price",
+            header: "가격",
+            editable: true,
+            editorType: "number",
+            sortable: true,
+            align: "right",
+            width: "w-[110px]",
+            cell: (r) =>
+              r.price === 0
+                ? <span className="text-zinc-400">무료</span>
+                : `${r.price.toLocaleString()}원`,
+            toEditValue: (r) => String(r.price),
+          },
+          {
+            key: "stock",
+            header: "재고",
+            editable: true,
+            editorType: "number",
+            sortable: true,
+            align: "right",
+            width: "w-[80px]",
+          },
+        ]}
+        onCellSave={(row, colKey, newValue) => {
+          setRows((prev) =>
+            prev.map((r) =>
+              r.id === row.id
+                ? {
+                    ...r,
+                    [colKey]:
+                      colKey === "price" || colKey === "stock"
+                        ? Number(newValue) || 0
+                        : newValue,
+                  }
+                : r
+            )
+          );
+        }}
+      />
+      <p className="text-[11.5px] text-zinc-500">
+        셀 클릭 → 편집 모드. Enter / blur 저장 · Esc 취소
+      </p>
+    </div>
+  );
+}
+
+const EDITABLE_TABLE_DEF: ComponentDef = {
+  id: "editable-table",
+  ko: "인라인 편집 테이블",
+  en: "EditableTable",
+  desc: "DataTable + 셀 클릭으로 inline input 편집. Enter/blur 저장, Esc 취소. admin의 빠른 데이터 보정에 적합.",
+  intro:
+    "표의 셀을 클릭하면 그 자리에서 input으로 바뀌어 값을 바로 고칠 수 있게 해 주는 표입니다. 별도 편집 폼이나 다이얼로그 없이 빠르게 데이터를 보정할 수 있고, Enter나 다른 곳 클릭으로 저장, Esc로 취소됩니다.",
+  useCases: [
+    "Admin 상품·가격·재고 빠른 보정 (Excel-like)",
+    "Hero 슬라이드의 sort_order / status 직접 편집",
+    "사용자 권한·태그·메모 같은 짧은 필드의 빠른 수정",
+    "데이터 클린업 도구 (잘못된 값 즉시 고치기)",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "셀 클릭 → input 전환",
+      description:
+        "editable=true 컬럼만 편집 가능. number 타입은 editorType='number'. cell render와 toEditValue 분리로 표시는 포맷팅, 편집은 raw 값.",
+      preview: <EditableTableDemo />,
+      prompt: `EditableTable — inline 셀 편집.
+
+- 비편집 시: 셀 hover에 헤어라인 박스 + bg-zinc-50 (살짝 인지 가능)
+- 편집 시: input 1px emerald border + ring-2 emerald-500/15, Check / X 아이콘
+- Enter / blur: onCellSave 호출, 편집 종료
+- Esc: 취소 (값 변경 없음)
+- editable=true 컬럼만 적용. 다른 컬럼은 일반 표시
+- editorType='number'로 type=number input
+- cell render(표시)와 toEditValue(편집용 raw)를 분리 — 가격을 "1,000원"으로 표시하지만 편집은 "1000"으로
+
+부모는 onCellSave에서 데이터 업데이트 + 영속 처리 (DB, optimistic update 등).`,
+      react: `<EditableTable<Row>
+  data={rows}
+  rowKey={(r) => String(r.id)}
+  columns={[
+    { key: "name", header: "이름", editable: true, sortable: true },
+    {
+      key: "price",
+      header: "가격",
+      editable: true,
+      editorType: "number",
+      align: "right",
+      cell: (r) => \`\${r.price.toLocaleString()}원\`,
+      toEditValue: (r) => String(r.price),
+    },
+  ]}
+  onCellSave={(row, key, value) =>
+    updateRow(row.id, { [key]: key === "price" ? Number(value) : value })
+  }
+/>`,
+    },
+  ],
+  props: [
+    { name: "data / density / caption / onRowClick", type: "...", desc: "DataTable과 동일" },
+    {
+      name: "columns",
+      type: "EditableTableColumn<T>[]",
+      desc: "DataTableColumn + {editable?, editorType?: 'text'|'number', toEditValue?}",
+    },
+    {
+      name: "rowKey",
+      type: "(row, i) => string",
+      desc: "필수 — 셀 편집 상태 추적용 unique key",
+    },
+    {
+      name: "onCellSave",
+      type: "(row, colKey, newValue: string) => void",
+      desc: "Enter/blur 시 호출. 부모가 데이터 업데이트.",
+    },
   ],
 };
 
