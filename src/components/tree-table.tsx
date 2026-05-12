@@ -11,7 +11,14 @@ import {
 export interface TreeTableProps<T>
   extends Omit<
     DataTableProps<T>,
-    "data" | "rowKey" | "columns" | "onRowClick" | "selection" | "expansion"
+    | "data"
+    | "rowKey"
+    | "columns"
+    | "onRowClick"
+    | "selection"
+    | "expansion"
+    | "rowClassName"
+    | "getCellSpan"
   > {
   /** 트리 노드 배열 (루트). */
   data: T[];

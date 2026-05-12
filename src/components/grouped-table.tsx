@@ -11,7 +11,14 @@ import {
 export interface GroupedTableProps<T>
   extends Omit<
     DataTableProps<T>,
-    "data" | "rowKey" | "columns" | "onRowClick" | "selection" | "expansion"
+    | "data"
+    | "rowKey"
+    | "columns"
+    | "onRowClick"
+    | "selection"
+    | "expansion"
+    | "rowClassName"
+    | "getCellSpan"
   > {
   data: T[];
   /** 표 컬럼 정의 — DataTable과 동일. 단 그룹 컨텍스트에서 sortable은 자동 비활성 */
@@ -141,8 +148,8 @@ export function GroupedTable<T>({
   }, [data, groupBy, rowKey, collapsedSet]);
 
   // ── columns wrap — 첫 컬럼 cell에 group header rendering 분기 ──
-  // 헤더 row는 colSpan 전체로 그룹 헤더 노출. 일반 row는 그대로.
-  // 명시 필드만 사용 (sortKey/compare는 keyof T라 GroupedRow<T>에 호환 X)
+  // 그룹 헤더 row는 첫 컬럼이 colSpan=columns.length로 전체 행 차지 (DataTable의
+  // getCellSpan 사용). 명시 필드만 사용 (sortKey/compare는 keyof T라 호환 X).
   const wrappedColumns: DataTableColumn<GroupedRow<T>>[] = columns.map(
     (col, colIndex) => {
       return {
@@ -153,11 +160,9 @@ export function GroupedTable<T>({
         sortable: false, // 그룹 컨텍스트에서 정렬은 그룹 깨뜨려 비활성
         cell: (row, i) => {
           if (row.kind === "header") {
-            if (colIndex !== 0) return null; // 첫 컬럼만 — 나머지는 빈 (colSpan 효과)
-            // 첫 컬럼에서 colSpan 흉내 — 큰 padding으로 sibling cells 위로 영향 X.
-            // 실제 colSpan은 DataTable이 colSpan 옵션을 지원하지 않으므로
-            // CSS로 column-spanning 효과 만들기 어렵다. 그래서 첫 컬럼에만 노출하고,
-            // 표 헤더는 그대로 두되 그룹 헤더의 셀이 첫 컬럼에서 시작해 자연스럽게 시각화.
+            // 첫 컬럼만 group header label 렌더. 나머지 컬럼은 getCellSpan 처리로
+            // 자동 skip되므로 여기 도달하지 않음 (안전망으로 null 반환).
+            if (colIndex !== 0) return null;
             const headerNode = renderGroupHeader
               ? renderGroupHeader(row.group, row.rows)
               : (
@@ -203,16 +208,22 @@ export function GroupedTable<T>({
     }
   );
 
-  // 그룹 헤더 행 시각화는 첫 컬럼 padding + smallcaps 톤으로 처리.
-  // 더 강한 시각 분리(colSpan / border-t)는 DataTable에 rowClassName prop 추가
-  // 후 처리 — 별도 라운드.
-
   return (
     <DataTable<GroupedRow<T>>
       {...rest}
       data={groupedRows}
       columns={wrappedColumns}
       rowKey={(r) => r.key}
+      // 그룹 헤더 행 시각 분리 — border-t 헤어라인 강조 + zinc 배경 + 위 간격
+      rowClassName={(row) =>
+        row.kind === "header"
+          ? "!border-t border-zinc-300 bg-zinc-100/50 dark:!border-white/[0.08] dark:bg-white/[0.03]"
+          : undefined
+      }
+      // 그룹 헤더 첫 컬럼이 전체 columns 차지 (colSpan)
+      getCellSpan={(row, _i, ci) =>
+        row.kind === "header" && ci === 0 ? columns.length : 1
+      }
     />
   );
 }

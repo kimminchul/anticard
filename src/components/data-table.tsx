@@ -91,6 +91,26 @@ export interface DataTableProps<T>
   selection?: DataTableSelection<T>;
   /** 행 펼침 — 지정 시 첫 컬럼 chevron + 펼침 영역 자동. */
   expansion?: DataTableExpansion<T>;
+  /**
+   * 행마다 추가 className. group header / disabled row / 강조 등에 사용.
+   * 결과가 빈 문자열 또는 undefined면 무시.
+   *
+   * @example GroupedTable이 그룹 헤더 행에 별도 톤
+   *   rowClassName={(row) => row.kind === "header" ? "bg-zinc-50/60" : ""}
+   */
+  rowClassName?: (row: T, i: number) => string | undefined;
+  /**
+   * 한 셀이 colSpan으로 여러 컬럼 차지. 기본 1.
+   *
+   * 같은 row의 다음 cell들은 자동 skip (예: span=3이면 다음 2개 cell skip).
+   * selection/expansion 컬럼은 별도 — getCellSpan은 columns 컬럼만 대상.
+   *
+   * @example group header row가 첫 컬럼에서 전체 columns 차지
+   *   getCellSpan={(row, _i, col) =>
+   *     row.kind === "header" && col === 0 ? columns.length : 1
+   *   }
+   */
+  getCellSpan?: (row: T, rowIndex: number, columnIndex: number) => number;
 }
 
 /**
@@ -120,6 +140,8 @@ export function DataTable<T>({
   caption,
   selection,
   expansion,
+  rowClassName,
+  getCellSpan,
   className,
   ...props
 }: DataTableProps<T>) {
@@ -396,7 +418,8 @@ export function DataTable<T>({
                   rowInteractive &&
                     "cursor-pointer transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.02]",
                   isSelected && "bg-emerald-50/40 dark:bg-emerald-500/[0.04]",
-                  isExpanded && "bg-zinc-50/60 dark:bg-white/[0.02]"
+                  isExpanded && "bg-zinc-50/60 dark:bg-white/[0.02]",
+                  rowClassName?.(row, i)
                 )}
               >
                 {expansionEnabled && (
@@ -443,29 +466,41 @@ export function DataTable<T>({
                     </button>
                   </td>
                 )}
-                {columns.map((c) => {
-                  const alignCls =
-                    c.align === "right"
-                      ? "text-right"
-                      : c.align === "center"
-                      ? "text-center"
-                      : "text-left";
-                  return (
-                    <td
-                      key={c.key}
-                      className={cn(
-                        "px-3 text-zinc-700 dark:text-zinc-300",
-                        cellPadding,
-                        alignCls,
-                        c.width
-                      )}
-                    >
-                      {c.cell
-                        ? c.cell(row, i)
-                        : ((row as Record<string, React.ReactNode>)[c.key] ?? null)}
-                    </td>
-                  );
-                })}
+                {(() => {
+                  // colSpan + skip 처리 — 한 row 안에서 이전 cell이 span으로
+                  // 차지한 컬럼은 render skip.
+                  let skipCount = 0;
+                  return columns.map((c, ci) => {
+                    if (skipCount > 0) {
+                      skipCount--;
+                      return null;
+                    }
+                    const span = getCellSpan?.(row, i, ci) ?? 1;
+                    if (span > 1) skipCount = span - 1;
+                    const alignCls =
+                      c.align === "right"
+                        ? "text-right"
+                        : c.align === "center"
+                        ? "text-center"
+                        : "text-left";
+                    return (
+                      <td
+                        key={c.key}
+                        colSpan={span > 1 ? span : undefined}
+                        className={cn(
+                          "px-3 text-zinc-700 dark:text-zinc-300",
+                          cellPadding,
+                          alignCls,
+                          c.width
+                        )}
+                      >
+                        {c.cell
+                          ? c.cell(row, i)
+                          : ((row as Record<string, React.ReactNode>)[c.key] ?? null)}
+                      </td>
+                    );
+                  });
+                })()}
               </tr>
               {expansionEnabled && isExpanded && (
                 <tr

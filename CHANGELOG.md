@@ -12,6 +12,8 @@
   - `channelsLabel` (default `"Channels"`)
   - 영문/일문 사이트에서 dogfood할 때 hardcoded 한국어를 외부 주입으로 교체할 수 있도록. freeive ko/en/ja 사이트에서 발견된 누락 봉합.
 - **HeroPattern** `width` prop — HeroHeading의 `width` 노출 (default/wide/full). 일본어·영문 긴 제목이 좁은 max-width(20ch)에 갇혀 줄바꿈하는 문제를 prop으로 해결. 이전엔 freeive가 HeroPattern을 분해해 직접 조립해서 우회.
+- **DataTable** `rowClassName(row, i)` prop — 행 단위 추가 className. group header / disabled / 강조 행 표현. GroupedTable이 그룹 헤더 행 시각 분리(border-t + bg-zinc-100/50)에 활용.
+- **DataTable** `getCellSpan(row, i, colIndex)` prop — 한 셀이 colSpan으로 여러 컬럼 차지. 같은 row의 후속 cell 자동 skip (let 변수로 row 단위 skipCount 추적). GroupedTable의 그룹 헤더가 첫 컬럼에서 전체 columns 차지하는 시각화에 활용.
 - **DataTable** `selection` prop — 행 선택 모드. 지정 시 첫 컬럼에 체크박스 자동 노출, 헤더 위에 일괄 액션 영역 노출. 헤더 체크박스는 전체/일부(mixed)/없음 3-state. 선택된 행은 emerald accent 톤. 행 onClick과 체크박스 onClick은 stopPropagation으로 분리.
   - `selectedKeys` / `onSelectionChange` (controlled)
   - `selectKey(row, i) => string` — DB id 등 안정적 unique key 권장
@@ -26,7 +28,7 @@
   - `toggleOnRowClick` (행 어디든 클릭으로 toggle)
 - **ExpandableTable** (NEW) — DataTable + 행 펼침 wrapper. 카드 그리드의 대안 — 표는 좁게, 깊은 정보는 같은 줄 컨텍스트에 펼침. admin 글/Heritage 사례/주문·로그 리스트에 적합. NAV "데이터 테이블" planned 6개 중 2번째 ready 전환.
 - **EditableTable** (NEW) — DataTable + inline 셀 편집. 셀 클릭 → emerald accent ring input으로 전환, Enter / blur 저장, Esc 취소. 비편집 시 hover에 헤어라인 박스로 편집 가능성 인지. `editable=true` 컬럼만 적용, `editorType: 'text' | 'number'`, `toEditValue`로 표시(포맷팅) ↔ 편집(raw) 분리 가능. DataTable 본체 prop은 추가하지 않고 columns.cell augment 방식 — selection/expansion과 직교 (조합 가능). admin의 빠른 데이터 보정 / Excel-like 패턴. NAV "데이터 테이블" planned 6개 중 3번째 ready 전환.
-- **GroupedTable** (NEW) — DataTable + 카테고리·섹터로 묶인 행 사이에 그룹 헤더 자동 삽입. `groupBy(row) => string` 함수로 그룹화, 헤더는 smallcaps + count, `collapsible=true`로 그룹별 펼침/접힘. `renderGroupHeader`로 헤더 커스터마이즈. 시각적으로 그룹 헤더는 첫 컬럼에 라벨, 다른 컬럼은 빈 셀 — 완전한 colSpan 시각화는 후속 라운드에서 DataTable에 rowClassName/cellSpan prop 추가 후 보강. Heritage 섹터별 / admin 카테고리별 리스트에 자연. NAV "데이터 테이블" planned 6개 중 4번째 ready 전환.
+- **GroupedTable** (NEW) — DataTable + 카테고리·섹터로 묶인 행 사이에 그룹 헤더 자동 삽입. `groupBy(row) => string` 함수로 그룹화, 헤더는 smallcaps + count, `collapsible=true`로 그룹별 펼침/접힘. `renderGroupHeader`로 헤더 커스터마이즈. 그룹 헤더 행은 DataTable의 `rowClassName` + `getCellSpan`을 활용해 첫 컬럼에서 전체 columns colSpan + border-t / bg-zinc-100/50 톤으로 시각 분리. Heritage 섹터별 / admin 카테고리별 리스트에 자연. NAV "데이터 테이블" planned 6개 중 4번째 ready 전환.
 - **TreeTable** (NEW) — DataTable + 계층 구조. `getChildren(row) => T[]`로 자식 추출, 내부에서 depth 누적해 flatten. 첫 컬럼만 자동으로 `indent(depth × indentSize) + chevron` 부여, 다른 컬럼은 원본 cell 그대로. leaf 노드는 chevron 자리에 빈 4×4 (컬럼 정렬 안정). `defaultExpandedKeys`/`expandedKeys`+`onExpandedChange`. 트리 컨텍스트에서 sortable 자동 비활성. 파일 트리 / 카테고리 트리 / 조직도 / nested 댓글에 자연. NAV "데이터 테이블" planned 6개 중 5번째 ready 전환.
 - **CompactTable** (NEW) — 로그·데이터 뷰어용 압축 표. DataTable wrapper로 `density='tight'` 강제 + 본문 12px + 헤더 10.5px + 컬럼 패딩 px-2.5 (더 좁게). `font='mono'`(default): `ui-monospace + tabular-nums`로 timestamp·자릿수 정렬 안정. `font='sans'`도 가능 (정보 밀도만 높이고 싶을 때). `hoverable=false`로 hover 강조 끄기 (정적 로그 뷰). 안티 카드 헤어라인 톤 유지. NAV "데이터 테이블" planned 6개 중 6번째 ready 전환 — **DataTable variants 6개 모두 ready, planned 0개**.
 

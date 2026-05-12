@@ -8118,6 +8118,21 @@ column.compare 커스텀 비교도 가능. row.onClick으로 인터랙티브 행
       type: "DataTableSelection<T>",
       desc: "{selectedKeys, onSelectionChange, selectKey?, bulkActions?, showCount?} — 지정 시 체크박스 컬럼 + 일괄 액션 영역 자동. SelectableTable wrapper 사용 권장.",
     },
+    {
+      name: "expansion",
+      type: "DataTableExpansion<T>",
+      desc: "{expandedKeys, onExpandedChange, renderExpanded, expandKey?, single?, toggleOnRowClick?} — 첫 컬럼 chevron + 펼침 panel. ExpandableTable wrapper 사용 권장.",
+    },
+    {
+      name: "rowClassName",
+      type: "(row, i) => string | undefined",
+      desc: "행 단위 추가 className. group header / disabled / 강조 행 표현. GroupedTable이 그룹 헤더 행에 활용.",
+    },
+    {
+      name: "getCellSpan",
+      type: "(row, rowIndex, columnIndex) => number",
+      desc: "한 셀이 colSpan으로 여러 컬럼 차지. 같은 row의 후속 cell 자동 skip. GroupedTable의 그룹 헤더가 첫 컬럼에서 전체 columns 차지하도록 사용.",
+    },
   ],
 };
 
