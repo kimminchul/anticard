@@ -84,6 +84,7 @@ import {
   ExpandableTable,
   EditableTable,
   GroupedTable,
+  TreeTable,
   DatePicker,
   Combobox,
   TextList,
@@ -169,7 +170,7 @@ const NAV: NavGroup[] = [
       { id: "expandable-table", ko: "펼침 가능 테이블 (행 클릭 → 상세)", en: "ExpandableTable", status: "ready" },
       { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "ready" },
       { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "ready" },
-      { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "planned" },
+      { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "ready" },
       { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "planned" },
     ],
   },
@@ -410,6 +411,7 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   "expandable-table": { addedIn: "0.14.0" }, // ExpandableTable + DataTable.expansion prop
   "editable-table": { addedIn: "0.14.0" }, // EditableTable (columns.cell augment)
   "grouped-table": { addedIn: "0.14.0" }, // GroupedTable (groupBy + header rows + collapsible)
+  "tree-table": { addedIn: "0.14.0" }, // TreeTable (계층 + indent + chevron)
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -544,6 +546,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "expandable-table": () => <ComponentPage def={EXPANDABLE_TABLE_DEF} />,
   "editable-table": () => <ComponentPage def={EDITABLE_TABLE_DEF} />,
   "grouped-table": () => <ComponentPage def={GROUPED_TABLE_DEF} />,
+  "tree-table": () => <ComponentPage def={TREE_TABLE_DEF} />,
   "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
   combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
   // 리스트 / 텍스트
@@ -8590,6 +8593,131 @@ const GROUPED_TABLE_DEF: ComponentDef = {
       type: "(groups: string[]) => void",
       desc: "접힘 변경 콜백",
     },
+  ],
+};
+
+interface FileNode {
+  id: string;
+  name: string;
+  size: string;
+  children?: FileNode[];
+}
+const TREE_DATA: FileNode[] = [
+  {
+    id: "src",
+    name: "src/",
+    size: "—",
+    children: [
+      {
+        id: "src/components",
+        name: "components/",
+        size: "—",
+        children: [
+          { id: "src/components/data-table.tsx", name: "data-table.tsx", size: "9.2 KB" },
+          { id: "src/components/selectable-table.tsx", name: "selectable-table.tsx", size: "2.4 KB" },
+          { id: "src/components/expandable-table.tsx", name: "expandable-table.tsx", size: "2.1 KB" },
+          { id: "src/components/editable-table.tsx", name: "editable-table.tsx", size: "5.0 KB" },
+          { id: "src/components/grouped-table.tsx", name: "grouped-table.tsx", size: "4.6 KB" },
+          { id: "src/components/tree-table.tsx", name: "tree-table.tsx", size: "4.2 KB" },
+        ],
+      },
+      {
+        id: "src/tokens",
+        name: "tokens/",
+        size: "—",
+        children: [
+          { id: "src/tokens/typography.ts", name: "typography.ts", size: "1.1 KB" },
+          { id: "src/tokens/motion.ts", name: "motion.ts", size: "1.3 KB" },
+        ],
+      },
+      { id: "src/index.ts", name: "index.ts", size: "6.8 KB" },
+    ],
+  },
+  {
+    id: "playground",
+    name: "playground/",
+    size: "—",
+    children: [
+      { id: "playground/App.tsx", name: "App.tsx", size: "320 KB" },
+      { id: "playground/index.html", name: "index.html", size: "0.8 KB" },
+    ],
+  },
+];
+function TreeTableDemo() {
+  return (
+    <TreeTable<FileNode>
+      data={TREE_DATA}
+      getChildren={(n) => n.children}
+      rowKey={(n) => n.id}
+      defaultExpandedKeys={["src", "src/components"]}
+      columns={[
+        { key: "name", header: "이름" },
+        { key: "size", header: "크기", align: "right", width: "w-[100px]" },
+      ]}
+    />
+  );
+}
+
+const TREE_TABLE_DEF: ComponentDef = {
+  id: "tree-table",
+  ko: "트리 테이블 (계층 구조)",
+  en: "TreeTable",
+  desc: "DataTable + 계층 노드 (indent + chevron). 파일 트리·카테고리 트리·조직도 같은 계층 데이터를 표 안에서 자연스럽게.",
+  intro:
+    "부모-자식 관계를 가진 트리 데이터를 표로 풀어서 보여 주는 컴포넌트입니다. 첫 컬럼에 자동으로 들여쓰기와 chevron이 부여되어 계층이 시각적으로 명확해지고, leaf 노드는 chevron 자리에 빈 공간만 남겨 컬럼 정렬이 흐트러지지 않습니다.",
+  useCases: [
+    "파일·폴더 트리 뷰",
+    "카테고리·태그의 계층 정리 (Heritage 섹터 + 하위 프로젝트)",
+    "조직도 / 권한 트리 / 메뉴 구조",
+    "댓글·답글 같은 nested 데이터의 표 뷰",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "파일 트리 — 깊이별 indent + chevron",
+      description:
+        "getChildren 함수로 자식 추출. rowKey는 안정적 unique key (보통 path 또는 DB id). leaf는 chevron 자리에 빈 16px.",
+      preview: <TreeTableDemo />,
+      prompt: `TreeTable — 계층 구조 표.
+
+- data: T[] (루트 노드 배열)
+- getChildren(row) => T[] | undefined로 자식 추출
+- rowKey(row, parentKey, i) => string — 안정적 unique key 필수
+- 첫 컬럼만 indent(depth × indentSize) + chevron 자동
+- 다른 컬럼은 원본 cell 그대로
+- leaf 노드: chevron 자리에 빈 4×4 (정렬 안정)
+- 부모 노드: chevron 클릭으로 펼침/접힘
+- defaultExpandedKeys (uncontrolled) / expandedKeys + onExpandedChange (controlled)
+- indentSize 기본 18px
+
+알려진 제약: 트리 컨텍스트에서 sortable 자동 비활성 (계층 깨뜨림 방지).`,
+      react: `<TreeTable<Node>
+  data={tree}
+  getChildren={(n) => n.children}
+  rowKey={(n) => String(n.id)}
+  defaultExpandedKeys={["root"]}
+  columns={[
+    { key: "name", header: "이름" },
+    { key: "size", header: "크기", align: "right" },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "data", type: "T[]", desc: "루트 노드 배열" },
+    { name: "getChildren", type: "(row) => T[] | undefined", desc: "자식 추출 (없으면 leaf)" },
+    { name: "rowKey", type: "(row, parentKey, i) => string", desc: "노드 unique key (필수)" },
+    { name: "columns", type: "DataTableColumn<T>[]", desc: "표 컬럼. 첫 컬럼이 indent + chevron 자동" },
+    { name: "onRowClick", type: "(row) => void", desc: "행 클릭" },
+    { name: "defaultExpandedKeys", type: "string[]", desc: "초기 펼친 노드" },
+    { name: "expandedKeys", type: "string[]", desc: "controlled 펼친 키" },
+    {
+      name: "onExpandedChange",
+      type: "(keys: string[]) => void",
+      desc: "펼침 변경 콜백",
+    },
+    { name: "indentSize", type: "number", default: "18", desc: "깊이당 padding-left px" },
   ],
 };
 
