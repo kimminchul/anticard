@@ -29,6 +29,13 @@ export interface HeroPatternProps
   align?: "left" | "center";
   /** 상하 패딩 */
   padding?: "default" | "tight" | "loose";
+  /**
+   * 제목 너비 제한 (HeroHeading의 width prop으로 전달).
+   * - `default`: 20ch — 짧은 카피
+   * - `wide`: 32ch — 긴 문장 (일본어/영어 줄바꿈 회피)
+   * - `full`: 제한 없음
+   */
+  width?: "default" | "wide" | "full";
 }
 
 /**
@@ -65,6 +72,7 @@ export function HeroPattern({
   size = "page",
   align = "left",
   padding = "default",
+  width = "default",
   className,
   ...props
 }: HeroPatternProps) {
@@ -86,6 +94,7 @@ export function HeroPattern({
       <HeroHeading
         size={size}
         align={align}
+        width={width}
         className={eyebrow ? "mt-5" : undefined}
       >
         {title}

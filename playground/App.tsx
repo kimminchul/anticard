@@ -396,8 +396,11 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   banner: { addedIn: "0.3.0", updatedIn: "0.12.0" }, // role="alert" 분기 + slide-down 모션
   callout: { addedIn: "0.6.0", updatedIn: "0.12.0" }, // 아이콘 vertical center
   "wave-card": { addedIn: "0.5.0", updatedIn: "0.12.0" }, // orientation prop
-  "talk-pattern": { addedIn: "0.3.0", updatedIn: "0.12.0" }, // 한쪽만 있을 때 1열
+  "talk-pattern": { addedIn: "0.3.0", updatedIn: "0.14.0" }, // acceptLabel/declineLabel/channelsLabel i18n
   header: { addedIn: "0.1.0", updatedIn: "0.12.0" }, // border-current/40 fix
+
+  // 0.14.0 — 다국어 / 분해 사용 봉합
+  "hero-pattern": { addedIn: "0.3.0", updatedIn: "0.14.0" }, // width prop (HeroHeading.width 노출)
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -4440,6 +4443,45 @@ ctas 생략하면 hero 영역에 CTA 없이 제목 + 본문만.`,
   lead="..."
 />`,
     },
+    {
+      index: "03",
+      badge: "width · wide",
+      title: "긴 문장 — width='wide' (32ch)",
+      description:
+        "일본어·영어 긴 제목이 기본 max-width(20ch)에 갇혀 부자연스럽게 줄바꿈하는 문제를 width='wide'로 해소.",
+      preview: (
+        <HeroPattern
+          size="hero"
+          eyebrow="Freeive — Solo lab, est. 2016"
+          width="wide"
+          title={
+            <>
+              AIを使う非エンジニアの方へ、<br />
+              <span className="text-zinc-400 dark:text-zinc-400">
+                ランディングのためのUIライブラリ。
+              </span>
+            </>
+          }
+          lead="AIが作った感の払拭。非エンジニアにUI/UXを自然に習得させるプロジェクト。"
+          ctas={[
+            { label: "Anti Card Lab", href: "#", tone: "accent" },
+            { label: "Playground", href: "#" },
+          ]}
+        />
+      ),
+      prompt: `긴 일본어/영어 제목을 hero에서 자연스럽게 노출. width="wide"로 max-width를 20ch → 32ch로 완화. 한국어 기본 톤(짧고 강한 제목)을 깨지 않으면서 다국어 사이트에 대응.
+
+- width="default" (기본): 20ch — 짧고 강한 한국어 카피
+- width="wide": 32ch — 일본어/영어 긴 문장
+- width="full": 제한 없음 — 광고성 카피`,
+      react: `<HeroPattern
+  size="hero"
+  width="wide"
+  eyebrow="..."
+  title="긴 일본어/영어 제목"
+  lead="..."
+/>`,
+    },
   ],
   props: [
     { name: "eyebrow", type: "ReactNode", desc: "smallcaps 라벨" },
@@ -4449,6 +4491,12 @@ ctas 생략하면 hero 영역에 CTA 없이 제목 + 본문만.`,
     { name: "size", type: '"page" | "hero"', default: '"page"', desc: "page 30~48 / hero 40~64 (메인 1회)" },
     { name: "align", type: '"left" | "center"', default: '"left"', desc: "정렬" },
     { name: "padding", type: '"default" | "tight" | "loose"', default: '"default"', desc: "상하 패딩" },
+    {
+      name: "width",
+      type: '"default" | "wide" | "full"',
+      default: '"default"',
+      desc: "HeroHeading 너비. default 20ch / wide 32ch (긴 일·영문) / full 제한 없음",
+    },
   ],
 };
 
@@ -4569,12 +4617,71 @@ const TALK_PATTERN_DEF: ComponentDef = {
   channels={[{ label: "Email", value: "ive@...", href: "mailto:..." }]}
 />`,
     },
+    {
+      index: "02",
+      badge: "i18n",
+      title: "영문 — 라벨 prop 주입",
+      description:
+        "acceptLabel / declineLabel / channelsLabel로 한국어 hardcoded 라벨 교체. 영문·일문 사이트 대응.",
+      preview: (
+        <TalkPattern
+          eyebrow="Talk · before we work together"
+          title="Open for inquiries."
+          lead="Not an outsourcing agency. Only deep, focused work."
+          acceptLabel="Accepting"
+          declineLabel="Not accepting"
+          channelsLabel="Channels"
+          acceptList={[
+            "B2B engagements (contracts)",
+            "Joint projects / collaborations",
+            "AI UI / anti-card consulting",
+          ]}
+          declineList={["Lowest-bid competitions", "Template-grade sites"]}
+          channels={[
+            {
+              label: "Email",
+              value: "ive@freeive.com",
+              href: "mailto:ive@freeive.com",
+            },
+          ]}
+        />
+      ),
+      prompt: `TalkPattern을 영문/일문 사이트에 쓸 때, 내부 hardcoded "받음"/"안 받음"/"Channels" 라벨을 acceptLabel/declineLabel/channelsLabel prop으로 외부 주입합니다.
+
+- ko: "받음" / "안 받음" / "Channels" (default)
+- en: "Accepting" / "Not accepting" / "Channels"
+- ja: "受け付け中" / "受け付けない" / "Channels"`,
+      react: `<TalkPattern
+  title="Open for inquiries."
+  acceptLabel="Accepting"
+  declineLabel="Not accepting"
+  channelsLabel="Channels"
+  acceptList={["B2B engagements", "Joint projects"]}
+  declineList={["Lowest-bid", "Template sites"]}
+  channels={[{ label: "Email", value: "ive@...", href: "mailto:..." }]}
+/>`,
+    },
   ],
   props: [
     { name: "eyebrow / title / lead", type: "ReactNode", desc: "Hero 영역 (HeroPattern 내장)" },
     { name: "acceptList", type: "ReactNode[]", desc: "받는 일 (✓ emerald)" },
     { name: "declineList", type: "ReactNode[]", desc: "안 받는 일 (✕ zinc)" },
     { name: "channels", type: "[{label, value, href?, external?}]", desc: "연락 채널 DefList" },
+    {
+      name: "acceptLabel",
+      type: "ReactNode",
+      desc: "받음 섹션 라벨. default `\"받음\"`. 영문/일문 사이트는 명시 권장.",
+    },
+    {
+      name: "declineLabel",
+      type: "ReactNode",
+      desc: "안 받음 섹션 라벨. default `\"안 받음\"`.",
+    },
+    {
+      name: "channelsLabel",
+      type: "ReactNode",
+      desc: "채널 섹션 라벨. default `\"Channels\"` (영문 그대로 권장).",
+    },
   ],
 };
 

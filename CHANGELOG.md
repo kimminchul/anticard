@@ -6,7 +6,12 @@
 ## [Unreleased]
 
 ### Added
-- (비어있음)
+- **TalkPattern** 다국어/카피 변형 prop 3종:
+  - `acceptLabel` (default `"받음"`)
+  - `declineLabel` (default `"안 받음"`)
+  - `channelsLabel` (default `"Channels"`)
+  - 영문/일문 사이트에서 dogfood할 때 hardcoded 한국어를 외부 주입으로 교체할 수 있도록. freeive ko/en/ja 사이트에서 발견된 누락 봉합.
+- **HeroPattern** `width` prop — HeroHeading의 `width` 노출 (default/wide/full). 일본어·영문 긴 제목이 좁은 max-width(20ch)에 갇혀 줄바꿈하는 문제를 prop으로 해결. 이전엔 freeive가 HeroPattern을 분해해 직접 조립해서 우회.
 
 ## [0.13.1] - 2026-05-10
 

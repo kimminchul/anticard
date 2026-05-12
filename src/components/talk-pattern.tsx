@@ -21,6 +21,13 @@ export interface TalkPatternProps
     href?: string;
     external?: boolean;
   }>;
+  /**
+   * 섹션 라벨 — 다국어/카피 변형 필요 시 외부에서 주입.
+   * 미지정 시 한국어 기본값. 영문/일문 사이트는 명시 권장.
+   */
+  acceptLabel?: React.ReactNode;
+  declineLabel?: React.ReactNode;
+  channelsLabel?: React.ReactNode;
 }
 
 /**
@@ -29,12 +36,24 @@ export interface TalkPatternProps
  * Hero + 의뢰 가능성 체크리스트(받음/안받음) + 연락 채널 묶음.
  * 1인 랩의 "이기는 싸움만" 정체성 표현.
  *
- * @example
+ * 라벨 i18n: `acceptLabel`/`declineLabel`/`channelsLabel` prop으로 외부 주입.
+ * 미지정 시 한국어 "받음" / "안 받음" / "Channels" 기본값.
+ *
+ * @example 한국어 (기본)
  *   <TalkPattern
  *     title="이기는 싸움만 받습니다."
  *     acceptList={["B2B 의뢰", "1인 랩 협업"]}
  *     declineList={["가격 경쟁", "양산형 사이트"]}
  *     channels={[{ label: "Email", value: "ive@freeive.com", href: "mailto:..." }]}
+ *   />
+ *
+ * @example 영문
+ *   <TalkPattern
+ *     title="Open for inquiries."
+ *     acceptLabel="Accepting"
+ *     declineLabel="Not accepting"
+ *     channelsLabel="Channels"
+ *     acceptList={[...]}
  *   />
  */
 export function TalkPattern({
@@ -44,6 +63,9 @@ export function TalkPattern({
   acceptList = [],
   declineList = [],
   channels = [],
+  acceptLabel = "받음",
+  declineLabel = "안 받음",
+  channelsLabel = "Channels",
   className,
   ...props
 }: TalkPatternProps) {
@@ -66,7 +88,7 @@ export function TalkPattern({
         >
           {acceptList.length > 0 && (
             <div>
-              <Eyebrow tone="accent">받음</Eyebrow>
+              <Eyebrow tone="accent">{acceptLabel}</Eyebrow>
               <ul className="mt-5 space-y-3">
                 {acceptList.map((item, i) => (
                   <li
@@ -84,7 +106,7 @@ export function TalkPattern({
           )}
           {declineList.length > 0 && (
             <div>
-              <Eyebrow>안 받음</Eyebrow>
+              <Eyebrow>{declineLabel}</Eyebrow>
               <ul className="mt-5 space-y-3">
                 {declineList.map((item, i) => (
                   <li
@@ -105,7 +127,7 @@ export function TalkPattern({
 
       {channels.length > 0 && (
         <div className="mt-16 border-t border-zinc-200 pt-12 dark:border-white/[0.06]">
-          <Eyebrow>Channels</Eyebrow>
+          <Eyebrow>{channelsLabel}</Eyebrow>
           <dl className="mt-6 divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-white/[0.06] dark:border-white/[0.06]">
             {channels.map((ch, i) => (
               <div
