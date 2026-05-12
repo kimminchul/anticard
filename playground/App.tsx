@@ -617,13 +617,59 @@ interface SearchBoxProps {
   onQueryChange: (q: string) => void;
 }
 
+/**
+ * 버전 검색 prefix — `v0.14.0` / `v:0.14.0` / `version:0.14.0` / `latest` / `최신`.
+ * 일반 텍스트 검색과 별개 모드로 분기. 해당 버전의 addedIn 또는 updatedIn이
+ * 매치하는 컴포넌트만 노출 (이번 라운드에 변경된 것만 빠르게 보기).
+ */
+const VERSION_PREFIX_RE = /^(?:v(?:ersion)?\s*:?\s*)?(\d+\.\d+\.\d+)$/i;
+function parseVersionQuery(q: string): string | null {
+  const lower = q.trim().toLowerCase();
+  if (!lower) return null;
+  if (lower === "latest" || lower === "최신") return VERSION;
+  const m = lower.match(VERSION_PREFIX_RE);
+  return m ? m[1] : null;
+}
+
+interface VersionMatch extends NavItem {
+  group: string;
+  kind: "added" | "updated";
+}
+
 function SearchBox({ query, onQueryChange }: SearchBoxProps) {
   const [focused, setFocused] = useState(false);
   const q = query.trim().toLowerCase();
   const showDropdown = focused && q.length > 0;
 
-  // NAV 전체에서 매칭 (ready 상태만 — 그 외는 클릭 불가)
-  const matches = q
+  // 버전 검색 모드 — 'v0.14.0' / 'latest' / '최신' 등 패턴
+  const targetVersion = parseVersionQuery(query);
+
+  // NAV id로 NavItem 찾기 helper
+  const findNavItem = (id: string): (NavItem & { group: string }) | null => {
+    for (const g of NAV) {
+      const it = g.items.find((i) => i.id === id && i.status === "ready");
+      if (it) return { ...it, group: g.group };
+    }
+    return null;
+  };
+
+  // 버전 매치 (해당 버전 addedIn 또는 updatedIn) — added/updated 구분 유지
+  const versionMatches: VersionMatch[] = targetVersion
+    ? (Object.entries(COMPONENT_VERSIONS) as [string, { addedIn: string; updatedIn?: string }][])
+        .flatMap(([id, v]) => {
+          const item = findNavItem(id);
+          if (!item) return [];
+          const out: VersionMatch[] = [];
+          if (v.updatedIn === targetVersion) out.push({ ...item, kind: "updated" });
+          else if (v.addedIn === targetVersion) out.push({ ...item, kind: "added" });
+          return out;
+        })
+        // updated 먼저 (이번 라운드 변경분 강조), 그 다음 added
+        .sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "updated" ? -1 : 1))
+    : [];
+
+  // 일반 텍스트 매칭 (ready 상태만 — 그 외는 클릭 불가)
+  const textMatches = !targetVersion && q
     ? NAV.flatMap((g) =>
         g.items
           .filter(
@@ -637,6 +683,10 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
           .map((it) => ({ ...it, group: g.group }))
       ).slice(0, 12)
     : [];
+
+  const matches: (NavItem & { group: string; kind?: "added" | "updated" })[] = targetVersion
+    ? versionMatches
+    : textMatches;
 
   const handleSelect = (id: string) => {
     onQueryChange("");
@@ -660,7 +710,7 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
         onFocus={() => setFocused(true)}
-        placeholder="컴포넌트 검색 (한글 / 영문 / 카테고리)"
+        placeholder="컴포넌트 / 카테고리 / 버전 (예: v0.14.0, latest)"
         aria-label="컴포넌트 검색"
         className="w-full rounded-md border border-zinc-200 bg-white py-1.5 pl-8 pr-7 text-[12.5px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/15"
       />
@@ -678,14 +728,28 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
       {/* 드롭다운 결과 */}
       {showDropdown && (
         <div className="absolute left-0 right-0 top-full z-30 mt-1.5 max-h-[60vh] overflow-y-auto rounded-md border border-zinc-200 bg-white shadow-lg dark:border-white/[0.08] dark:bg-zinc-950">
+          {targetVersion && (
+            <div className="border-b border-zinc-100 px-4 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.06] dark:text-zinc-400">
+              버전 v{targetVersion}에 변경된 컴포넌트
+              {matches.length > 0 && (
+                <span className="ml-2 text-zinc-400 dark:text-zinc-500">
+                  · {matches.length}개
+                </span>
+              )}
+            </div>
+          )}
           {matches.length === 0 ? (
             <p className="px-4 py-3 text-[12.5px] text-zinc-500 dark:text-zinc-400">
-              “{query}”에 해당하는 컴포넌트 없음
+              {targetVersion
+                ? `v${targetVersion} 버전에 추가·변경된 컴포넌트가 없습니다.`
+                : `"${query}"에 해당하는 컴포넌트 없음`}
             </p>
           ) : (
             <ul className="py-1">
               {matches.map((m) => {
                 const v = COMPONENT_VERSIONS[m.id];
+                const isUpdated = m.kind === "updated";
+                const isAdded = m.kind === "added";
                 return (
                   <li key={m.id}>
                     <button
@@ -699,11 +763,23 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
                           {m.ko}
                         </span>
                         <code className="text-[11px] text-zinc-500">&lt;{m.en}&gt;</code>
+                        {isUpdated && (
+                          <span className="rounded-sm bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.06em] text-emerald-600 dark:text-emerald-400">
+                            updated
+                          </span>
+                        )}
+                        {isAdded && (
+                          <span className="rounded-sm bg-zinc-500/10 px-1.5 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.06em] text-zinc-600 dark:text-zinc-300">
+                            added
+                          </span>
+                        )}
                       </span>
                       <span className="flex items-baseline gap-2 text-[10.5px]">
                         <span className="uppercase tracking-[0.06em] text-zinc-400">{m.group}</span>
                         {v && (
-                          <span className="font-mono tabular-nums text-zinc-400">v{v.addedIn}</span>
+                          <span className="font-mono tabular-nums text-zinc-400">
+                            v{v.updatedIn ?? v.addedIn}
+                          </span>
                         )}
                       </span>
                     </button>
