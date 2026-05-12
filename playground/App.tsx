@@ -85,6 +85,7 @@ import {
   EditableTable,
   GroupedTable,
   TreeTable,
+  CompactTable,
   DatePicker,
   Combobox,
   TextList,
@@ -171,7 +172,7 @@ const NAV: NavGroup[] = [
       { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "ready" },
       { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "ready" },
       { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "ready" },
-      { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "planned" },
+      { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "ready" },
     ],
   },
   {
@@ -412,6 +413,7 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   "editable-table": { addedIn: "0.14.0" }, // EditableTable (columns.cell augment)
   "grouped-table": { addedIn: "0.14.0" }, // GroupedTable (groupBy + header rows + collapsible)
   "tree-table": { addedIn: "0.14.0" }, // TreeTable (계층 + indent + chevron)
+  "compact-table": { addedIn: "0.14.0" }, // CompactTable (mono + 12px + density tight)
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -547,6 +549,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "editable-table": () => <ComponentPage def={EDITABLE_TABLE_DEF} />,
   "grouped-table": () => <ComponentPage def={GROUPED_TABLE_DEF} />,
   "tree-table": () => <ComponentPage def={TREE_TABLE_DEF} />,
+  "compact-table": () => <ComponentPage def={COMPACT_TABLE_DEF} />,
   "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
   combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
   // 리스트 / 텍스트
@@ -8718,6 +8721,105 @@ const TREE_TABLE_DEF: ComponentDef = {
       desc: "펼침 변경 콜백",
     },
     { name: "indentSize", type: "number", default: "18", desc: "깊이당 padding-left px" },
+  ],
+};
+
+interface LogEntry {
+  ts: string;
+  level: "INFO" | "WARN" | "ERROR";
+  source: string;
+  msg: string;
+}
+const LOG_DATA: LogEntry[] = [
+  { ts: "2026-05-12 09:14:36", level: "INFO", source: "deploy", msg: "freeive-00135-4j8 rolled out — 100% traffic" },
+  { ts: "2026-05-12 09:14:31", level: "INFO", source: "build", msg: "tsup ESM/CJS/DTS success in 412ms" },
+  { ts: "2026-05-12 09:14:28", level: "WARN", source: "docker", msg: "node:20-alpine layer cached — skip re-download" },
+  { ts: "2026-05-12 09:14:21", level: "INFO", source: "build", msg: "Compiled successfully in 8.2s" },
+  { ts: "2026-05-12 09:14:15", level: "ERROR", source: "lint", msg: "Unused import 'NextRequest' in api/posts/route.ts:1" },
+  { ts: "2026-05-12 09:14:09", level: "INFO", source: "git", msg: "commit 2186acc — feat(data-table): EditableTable ready" },
+];
+function CompactTableDemo() {
+  return (
+    <CompactTable<LogEntry>
+      data={LOG_DATA}
+      columns={[
+        { key: "ts", header: "TIME", width: "w-[160px]" },
+        {
+          key: "level",
+          header: "LV",
+          width: "w-[60px]",
+          cell: (l) => (
+            <span
+              className={cn(
+                "rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase",
+                l.level === "INFO" && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+                l.level === "WARN" && "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+                l.level === "ERROR" && "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+              )}
+            >
+              {l.level}
+            </span>
+          ),
+        },
+        { key: "source", header: "SRC", width: "w-[80px]" },
+        { key: "msg", header: "MESSAGE" },
+      ]}
+    />
+  );
+}
+
+const COMPACT_TABLE_DEF: ComponentDef = {
+  id: "compact-table",
+  ko: "압축 테이블",
+  en: "CompactTable",
+  desc: "로그·데이터 뷰어용 정보 밀도 우선 표. monospace 폰트 + 12px + density tight. 안티 카드 헤어라인 톤 유지.",
+  intro:
+    "로그 / JSON / 시스템 데이터처럼 한 화면에 많은 행을 봐야 하고 자릿수 정렬이 중요한 정보를 위한 표입니다. monospace 폰트로 timestamp·숫자·코드가 자연스럽게 정렬되고, 행 간격과 폰트 크기가 일반 DataTable보다 더 좁아 정보 밀도를 극대화합니다.",
+  useCases: [
+    "Admin 로그 뷰어 / 시스템 audit 로그",
+    "API 응답 / JSON 행 뷰",
+    "git history / commit 리스트",
+    "큰 데이터 셋의 빠른 스캔 (preview 모드)",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "log viewer",
+      title: "deploy 로그 — 시간·레벨·메시지",
+      description:
+        "monospace + 12px + density tight. level pill로 INFO/WARN/ERROR 색 구분. tabular-nums로 timestamp 정렬 안정.",
+      preview: <CompactTableDemo />,
+      prompt: `CompactTable — 로그 뷰어용 압축 표.
+
+차이점 (vs DataTable):
+- density='tight' 강제 (py-2)
+- 본문 font-size 12px (vs 13.5px)
+- 헤더 10.5px smallcaps
+- 컬럼 패딩 px-2.5 (더 좁게)
+- font='mono' default: ui-monospace + tabular-nums (자릿수 정렬 안정)
+- font='sans'로 sans-serif도 가능 (정보 밀도만 높이고 싶을 때)
+- hoverable=false로 hover 강조 끄기 (로그 정적 보기)
+
+안티 카드 헤어라인 톤 유지 — shadow X / box X / 1px 헤어라인.`,
+      react: `<CompactTable<LogEntry>
+  data={logs}
+  columns={[
+    { key: "ts", header: "TIME", width: "w-[160px]" },
+    { key: "level", header: "LV", width: "w-[60px]" },
+    { key: "msg", header: "MESSAGE" },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "data / columns / rowKey / onRowClick / caption", type: "...", desc: "DataTable과 동일" },
+    {
+      name: "font",
+      type: '"mono" | "sans"',
+      default: '"mono"',
+      desc: "ui-monospace (로그·JSON) 또는 sans (정보 밀도만)",
+    },
+    { name: "hoverable", type: "boolean", default: "true", desc: "행 hover 강조" },
   ],
 };
 

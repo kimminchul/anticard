@@ -28,6 +28,10 @@
 - **EditableTable** (NEW) — DataTable + inline 셀 편집. 셀 클릭 → emerald accent ring input으로 전환, Enter / blur 저장, Esc 취소. 비편집 시 hover에 헤어라인 박스로 편집 가능성 인지. `editable=true` 컬럼만 적용, `editorType: 'text' | 'number'`, `toEditValue`로 표시(포맷팅) ↔ 편집(raw) 분리 가능. DataTable 본체 prop은 추가하지 않고 columns.cell augment 방식 — selection/expansion과 직교 (조합 가능). admin의 빠른 데이터 보정 / Excel-like 패턴. NAV "데이터 테이블" planned 6개 중 3번째 ready 전환.
 - **GroupedTable** (NEW) — DataTable + 카테고리·섹터로 묶인 행 사이에 그룹 헤더 자동 삽입. `groupBy(row) => string` 함수로 그룹화, 헤더는 smallcaps + count, `collapsible=true`로 그룹별 펼침/접힘. `renderGroupHeader`로 헤더 커스터마이즈. 시각적으로 그룹 헤더는 첫 컬럼에 라벨, 다른 컬럼은 빈 셀 — 완전한 colSpan 시각화는 후속 라운드에서 DataTable에 rowClassName/cellSpan prop 추가 후 보강. Heritage 섹터별 / admin 카테고리별 리스트에 자연. NAV "데이터 테이블" planned 6개 중 4번째 ready 전환.
 - **TreeTable** (NEW) — DataTable + 계층 구조. `getChildren(row) => T[]`로 자식 추출, 내부에서 depth 누적해 flatten. 첫 컬럼만 자동으로 `indent(depth × indentSize) + chevron` 부여, 다른 컬럼은 원본 cell 그대로. leaf 노드는 chevron 자리에 빈 4×4 (컬럼 정렬 안정). `defaultExpandedKeys`/`expandedKeys`+`onExpandedChange`. 트리 컨텍스트에서 sortable 자동 비활성. 파일 트리 / 카테고리 트리 / 조직도 / nested 댓글에 자연. NAV "데이터 테이블" planned 6개 중 5번째 ready 전환.
+- **CompactTable** (NEW) — 로그·데이터 뷰어용 압축 표. DataTable wrapper로 `density='tight'` 강제 + 본문 12px + 헤더 10.5px + 컬럼 패딩 px-2.5 (더 좁게). `font='mono'`(default): `ui-monospace + tabular-nums`로 timestamp·자릿수 정렬 안정. `font='sans'`도 가능 (정보 밀도만 높이고 싶을 때). `hoverable=false`로 hover 강조 끄기 (정적 로그 뷰). 안티 카드 헤어라인 톤 유지. NAV "데이터 테이블" planned 6개 중 6번째 ready 전환 — **DataTable variants 6개 모두 ready, planned 0개**.
+
+### Changed
+- **Playground NAV** — `selectable-table` / `expandable-table` / `editable-table` / `grouped-table` / `tree-table` / `compact-table` 모두 `status: "ready"`. NAV 78항목 중 78 ready / 0 planned. 라이브러리 v0.13.1 기준 dogfooding 마무리.
 - Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10
