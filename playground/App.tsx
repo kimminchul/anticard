@@ -9015,12 +9015,13 @@ function CompactTableDemo() {
           width: "w-[60px]",
           cell: (l) => (
             <span
-              className={cn(
-                "rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase",
-                l.level === "INFO" && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-                l.level === "WARN" && "bg-amber-500/10 text-amber-600 dark:text-amber-400",
-                l.level === "ERROR" && "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-              )}
+              className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
+                l.level === "INFO"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : l.level === "WARN"
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+              }`}
             >
               {l.level}
             </span>
