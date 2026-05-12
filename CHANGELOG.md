@@ -34,6 +34,10 @@
 
 ### Changed
 - **Playground NAV** — `selectable-table` / `expandable-table` / `editable-table` / `grouped-table` / `tree-table` / `compact-table` 모두 `status: "ready"`. NAV 78항목 중 78 ready / 0 planned. 라이브러리 v0.13.1 기준 dogfooding 마무리.
+- **Playground UX 보강 3종**:
+  - 검색 dropdown 키보드 nav — ↓↑ 항목 이동, Enter 선택, Esc 닫기. active 항목 emerald accent 배경 강조, mouseEnter 시 동기화. ARIA (`combobox` / `listbox` / `option` / `aria-activedescendant`) 적용.
+  - 글로벌 `/` 단축키 — 어디서든 `/` 누르면 검색 input 포커스. 입력 중인 INPUT/TEXTAREA/contenteditable에서는 무시.
+  - 코드 / 프롬프트 복사 피드백 — copy 버튼 클릭 시 1.6초 동안 `✓ copied` + emerald accent 배경. `useCopyFeedback` 훅으로 latest-timer 유지 (빠른 반복 안전).
 - Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10

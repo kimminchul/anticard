@@ -581,6 +581,30 @@ export default function App() {
     return () => window.removeEventListener("hashchange", sync);
   }, []);
 
+  // 글로벌 단축키 — '/' 키로 검색 input 포커스 (입력 중인 곳에서는 무시).
+  // SearchBox가 window.__antiCardSearchFocus를 등록해두는 핸들 사용.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (t && t.isContentEditable)
+      ) {
+        return;
+      }
+      e.preventDefault();
+      (
+        window as Window & { __antiCardSearchFocus?: () => void }
+      ).__antiCardSearchFocus?.();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const ActiveSection = READY_SECTIONS[activeId] ?? Intro;
 
   return (
@@ -657,8 +681,23 @@ interface VersionMatch extends NavItem {
 
 function SearchBox({ query, onQueryChange }: SearchBoxProps) {
   const [focused, setFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const q = query.trim().toLowerCase();
   const showDropdown = focused && q.length > 0;
+
+  // 외부에서 '/' 단축키로 input 포커스 — App keydown listener가 이 ref 사용
+  useEffect(() => {
+    (window as Window & { __antiCardSearchFocus?: () => void }).__antiCardSearchFocus =
+      () => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      };
+    return () => {
+      delete (window as Window & { __antiCardSearchFocus?: () => void })
+        .__antiCardSearchFocus;
+    };
+  }, []);
 
   // 버전 검색 모드 — 'v0.14.0' / 'latest' / '최신' 등 패턴
   const targetVersion = parseVersionQuery(query);
@@ -707,10 +746,41 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
     ? versionMatches
     : textMatches;
 
-  const handleSelect = (id: string) => {
+  // 매치가 바뀌면 active index 0으로 reset (out-of-range 방지)
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query, matches.length]);
+
+  const handleSelectItem = (id: string) => {
     onQueryChange("");
     setFocused(false);
     window.location.hash = `#${id}`;
+  };
+
+  // 키보드 nav — ArrowDown/Up 항목 이동, Enter 선택, Esc 닫기
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showDropdown || matches.length === 0) {
+      if (e.key === "Escape" && query) {
+        onQueryChange("");
+        inputRef.current?.blur();
+      }
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, matches.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const m = matches[activeIndex];
+      if (m) handleSelectItem(m.id);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onQueryChange("");
+      inputRef.current?.blur();
+    }
   };
 
   return (
@@ -725,12 +795,22 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
     >
       <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
       <input
+        ref={inputRef}
         type="search"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
         onFocus={() => setFocused(true)}
-        placeholder="컴포넌트 / 카테고리 / 버전 (예: v0.14.0, latest)"
+        onKeyDown={handleKeyDown}
+        placeholder="컴포넌트 / 카테고리 / 버전 (예: v0.14.0, latest) — '/' 단축키"
         aria-label="컴포넌트 검색"
+        aria-autocomplete="list"
+        aria-expanded={showDropdown}
+        aria-activedescendant={
+          showDropdown && matches[activeIndex]
+            ? `search-result-${matches[activeIndex].id}`
+            : undefined
+        }
+        role="combobox"
         className="w-full rounded-md border border-zinc-200 bg-white py-1.5 pl-8 pr-7 text-[12.5px] text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/15"
       />
       {query && (
@@ -764,18 +844,24 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
                 : `"${query}"에 해당하는 컴포넌트 없음`}
             </p>
           ) : (
-            <ul className="py-1">
-              {matches.map((m) => {
+            <ul className="py-1" role="listbox">
+              {matches.map((m, idx) => {
                 const v = COMPONENT_VERSIONS[m.id];
                 const isUpdated = m.kind === "updated";
                 const isAdded = m.kind === "added";
+                const isActive = idx === activeIndex;
                 return (
-                  <li key={m.id}>
+                  <li key={m.id} role="option" aria-selected={isActive} id={`search-result-${m.id}`}>
                     <button
                       type="button"
                       onMouseDown={(e) => e.preventDefault() /* blur 회피 */}
-                      onClick={() => handleSelect(m.id)}
-                      className="group flex w-full items-baseline justify-between gap-3 px-4 py-2 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
+                      onMouseEnter={() => setActiveIndex(idx)}
+                      onClick={() => handleSelectItem(m.id)}
+                      className={`group flex w-full items-baseline justify-between gap-3 px-4 py-2 text-left transition-colors ${
+                        isActive
+                          ? "bg-emerald-500/[0.08] dark:bg-emerald-500/[0.06]"
+                          : "hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
+                      }`}
                     >
                       <span className="flex items-baseline gap-2">
                         <span className="text-[13px] text-zinc-900 group-hover:text-emerald-700 dark:text-zinc-100 dark:group-hover:text-emerald-400">
@@ -2060,19 +2146,45 @@ function useIsDark(): boolean {
   return isDark;
 }
 
+/**
+ * 카피 → 1.6초 동안 피드백 상태(true) 후 자동 복귀.
+ * 같은 카피를 빠르게 반복해도 안전하게 latest timer만 유지.
+ */
+function useCopyFeedback(): { copied: boolean; copy: (text: string) => void } {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
+  const copy = (text: string) => {
+    try {
+      navigator.clipboard.writeText(text);
+    } catch {
+      /* permissions / non-https — 무시 */
+    }
+    setCopied(true);
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setCopied(false), 1600);
+  };
+  return { copied, copy };
+}
+
 function CodeInline({ code, language }: { code: string; language: string }) {
   const lang = detectLanguage(language);
   const isDark = useIsDark();
+  const { copied, copy } = useCopyFeedback();
   return (
     <div className="relative">
       <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-5 py-2 text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.04] dark:bg-white/[0.02]">
         <span>{language}</span>
         <button
           type="button"
-          onClick={() => navigator.clipboard.writeText(code)}
-          className="rounded border border-zinc-300 px-2 py-0.5 text-[10.5px] tracking-normal text-zinc-700 transition-colors hover:border-emerald-500/50 hover:text-emerald-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
+          onClick={() => copy(code)}
+          aria-label={copied ? "복사됨" : "코드 복사"}
+          className={`rounded border px-2 py-0.5 text-[10.5px] tracking-normal transition-colors ${
+            copied
+              ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-400/10 dark:text-emerald-400"
+              : "border-zinc-300 text-zinc-700 hover:border-emerald-500/50 hover:text-emerald-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
+          }`}
         >
-          copy
+          {copied ? "✓ copied" : "copy"}
         </button>
       </div>
       <Highlight
@@ -2100,6 +2212,7 @@ function CodeInline({ code, language }: { code: string; language: string }) {
 }
 
 function PromptInline({ prompt }: { prompt: string }) {
+  const { copied, copy } = useCopyFeedback();
   return (
     <div>
       <div className="bg-emerald-500/[0.04] dark:bg-emerald-500/[0.03]">
@@ -2107,10 +2220,15 @@ function PromptInline({ prompt }: { prompt: string }) {
           <span>Prompt</span>
           <button
             type="button"
-            onClick={() => navigator.clipboard.writeText(prompt)}
-            className="rounded border border-emerald-500/40 px-2 py-0.5 text-[10.5px] tracking-normal text-emerald-700 transition-colors hover:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-400"
+            onClick={() => copy(prompt)}
+            aria-label={copied ? "복사됨" : "프롬프트 복사"}
+            className={`rounded border px-2 py-0.5 text-[10.5px] tracking-normal transition-colors ${
+              copied
+                ? "border-emerald-500 bg-emerald-500/15 text-emerald-700 dark:border-emerald-400 dark:bg-emerald-400/15 dark:text-emerald-300"
+                : "border-emerald-500/40 text-emerald-700 hover:bg-emerald-500/10 dark:border-emerald-400/30 dark:text-emerald-400"
+            }`}
           >
-            copy
+            {copied ? "✓ copied" : "copy"}
           </button>
         </div>
         <pre className="overflow-x-auto whitespace-pre-wrap px-5 py-4 text-[13px] leading-relaxed text-zinc-900 dark:text-zinc-100">
