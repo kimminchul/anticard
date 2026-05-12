@@ -558,10 +558,59 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
 
 const DEFAULT_ID = "intro";
 
+function ShortcutsDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const items: Array<{ keys: string[]; desc: string }> = [
+    { keys: ["/"], desc: "검색 input 포커스" },
+    { keys: ["↓", "↑"], desc: "검색 결과에서 항목 이동" },
+    { keys: ["Enter"], desc: "선택한 항목으로 이동" },
+    { keys: ["Esc"], desc: "검색 닫기 / 다이얼로그 닫기" },
+    { keys: ["?"], desc: "이 단축키 도움말 (Shift + /)" },
+  ];
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      size="narrow"
+      title="키보드 단축키"
+      description="모든 단축키는 입력 중(input/textarea)이 아닐 때만 작동합니다."
+    >
+      <ul className="space-y-2">
+        {items.map((it) => (
+          <li
+            key={it.desc}
+            className="flex items-center justify-between gap-4 border-b border-zinc-100 py-2 last:border-b-0 dark:border-white/[0.04]"
+          >
+            <span className="text-[13.5px] text-zinc-700 dark:text-zinc-300">
+              {it.desc}
+            </span>
+            <span className="flex items-center gap-1">
+              {it.keys.map((k, i) => (
+                <kbd
+                  key={i}
+                  className="rounded border border-zinc-300 bg-zinc-50 px-1.5 py-0.5 font-mono text-[11px] text-zinc-700 dark:border-white/15 dark:bg-white/[0.04] dark:text-zinc-200"
+                >
+                  {k}
+                </kbd>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Dialog>
+  );
+}
+
 export default function App() {
   const [filter, setFilter] = useState<"all" | "ready">("all");
   const [activeId, setActiveId] = useState<string>(DEFAULT_ID);
   const [query, setQuery] = useState("");
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -581,11 +630,12 @@ export default function App() {
     return () => window.removeEventListener("hashchange", sync);
   }, []);
 
-  // 글로벌 단축키 — '/' 키로 검색 input 포커스 (입력 중인 곳에서는 무시).
-  // SearchBox가 window.__antiCardSearchFocus를 등록해두는 핸들 사용.
+  // 글로벌 단축키 — '/' 검색 포커스, '?' 단축키 도움말 모달.
+  // 입력 중(INPUT/TEXTAREA/contenteditable)에서는 무시.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key !== "/" && e.key !== "?") return;
       const t = e.target as HTMLElement | null;
       const tag = t?.tagName;
       if (
@@ -597,9 +647,13 @@ export default function App() {
         return;
       }
       e.preventDefault();
-      (
-        window as Window & { __antiCardSearchFocus?: () => void }
-      ).__antiCardSearchFocus?.();
+      if (e.key === "?") {
+        setShowShortcuts(true);
+      } else {
+        (
+          window as Window & { __antiCardSearchFocus?: () => void }
+        ).__antiCardSearchFocus?.();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -609,8 +663,13 @@ export default function App() {
 
   return (
     <ToastProvider position="bottom-right" limit={5}>
+    <ShortcutsDialog open={showShortcuts} onOpenChange={setShowShortcuts} />
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
-      <Header query={query} onQueryChange={setQuery} />
+      <Header
+        query={query}
+        onQueryChange={setQuery}
+        onShortcutsOpen={() => setShowShortcuts(true)}
+      />
 
       {/* Mobile sidebar — collapsible details */}
       <details
@@ -653,6 +712,7 @@ export default function App() {
 interface HeaderProps {
   query: string;
   onQueryChange: (q: string) => void;
+  onShortcutsOpen: () => void;
 }
 
 interface SearchBoxProps {
@@ -899,7 +959,7 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
   );
 }
 
-function Header({ query, onQueryChange }: HeaderProps) {
+function Header({ query, onQueryChange, onShortcutsOpen }: HeaderProps) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-zinc-200/60 pb-4 md:pb-5 dark:border-white/[0.06]">
       <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
@@ -921,6 +981,15 @@ function Header({ query, onQueryChange }: HeaderProps) {
 
       <nav className="order-2 flex items-center gap-3 text-[12.5px] text-zinc-500 sm:gap-4 md:order-3 dark:text-zinc-400">
         <ThemeToggle />
+        <button
+          type="button"
+          onClick={onShortcutsOpen}
+          aria-label="키보드 단축키 도움말"
+          title="키보드 단축키 (?)"
+          className="inline-flex h-6 w-6 items-center justify-center rounded border border-zinc-200 font-mono text-[11px] text-zinc-500 transition-colors hover:border-emerald-500/50 hover:text-emerald-700 dark:border-white/15 dark:text-zinc-400 dark:hover:border-emerald-400/50 dark:hover:text-emerald-400"
+        >
+          ?
+        </button>
         <a
           href="https://github.com/kimminchul/anticard"
           target="_blank"
@@ -985,6 +1054,17 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
   const readyCount = NAV.flatMap((g) => g.items).filter((i) => i.status === "ready").length;
   const totalCount = NAV.flatMap((g) => g.items).length;
 
+  // active 항목 자동 스크롤 — 사이드바가 max-h + overflow-y라 active가 화면 밖일 수 있음.
+  // 50ms 후 scrollIntoView({ block: 'nearest' })로 사이드바 안에서만 살짝 스크롤.
+  // details auto-open 후 DOM 마운트 보장 위해 짧은 지연.
+  const activeRef = useRef<HTMLAnchorElement | null>(null);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [activeId]);
+
   // filter (전체/준비됨) 만 적용
   const filteredGroups = NAV.map((group) => {
     const items = filter === "ready" ? group.items.filter((i) => i.status === "ready") : group.items;
@@ -999,6 +1079,7 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
         <ul className="mt-3 space-y-1.5 border-l border-zinc-200 pl-3.5 text-[15px] dark:border-white/[0.08]">
           <li>
             <a
+              ref={activeId === "intro" ? activeRef : undefined}
               href="#intro"
               className={`-ml-3.5 flex items-baseline gap-2 rounded-r-md py-1 pl-3.5 pr-2 transition-colors ${
                 activeId === "intro"
@@ -1066,6 +1147,7 @@ function Sidebar({ filter, onFilterChange, activeId }: SidebarProps) {
                     <li key={item.id}>
                       {isClickable ? (
                         <a
+                          ref={isActive ? activeRef : undefined}
                           href={`#${item.id}`}
                           className={`-ml-3.5 flex items-baseline justify-between gap-2 rounded-r-md py-1 pl-3.5 pr-2 transition-colors ${isActive ? "border-l-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400" : "border-l-2 border-transparent text-zinc-700 hover:border-zinc-300 hover:text-emerald-700 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:text-emerald-400"}`}
                         >
@@ -2264,12 +2346,12 @@ function PropsTable({
     <>
       <h3 className="mt-12 text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500">Props</h3>
       <table className="mt-3 w-full text-[13px]">
-        <thead>
+        <thead className="sticky top-0 z-10 bg-white/95 backdrop-blur dark:bg-zinc-950/95">
           <tr className="border-b border-zinc-200 text-[11px] uppercase tracking-[0.08em] text-zinc-500 dark:border-white/[0.06]">
-            <th className="py-2 text-left font-medium">Name</th>
-            <th className="py-2 text-left font-medium">Type</th>
-            <th className="py-2 text-left font-medium">Default</th>
-            <th className="py-2 text-left font-medium">Description</th>
+            <th className="bg-inherit py-2 text-left font-medium">Name</th>
+            <th className="bg-inherit py-2 text-left font-medium">Type</th>
+            <th className="bg-inherit py-2 text-left font-medium">Default</th>
+            <th className="bg-inherit py-2 text-left font-medium">Description</th>
           </tr>
         </thead>
         <tbody>
