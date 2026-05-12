@@ -41,6 +41,7 @@
   - 사이드바 active 항목 자동 스크롤 — 페이지 진입 / 검색 dropdown 선택 시 사이드바가 active 항목으로 `scrollIntoView({ block: "nearest" })`. details auto-open 후 DOM 마운트 보장 위해 50ms 지연.
   - Props 표 sticky 헤더 — 긴 컴포넌트 페이지에서 props 표 헤더가 viewport top에 sticky. backdrop-blur + bg-white/95 (dark mode 대응).
   - `?` 단축키 → 키보드 단축키 모달 — anti-card Dialog dogfood. `/` `↓↑` `Enter` `Esc` `?` 5개 단축키 목록. Header에 `?` 버튼도 노출 (발견성).
+  - **모바일 사이드바 우측 슬라이드 패널화** — 기존 `<details>` 아코디언 → 우측에서 슬라이드 인하는 fixed 패널(`right-0`, `82%` 폭, max `320px`). 백드롭 클릭 / X 버튼 / 컴포넌트 항목 선택(hashchange) 시 자동 닫힘. 열림 시 body 스크롤 잠금. Header 좌측에 햄버거 버튼 (md:hidden) 추가. CSS keyframe `slide-in-right` (220ms cubic-bezier 0.22/1/0.36/1) 추가.
 - Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10

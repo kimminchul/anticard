@@ -611,6 +611,7 @@ export default function App() {
   const [activeId, setActiveId] = useState<string>(DEFAULT_ID);
   const [query, setQuery] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     const sync = () => {
@@ -618,17 +619,24 @@ export default function App() {
       if (READY_SECTIONS[id]) {
         setActiveId(id);
         window.scrollTo({ top: 0, behavior: "smooth" });
-        // 모바일 사이드바 자동 close (컴포넌트 클릭 시 본문 즉시 보이도록)
-        const det = document.querySelector(
-          "details[data-mobile-sidebar]"
-        ) as HTMLDetailsElement | null;
-        if (det && det.open) det.open = false;
+        // 모바일 사이드 패널 자동 close (컴포넌트 클릭 시 본문 즉시 보이도록)
+        setMobileNavOpen(false);
       }
     };
     sync();
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);
   }, []);
+
+  // 모바일 패널 열림 시 body 스크롤 잠금
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileNavOpen]);
 
   // 글로벌 단축키 — '/' 검색 포커스, '?' 단축키 도움말 모달.
   // 입력 중(INPUT/TEXTAREA/contenteditable)에서는 무시.
@@ -669,26 +677,45 @@ export default function App() {
         query={query}
         onQueryChange={setQuery}
         onShortcutsOpen={() => setShowShortcuts(true)}
+        onMobileNavOpen={() => setMobileNavOpen(true)}
       />
 
-      {/* Mobile sidebar — collapsible details */}
-      <details
-        data-mobile-sidebar
-        className="mt-5 border-y border-zinc-200/60 dark:border-white/[0.06] md:hidden"
-      >
-        <summary className="group flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
-          <span className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100">
-            메뉴 / Components
-          </span>
-          <ChevronDown
-            aria-hidden
-            className="h-4 w-4 text-zinc-500 transition-transform group-open:rotate-180"
+      {/* 모바일 사이드 패널 — 우측 슬라이드 인. 백드롭 클릭 / X 버튼 / 항목 선택
+          (hashchange) 시 자동 닫힘. md 이상에선 sticky sidebar가 노출되므로 미사용 */}
+      {mobileNavOpen && (
+        <>
+          <button
+            type="button"
+            aria-label="메뉴 닫기"
+            tabIndex={-1}
+            onClick={() => setMobileNavOpen(false)}
+            className="fixed inset-0 z-40 cursor-default bg-black/50 backdrop-blur-sm md:hidden"
           />
-        </summary>
-        <div className="pb-4 pt-2">
-          <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
-        </div>
-      </details>
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="컴포넌트 메뉴"
+            className="fixed right-0 top-0 bottom-0 z-50 flex w-[82%] max-w-[320px] flex-col border-l border-zinc-200 bg-white animate-slide-in-right md:hidden dark:border-white/[0.08] dark:bg-zinc-950"
+          >
+            <div className="flex h-12 items-center justify-between border-b border-zinc-200 px-4 dark:border-white/[0.06]">
+              <span className="text-[13px] font-medium uppercase tracking-[0.08em] text-zinc-700 dark:text-zinc-300">
+                Menu
+              </span>
+              <button
+                type="button"
+                aria-label="메뉴 닫기"
+                onClick={() => setMobileNavOpen(false)}
+                className="inline-flex h-7 w-7 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/[0.06] dark:hover:text-zinc-100"
+              >
+                <X aria-hidden className="h-4 w-4" strokeWidth={1.5} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <Sidebar filter={filter} onFilterChange={setFilter} activeId={activeId} />
+            </div>
+          </aside>
+        </>
+      )}
 
       {/* Layout: desktop grid + mobile single column */}
       <div className="mt-6 md:mt-10 md:grid md:grid-cols-[280px_1fr] md:gap-12">
@@ -713,6 +740,7 @@ interface HeaderProps {
   query: string;
   onQueryChange: (q: string) => void;
   onShortcutsOpen: () => void;
+  onMobileNavOpen: () => void;
 }
 
 interface SearchBoxProps {
@@ -959,10 +987,32 @@ function SearchBox({ query, onQueryChange }: SearchBoxProps) {
   );
 }
 
-function Header({ query, onQueryChange, onShortcutsOpen }: HeaderProps) {
+function Header({ query, onQueryChange, onShortcutsOpen, onMobileNavOpen }: HeaderProps) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-zinc-200/60 pb-4 md:pb-5 dark:border-white/[0.06]">
       <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
+        {/* 모바일 햄버거 — md 이하에서만 노출. 사이드 패널 트리거. */}
+        <button
+          type="button"
+          aria-label="메뉴 열기"
+          onClick={onMobileNavOpen}
+          className="-ml-1 inline-flex h-7 w-7 items-center justify-center self-center rounded text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-white/[0.06] md:hidden"
+        >
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M4 7h16M4 12h16M4 17h16"
+            />
+          </svg>
+        </button>
         <h1 className="text-lg font-semibold tracking-tight text-zinc-900 md:text-xl dark:text-zinc-50">
           anti-card
         </h1>
