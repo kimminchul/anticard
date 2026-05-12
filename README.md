@@ -2,7 +2,7 @@
 
 > 랜딩에 최적화된 React UI 라이브러리.
 
-**v0.12.1** · [Playground →](https://kimminchul.github.io/anticard/) · [English](./README.en.md)
+**v0.14.0** · [Playground →](https://kimminchul.github.io/anticard/) · [English](./README.en.md)
 
 ---
 
@@ -28,7 +28,7 @@ npm install @freeive/anti-card
 import { HeroPattern, ListRow, StatList } from "@freeive/anti-card";
 ```
 
-Tailwind 기반. dark/light 자동. 타이포 토큰 12개. 현재 컴포넌트 64개.
+Tailwind 기반. dark/light 자동. 타이포 토큰 12개. 현재 컴포넌트 70개.
 각 컴포넌트의 시각 미리보기·props·사용 예는 [Playground](https://kimminchul.github.io/anticard/)에 있다.
 
 ## 설계 원칙

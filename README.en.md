@@ -2,7 +2,7 @@
 
 > A React UI library tuned for landing pages.
 
-**v0.12.1** · [Playground →](https://kimminchul.github.io/anticard/) · [한글 README](./README.md)
+**v0.14.0** · [Playground →](https://kimminchul.github.io/anticard/) · [한글 README](./README.md)
 
 ---
 
@@ -28,7 +28,7 @@ npm install @freeive/anti-card
 import { HeroPattern, ListRow, StatList } from "@freeive/anti-card";
 ```
 
-Tailwind based. Dark/light auto. 12 typography tokens. Currently 64 components.
+Tailwind based. Dark/light auto. 12 typography tokens. Currently 70 components.
 Visual previews, props, and usage live in the [Playground](https://kimminchul.github.io/anticard/).
 
 ## Design principles
