@@ -214,9 +214,12 @@ export type {
   DataTableProps,
   DataTableColumn,
   DataTableSelection,
+  DataTableExpansion,
 } from "./components/data-table";
 export { SelectableTable } from "./components/selectable-table";
 export type { SelectableTableProps } from "./components/selectable-table";
+export { ExpandableTable } from "./components/expandable-table";
+export type { ExpandableTableProps } from "./components/expandable-table";
 
 export { TextList } from "./components/text-list";
 export type { TextListProps, TextListVariant } from "./components/text-list";

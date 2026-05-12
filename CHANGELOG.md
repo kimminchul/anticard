@@ -18,6 +18,13 @@
   - `bulkActions` (`ReactNode` 또는 `(keys) => ReactNode`)
   - `showCount` (default true) — 'N개 선택됨' 표시
 - **SelectableTable** (NEW) — DataTable + 행 선택 wrapper. uncontrolled (`defaultSelectedKeys`) / controlled 둘 다 지원. admin 리스트의 일괄 처리 패턴(일괄 발행 / 휴지통 / 카테고리 변경 등)에 적합. NAV "데이터 테이블" 그룹의 planned 6개 중 1번째 ready 전환.
+- **DataTable** `expansion` prop — 행 펼침 모드. 지정 시 첫 컬럼에 chevron 자동 노출, 클릭 시 다음 줄에 `colSpan` 전체로 `renderExpanded(row)` 결과 출력. 펼친 행은 zinc accent 톤. selection과 함께 켜면 chevron → 체크박스 → 본 컬럼 순으로 자동 정렬.
+  - `expandedKeys` / `onExpandedChange` (controlled)
+  - `expandKey(row, i) => string`
+  - `renderExpanded(row) => ReactNode`
+  - `single` (accordion — 한 개만)
+  - `toggleOnRowClick` (행 어디든 클릭으로 toggle)
+- **ExpandableTable** (NEW) — DataTable + 행 펼침 wrapper. 카드 그리드의 대안 — 표는 좁게, 깊은 정보는 같은 줄 컨텍스트에 펼침. admin 글/Heritage 사례/주문·로그 리스트에 적합. NAV "데이터 테이블" planned 6개 중 2번째 ready 전환.
 - Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10

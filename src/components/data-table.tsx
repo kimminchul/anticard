@@ -1,6 +1,13 @@
 "use client";
 import * as React from "react";
-import { ChevronUp, ChevronDown, ChevronsUpDown, Check, Minus } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+  ChevronRight,
+  Check,
+  Minus,
+} from "lucide-react";
 import { cn } from "../utils/cn";
 
 export interface DataTableColumn<T> {
@@ -44,6 +51,28 @@ export interface DataTableSelection<T> {
   showCount?: boolean;
 }
 
+/**
+ * 행 펼침 옵션. 지정 시 첫 컬럼에 chevron 버튼 자동 노출,
+ * 클릭 시 다음 줄에 renderExpanded 결과를 colSpan으로 출력.
+ */
+export interface DataTableExpansion<T> {
+  /** 펼쳐진 row 키 (controlled) */
+  expandedKeys: string[];
+  /** 펼침 변경 콜백 */
+  onExpandedChange: (expandedKeys: string[]) => void;
+  /** 펼침용 unique key. 미지정 시 rowKey 사용. */
+  expandKey?: (row: T, i: number) => string;
+  /** 펼침 영역 렌더러 */
+  renderExpanded: (row: T) => React.ReactNode;
+  /**
+   * 한 번에 하나만 펼침 (accordion). default false (다중).
+   * true면 다른 행 펼칠 때 기존 펼침 자동 닫힘.
+   */
+  single?: boolean;
+  /** 행 자체 클릭으로도 toggle 가능 (default false — chevron만) */
+  toggleOnRowClick?: boolean;
+}
+
 export interface DataTableProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   data: T[];
@@ -60,6 +89,8 @@ export interface DataTableProps<T>
   caption?: React.ReactNode;
   /** 행 선택 — 지정 시 체크박스 컬럼 + 일괄 액션 영역 자동. */
   selection?: DataTableSelection<T>;
+  /** 행 펼침 — 지정 시 첫 컬럼 chevron + 펼침 영역 자동. */
+  expansion?: DataTableExpansion<T>;
 }
 
 /**
@@ -88,6 +119,7 @@ export function DataTable<T>({
   density = "default",
   caption,
   selection,
+  expansion,
   className,
   ...props
 }: DataTableProps<T>) {
@@ -173,7 +205,34 @@ export function DataTable<T>({
     selection.onSelectionChange(Array.from(next));
   };
 
-  const totalCols = columns.length + (selectionEnabled ? 1 : 0);
+  // ── expansion 관련 helpers ──────────────────────────────────
+  const expansionEnabled = !!expansion;
+  const getExpandKey = React.useCallback(
+    (row: T, i: number): string => {
+      if (expansion?.expandKey) return expansion.expandKey(row, i);
+      if (rowKey) return rowKey(row, i);
+      return String(i);
+    },
+    [expansion, rowKey]
+  );
+  const expandedSet = React.useMemo(
+    () => new Set(expansion?.expandedKeys ?? []),
+    [expansion?.expandedKeys]
+  );
+  const toggleExpand = (key: string) => {
+    if (!expansion) return;
+    const current = expansion.expandedKeys ?? [];
+    if (current.includes(key)) {
+      expansion.onExpandedChange(current.filter((k) => k !== key));
+    } else {
+      expansion.onExpandedChange(
+        expansion.single ? [key] : [...current, key]
+      );
+    }
+  };
+
+  const totalCols =
+    columns.length + (selectionEnabled ? 1 : 0) + (expansionEnabled ? 1 : 0);
   const bulkActionsNode =
     selection?.bulkActions && selectedCount > 0
       ? typeof selection.bulkActions === "function"
@@ -187,6 +246,7 @@ export function DataTable<T>({
       data-anti-card="data-table"
       data-density={density}
       data-selectable={selectionEnabled ? "true" : undefined}
+      data-expandable={expansionEnabled ? "true" : undefined}
       className={cn("w-full overflow-x-auto", className)}
       {...props}
     >
@@ -214,6 +274,13 @@ export function DataTable<T>({
         )}
         <thead>
           <tr className="border-b border-zinc-200 dark:border-white/[0.08]">
+            {expansionEnabled && (
+              <th
+                scope="col"
+                className={cn("w-[32px] px-2", cellPadding)}
+                aria-hidden
+              />
+            )}
             {selectionEnabled && (
               <th
                 scope="col"
@@ -311,17 +378,49 @@ export function DataTable<T>({
             const key = rowKey ? rowKey(row, i) : String(i);
             const selKey = getSelectKey(row, i);
             const isSelected = selectedSet.has(selKey);
+            const expKey = getExpandKey(row, i);
+            const isExpanded = expandedSet.has(expKey);
+            const rowInteractive =
+              !!onRowClick ||
+              (expansionEnabled && expansion?.toggleOnRowClick);
+            const handleRowClick = () => {
+              if (expansion?.toggleOnRowClick) toggleExpand(expKey);
+              if (onRowClick) onRowClick(row);
+            };
             return (
+              <React.Fragment key={key}>
               <tr
-                key={key}
-                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                onClick={rowInteractive ? handleRowClick : undefined}
                 className={cn(
                   "border-b border-zinc-200/70 dark:border-white/[0.04]",
-                  onRowClick &&
+                  rowInteractive &&
                     "cursor-pointer transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.02]",
-                  isSelected && "bg-emerald-50/40 dark:bg-emerald-500/[0.04]"
+                  isSelected && "bg-emerald-50/40 dark:bg-emerald-500/[0.04]",
+                  isExpanded && "bg-zinc-50/60 dark:bg-white/[0.02]"
                 )}
               >
+                {expansionEnabled && (
+                  <td
+                    className={cn("w-[32px] px-2", cellPadding)}
+                    onClick={(e) => e.stopPropagation() /* 행 onClick 분리 */}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(expKey)}
+                      aria-expanded={isExpanded}
+                      aria-label={isExpanded ? "닫기" : "열기"}
+                      className="inline-flex h-5 w-5 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-zinc-200/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/[0.06] dark:hover:text-zinc-100"
+                    >
+                      <ChevronRight
+                        className={cn(
+                          "h-3.5 w-3.5 transition-transform",
+                          isExpanded && "rotate-90"
+                        )}
+                        strokeWidth={1.8}
+                      />
+                    </button>
+                  </td>
+                )}
                 {selectionEnabled && (
                   <td
                     className={cn("w-[36px] px-3", cellPadding)}
@@ -368,6 +467,17 @@ export function DataTable<T>({
                   );
                 })}
               </tr>
+              {expansionEnabled && isExpanded && (
+                <tr
+                  data-anti-card="data-table-expanded"
+                  className="border-b border-zinc-200/70 bg-zinc-50/60 dark:border-white/[0.04] dark:bg-white/[0.02]"
+                >
+                  <td colSpan={totalCols} className="px-3 py-4">
+                    {expansion?.renderExpanded(row)}
+                  </td>
+                </tr>
+              )}
+              </React.Fragment>
             );
           })}
         </tbody>
