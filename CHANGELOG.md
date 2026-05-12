@@ -6,6 +6,11 @@
 ## [Unreleased]
 
 ### Added
+- (비어있음)
+
+## [0.14.0] - 2026-05-13
+
+### Added
 - **TalkPattern** 다국어/카피 변형 prop 3종:
   - `acceptLabel` (default `"받음"`)
   - `declineLabel` (default `"안 받음"`)
