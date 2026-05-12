@@ -225,6 +225,8 @@ export type {
   EditableTableProps,
   EditableTableColumn,
 } from "./components/editable-table";
+export { GroupedTable } from "./components/grouped-table";
+export type { GroupedTableProps } from "./components/grouped-table";
 
 export { TextList } from "./components/text-list";
 export type { TextListProps, TextListVariant } from "./components/text-list";

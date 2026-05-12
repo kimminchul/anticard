@@ -83,6 +83,7 @@ import {
   SelectableTable,
   ExpandableTable,
   EditableTable,
+  GroupedTable,
   DatePicker,
   Combobox,
   TextList,
@@ -167,7 +168,7 @@ const NAV: NavGroup[] = [
       { id: "selectable-table", ko: "선택 가능 테이블 (체크박스 + 일괄 액션)", en: "SelectableTable", status: "ready" },
       { id: "expandable-table", ko: "펼침 가능 테이블 (행 클릭 → 상세)", en: "ExpandableTable", status: "ready" },
       { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "ready" },
-      { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "planned" },
+      { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "ready" },
       { id: "tree-table", ko: "트리 테이블 (계층 구조)", en: "TreeTable", status: "planned" },
       { id: "compact-table", ko: "압축 테이블 (로그·데이터 뷰어)", en: "CompactTable", status: "planned" },
     ],
@@ -408,6 +409,7 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   "selectable-table": { addedIn: "0.14.0" }, // SelectableTable wrapper
   "expandable-table": { addedIn: "0.14.0" }, // ExpandableTable + DataTable.expansion prop
   "editable-table": { addedIn: "0.14.0" }, // EditableTable (columns.cell augment)
+  "grouped-table": { addedIn: "0.14.0" }, // GroupedTable (groupBy + header rows + collapsible)
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -541,6 +543,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   "selectable-table": () => <ComponentPage def={SELECTABLE_TABLE_DEF} />,
   "expandable-table": () => <ComponentPage def={EXPANDABLE_TABLE_DEF} />,
   "editable-table": () => <ComponentPage def={EDITABLE_TABLE_DEF} />,
+  "grouped-table": () => <ComponentPage def={GROUPED_TABLE_DEF} />,
   "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
   combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
   // 리스트 / 텍스트
@@ -8490,6 +8493,102 @@ const EDITABLE_TABLE_DEF: ComponentDef = {
       name: "onCellSave",
       type: "(row, colKey, newValue: string) => void",
       desc: "Enter/blur 시 호출. 부모가 데이터 업데이트.",
+    },
+  ],
+};
+
+interface GroupedPost {
+  id: number;
+  title: string;
+  category: string;
+  publishedAt: string;
+}
+const GROUPED_POSTS: GroupedPost[] = [
+  { id: 1, title: "안티 카드 v0.13 — 카드 안에 카드를 쌓지 않는다", category: "Lab", publishedAt: "2026-05-09" },
+  { id: 2, title: "Pretendard 폰트와 안티 카드 톤", category: "Lab", publishedAt: "2026-04-28" },
+  { id: 3, title: "Heritage — 운영자의 깊이를 1인 랩으로", category: "Heritage", publishedAt: "2026-05-05" },
+  { id: 4, title: "라이나생명 디지털채널 재구축 회고", category: "Heritage", publishedAt: "2026-03-20" },
+  { id: 5, title: "MVP는 카드가 아니라 행이다", category: "Note", publishedAt: "2026-04-10" },
+  { id: 6, title: "Talk 페이지를 다시 쓴 이유", category: "Note", publishedAt: "2026-03-30" },
+];
+function GroupedTableDemo() {
+  return (
+    <GroupedTable<GroupedPost>
+      data={GROUPED_POSTS}
+      groupBy={(p) => p.category}
+      collapsible
+      columns={[
+        { key: "title", header: "제목" },
+        { key: "publishedAt", header: "발행일", align: "right", width: "w-[120px]" },
+      ]}
+    />
+  );
+}
+
+const GROUPED_TABLE_DEF: ComponentDef = {
+  id: "grouped-table",
+  ko: "그룹 헤더 테이블",
+  en: "GroupedTable",
+  desc: "DataTable + 카테고리·섹터로 묶인 행 사이에 그룹 헤더 자동 삽입. Heritage 섹터별 / admin 카테고리별 리스트에 자연.",
+  intro:
+    "행들을 카테고리·섹터·연도 같은 기준으로 묶어 그룹 헤더 행을 사이사이에 끼워 넣어 주는 표입니다. 카드 그리드 없이도 분류된 데이터를 한 표 안에서 한눈에 볼 수 있고, collapsible 옵션으로 그룹별 펼침/접힘이 가능합니다.",
+  useCases: [
+    "Heritage 페이지의 섹터(통신·금융·교육)별 프로젝트 묶음",
+    "Admin 글 리스트의 카테고리별 그룹화",
+    "주문·재고 리스트의 상태별 그룹",
+    "연도별 / 분기별 데이터 묶음",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "default",
+      title: "그룹 헤더 자동 삽입 + collapsible",
+      description:
+        "groupBy 함수로 자동 그룹화. 헤더는 smallcaps + count. chevron 클릭으로 그룹 접기/펼치기.",
+      preview: <GroupedTableDemo />,
+      prompt: `GroupedTable — 그룹 헤더가 중간중간 들어가는 표.
+
+- groupBy: (row) => string — 그룹 키 추출
+- 등장 순서 보존 그룹화 (Map 기반)
+- 그룹 헤더 행: smallcaps zinc-500 + count + chevron(collapsible 시)
+- renderGroupHeader로 헤더 커스터마이즈 가능
+- 그룹 컨텍스트에서 sortable 자동 비활성 (그룹 깨뜨림 방지)
+- collapsible=true: 그룹별 펼침/접힘 (uncontrolled/controlled)
+
+시각적으로 그룹 헤더 행은 첫 컬럼에 그룹 라벨이 들어가고 나머지는 빈 셀.
+완전한 colSpan 시각화는 별도 라운드에서 DataTable에 rowClassName/cellSpan prop 추가 후 처리.`,
+      react: `<GroupedTable<Post>
+  data={posts}
+  groupBy={(p) => p.category}
+  collapsible
+  columns={[
+    { key: "title", header: "제목" },
+    { key: "publishedAt", header: "발행일", align: "right" },
+  ]}
+/>`,
+    },
+  ],
+  props: [
+    { name: "data", type: "T[]", desc: "행 데이터" },
+    { name: "groupBy", type: "(row) => string", desc: "그룹 키 추출 함수 (필수)" },
+    { name: "columns", type: "DataTableColumn<T>[]", desc: "표 컬럼. sortable은 자동 비활성." },
+    {
+      name: "renderGroupHeader",
+      type: "(group, rows) => ReactNode",
+      desc: "그룹 헤더 커스터마이즈. 미지정 시 'group · N건' 형식.",
+    },
+    {
+      name: "collapsible",
+      type: "boolean",
+      default: "false",
+      desc: "그룹별 펼침/접힘 활성 (chevron 노출)",
+    },
+    { name: "defaultCollapsedGroups", type: "string[]", desc: "초기 접힌 그룹 (uncontrolled)" },
+    { name: "collapsedGroups", type: "string[]", desc: "controlled 접힌 그룹 키" },
+    {
+      name: "onCollapsedChange",
+      type: "(groups: string[]) => void",
+      desc: "접힘 변경 콜백",
     },
   ],
 };
