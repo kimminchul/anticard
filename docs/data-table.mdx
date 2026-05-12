@@ -4,7 +4,7 @@ description: 정렬 가능한 표. 박스 X, 행 사이 1px 헤어라인. 헤더
 group: components
 order: 51
 published: true
-updated: 2026-05-08
+updated: 2026-05-12
 ---
 
 `<DataTable>`은 anti-card 톤의 **인터랙티브 표**입니다. 행 + 헤어라인 = anti-card 시그니처. shadow / 줄무늬 X.
@@ -41,6 +41,10 @@ interface Project {
 | `empty` | `ReactNode` | `"데이터 없음"` | 빈 상태 메시지 |
 | `density` | `"tight" \| "default" \| "loose"` | `"default"` | 셀 패딩 |
 | `caption` | `ReactNode` | — | 표 위 caption (smallcaps) |
+| `selection` | `DataTableSelection<T>` | — | 체크박스 컬럼 + 일괄 액션. [SelectableTable](/anti-card/selectable-table) wrapper 권장 |
+| `expansion` | `DataTableExpansion<T>` | — | 첫 컬럼 chevron + 펼침 panel. [ExpandableTable](/anti-card/expandable-table) wrapper 권장 |
+| `rowClassName` | `(row, i) => string \| undefined` | — | 행 단위 className 병합 (group header / disabled 등) |
+| `getCellSpan` | `(row, i, colIndex) => number` | `1` | 셀 colSpan + 후속 cell 자동 skip (group header에 사용) |
 
 ### DataTableColumn
 
@@ -67,6 +71,17 @@ interface Project {
 
 - `<CompareTable>`: 정적 비교 표 (제품 A vs B). 정렬 없음
 - `<DataTable>`: 인터랙티브 표 (admin / 데이터). 정렬 + 행 클릭
+
+## Variants (DataTable 위에 쌓는 wrapper들)
+
+| 컴포넌트 | 용도 |
+|---|---|
+| [SelectableTable](/anti-card/selectable-table) | 체크박스 + 일괄 액션 (admin 일괄 처리) |
+| [ExpandableTable](/anti-card/expandable-table) | 행 펼침 + 상세 panel (카드 그리드 대안) |
+| [EditableTable](/anti-card/editable-table) | inline 셀 편집 (Excel-like) |
+| [GroupedTable](/anti-card/grouped-table) | 카테고리·섹터별 그룹 헤더 |
+| [TreeTable](/anti-card/tree-table) | 계층 구조 + indent + chevron |
+| [CompactTable](/anti-card/compact-table) | mono + 12px (로그 뷰어) |
 
 ## 관련
 

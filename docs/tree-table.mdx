@@ -1,0 +1,82 @@
+---
+title: TreeTable
+description: DataTable + 계층 노드 (indent + chevron). 파일 트리·카테고리 트리·조직도에.
+group: components
+order: 56
+published: true
+updated: 2026-05-12
+---
+
+`<TreeTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **계층 구조**를 얹은 wrapper입니다. `getChildren`으로 자식을 추출하고, 내부에서 depth를 누적해 평탄화한 후 첫 컬럼에 자동으로 `indent + chevron`을 부여합니다.
+
+```tsx
+import { TreeTable } from "@freeive/anti-card";
+
+interface Node {
+  id: string;
+  name: string;
+  size: string;
+  children?: Node[];
+}
+
+<TreeTable<Node>
+  data={tree}
+  getChildren={(n) => n.children}
+  rowKey={(n) => n.id}
+  defaultExpandedKeys={["root"]}
+  columns={[
+    { key: "name", header: "이름" },
+    { key: "size", header: "크기", align: "right" },
+  ]}
+/>
+```
+
+## Props
+
+`<DataTable>`의 prop 중 `data` / `rowKey` / `columns` / `onRowClick` / `selection` / `expansion` / `rowClassName` / `getCellSpan`은 wrapper가 자체 관리.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `T[]` | — | 루트 노드 배열 |
+| `getChildren` | `(row) => T[] \| undefined` | — | **필수** — 자식 추출 (없으면 leaf) |
+| `rowKey` | `(row, parentKey, i) => string` | — | **필수** — 노드 unique key |
+| `columns` | `DataTableColumn<T>[]` | — | 표 컬럼. 첫 컬럼이 indent + chevron 자동 |
+| `onRowClick` | `(row) => void` | — | 행 클릭 |
+| `defaultExpandedKeys` | `string[]` | `[]` | 초기 펼친 노드 (uncontrolled) |
+| `expandedKeys` | `string[]` | — | controlled 펼친 키 |
+| `onExpandedChange` | `(keys: string[]) => void` | — | 펼침 변경 콜백 |
+| `indentSize` | `number` | `18` | 깊이당 padding-left px |
+
+## 디자인
+
+- 첫 컬럼만 indent 적용 (`paddingLeft = depth × indentSize`)
+- 부모 노드: `lucide ChevronRight` (펼침 시 `rotate-90` transition)
+- leaf 노드: chevron 자리에 빈 `4×4` 공간 (컬럼 정렬 안정)
+- 다른 컬럼은 원본 `cell` 또는 `row[key]` 그대로
+- 트리 컨텍스트에서 sortable 자동 비활성 (계층 깨뜨림 방지)
+
+## rowKey의 안정성
+
+flatten 시 같은 노드가 매번 같은 key를 받도록 안정적인 unique key 권장:
+
+```tsx
+// 좋음 — DB id 또는 path
+rowKey={(n) => n.id}
+rowKey={(n) => n.path}
+
+// 위험 — index만 사용 (펼침/접힘 시 키 변동)
+rowKey={(_, _parent, i) => String(i)}
+```
+
+## ExpandableTable과의 차이
+
+| 컴포넌트 | 데이터 구조 | 펼침 결과 |
+|---|---|---|
+| [ExpandableTable](/anti-card/expandable-table) | flat 배열 | 행 *아래* 같은 row의 상세 panel |
+| `<TreeTable>` | nested 트리 (`children`) | 행 *아래* 자식 nodes (재귀) |
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체
+- [ExpandableTable](/anti-card/expandable-table) — 단일 펼침 (계층 아닌 상세)
+- [GroupedTable](/anti-card/grouped-table) — 그룹 (계층 아닌 묶음)

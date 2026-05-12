@@ -1,0 +1,66 @@
+---
+title: ExpandableTable
+description: DataTable + 행 펼침 (chevron + colSpan 상세 panel). 카드 그리드의 대안.
+group: components
+order: 53
+published: true
+updated: 2026-05-12
+---
+
+`<ExpandableTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **행 펼침**을 얹은 wrapper입니다. 행을 펼치면 다음 줄에 `colSpan` 전체로 상세 panel이 출력 — **카드 그리드를 거부하고도 깊은 정보**를 같은 줄 컨텍스트에 표현.
+
+```tsx
+import { ExpandableTable } from "@freeive/anti-card";
+
+<ExpandableTable<Post>
+  data={posts}
+  expandKey={(p) => String(p.id)}
+  single
+  toggleOnRowClick
+  columns={[
+    { key: "title", header: "제목", sortable: true },
+    { key: "category", header: "카테고리" },
+  ]}
+  renderExpanded={(p) => (
+    <div>
+      <p>{p.summary}</p>
+      <a href={`/posts/${p.id}`}>전체 보기 →</a>
+    </div>
+  )}
+/>
+```
+
+## Props
+
+`<DataTable>`의 모든 prop을 그대로 받습니다 (단 `expansion` 제외 — 내부에서 자동 주입).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `expandKey` | `(row, i) => string` | `rowKey > index` | 펼침용 unique key |
+| `defaultExpandedKeys` | `string[]` | `[]` | uncontrolled 초기 펼침 |
+| `expandedKeys` | `string[]` | — | controlled 펼친 키 (지정 시 `onExpandedChange` 필수) |
+| `onExpandedChange` | `(keys: string[]) => void` | — | 펼침 변경 콜백 |
+| `renderExpanded` | `(row) => ReactNode` | — | **필수** — 펼침 영역 렌더러 |
+| `single` | `boolean` | `false` | 한 번에 하나만 펼침 (accordion) |
+| `toggleOnRowClick` | `boolean` | `false` | 행 어디든 클릭으로 toggle (chevron 외) |
+
+## 디자인
+
+- 첫 컬럼 chevron: `lucide ChevronRight`, 펼침 시 `rotate-90` transition
+- 펼친 행 자체: `bg-zinc-50/60` (light) / `bg-white/[0.02]` (dark) — 헤어라인 톤
+- 펼침 panel: 다음 `<tr>`에 `colSpan={totalCols}` + 동일 zinc 배경
+- selection과 병용: chevron → 체크박스 → 본 컬럼 순으로 자동 정렬
+
+## 언제 카드 그리드 대신 이걸?
+
+shadcn식 카드 그리드는 모든 정보를 박스 안에 가두지만, ExpandableTable은:
+
+- **표 자체는 좁게** (한 화면에 더 많은 행)
+- **펼친 상세는 같은 줄 컨텍스트** (점프 없이 즉시 비교)
+- **카드 그림자·테두리 없음** — anti-card 톤 유지
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체
+- [TreeTable](/anti-card/tree-table) — 계층 (펼침과 비슷하지만 nested 구조)
+- [FAQ](/anti-card/faq) — 질문/답변 펼침 (단일 데이터)

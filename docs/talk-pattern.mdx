@@ -4,7 +4,7 @@ description: Talk·Contact 페이지. Hero + 받음/안받음 체크리스트 + 
 group: components
 order: 22
 published: true
-updated: 2026-05-08
+updated: 2026-05-12
 ---
 
 `<TalkPattern>`은 작은 랩의 **"잘 맞는 의뢰만 함께"** 정책을 표현하는 Talk·Contact 페이지 패턴입니다. 일반 폼 페이지 거부 — 잘 맞는 일 / 다른 분께 더 잘 맞을 일을 미리 명시.
@@ -41,6 +41,31 @@ import { TalkPattern } from "@freeive/anti-card";
 | `acceptList` | `ReactNode[]` | 받는 일 (✓ emerald) |
 | `declineList` | `ReactNode[]` | 안 받는 일 (✕ zinc) |
 | `channels` | `Array<{label, value, href?, external?}>` | 연락 채널 (DefList 패턴) |
+| `acceptLabel` | `ReactNode` | 받음 섹션 라벨. default `"받음"`. 영문/일문 사이트는 명시 권장 |
+| `declineLabel` | `ReactNode` | 안 받음 섹션 라벨. default `"안 받음"` |
+| `channelsLabel` | `ReactNode` | 채널 섹션 라벨. default `"Channels"` (영문 그대로 권장) |
+
+### 다국어 사용
+
+```tsx
+// ko (기본)
+<TalkPattern title="이기는 싸움만 받습니다." acceptList={[...]} />
+
+// en
+<TalkPattern
+  title="Open for inquiries."
+  acceptLabel="Accepting"
+  declineLabel="Not accepting"
+  channelsLabel="Channels"
+/>
+
+// ja
+<TalkPattern
+  title="お問い合わせを承ります。"
+  acceptLabel="受け付け中"
+  declineLabel="受け付けない"
+/>
+```
 
 ## 정체성
 

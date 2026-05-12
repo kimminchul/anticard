@@ -1,0 +1,80 @@
+---
+title: SelectableTable
+description: DataTable + 행 선택 (체크박스 + 일괄 액션 영역). admin 일괄 처리에 적합.
+group: components
+order: 52
+published: true
+updated: 2026-05-12
+---
+
+`<SelectableTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **행 선택 + 일괄 액션** 영역을 얹은 wrapper입니다. admin의 글·미디어·사용자 리스트에서 여러 행을 골라 한 번에 처리하는 패턴.
+
+```tsx
+import { SelectableTable } from "@freeive/anti-card";
+import { useState } from "react";
+
+interface Post {
+  id: number;
+  title: string;
+  status: "published" | "draft";
+}
+
+const [keys, setKeys] = useState<string[]>([]);
+
+<SelectableTable<Post>
+  data={posts}
+  selectKey={(p) => String(p.id)}
+  selectedKeys={keys}
+  onSelectionChange={setKeys}
+  columns={[
+    { key: "title", header: "제목", sortable: true },
+    { key: "status", header: "상태", sortable: true },
+  ]}
+  bulkActions={(keys) => (
+    <>
+      <button onClick={() => publish(keys)}>일괄 발행</button>
+      <button onClick={() => trash(keys)}>휴지통</button>
+    </>
+  )}
+/>
+```
+
+## Props
+
+`<DataTable>`의 모든 prop을 그대로 받습니다 (단 `selection` 제외 — 내부에서 자동 주입).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `selectKey` | `(row, i) => string` | `rowKey > index` | 행 선택 unique key |
+| `defaultSelectedKeys` | `string[]` | `[]` | uncontrolled 초기 선택 |
+| `selectedKeys` | `string[]` | — | controlled 선택 키 (지정 시 `onSelectionChange` 필수) |
+| `onSelectionChange` | `(keys: string[]) => void` | — | 선택 변경 콜백 |
+| `bulkActions` | `ReactNode \| (keys) => ReactNode` | — | 선택된 row 있을 때 헤더 위 액션 영역 |
+| `showCount` | `boolean` | `true` | 'N개 선택됨' 카운트 표시 |
+
+## 디자인
+
+- 첫 컬럼 체크박스: `h-4 w-4` 헤어라인, 선택 시 `bg-emerald-500` + `Check` 아이콘
+- 헤더 체크박스: 3-state — 전체(`Check`) / 일부(`Minus`, mixed) / 없음
+- 선택된 행: `bg-emerald-50/40` (light) / `bg-emerald-500/[0.04]` (dark) — 헤어라인 톤 유지
+- 일괄 액션 영역: 헤더 위 `border-b` 1px 헤어라인 박스, 좌측 'N개 선택됨' + 우측 액션 슬롯
+- 행 `onClick`과 체크박스 `onClick` 분리 (`stopPropagation`)
+
+## controlled vs uncontrolled
+
+```tsx
+// uncontrolled — 컴포넌트 내부 상태
+<SelectableTable defaultSelectedKeys={["1"]} ... />
+
+// controlled — 상위 컴포넌트가 상태 보유
+const [keys, setKeys] = useState<string[]>([]);
+<SelectableTable selectedKeys={keys} onSelectionChange={setKeys} ... />
+```
+
+`selectKey`는 **안정적인 unique key** (DB id 등) 권장. 정렬·필터 시에도 선택 일관성 유지.
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체
+- [ExpandableTable](/anti-card/expandable-table) — 펼침 가능 (선택과 병용 가능)
+- [EditableTable](/anti-card/editable-table) — inline 편집

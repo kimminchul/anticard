@@ -1,0 +1,82 @@
+---
+title: GroupedTable
+description: DataTable + 카테고리·섹터로 묶인 행 사이에 그룹 헤더 자동 삽입. Heritage·admin 카테고리 리스트에 자연.
+group: components
+order: 55
+published: true
+updated: 2026-05-12
+---
+
+`<GroupedTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **카테고리·섹터 그룹 헤더**를 자동 삽입하는 wrapper입니다. `groupBy` 함수로 행을 그룹화하고, 그룹 시작마다 헤더 행을 끼워 넣습니다.
+
+```tsx
+import { GroupedTable } from "@freeive/anti-card";
+
+<GroupedTable<Post>
+  data={posts}
+  groupBy={(p) => p.category}
+  collapsible
+  columns={[
+    { key: "title", header: "제목" },
+    { key: "publishedAt", header: "발행일", align: "right" },
+  ]}
+/>
+```
+
+## Props
+
+`<DataTable>`의 prop 중 `data` / `rowKey` / `columns` / `onRowClick` / `selection` / `expansion` / `rowClassName` / `getCellSpan`은 wrapper가 자체 관리.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `T[]` | — | 행 데이터 |
+| `groupBy` | `(row) => string` | — | **필수** — 그룹 키 추출 |
+| `columns` | `DataTableColumn<T>[]` | — | 표 컬럼. 그룹 컨텍스트에서 sortable 자동 비활성 |
+| `renderGroupHeader` | `(group, rows) => ReactNode` | `"group · N건"` | 헤더 커스터마이즈 |
+| `rowKey` | `(row, i) => string` | `"{group}-{i}"` | 행 unique key |
+| `collapsible` | `boolean` | `false` | 그룹별 펼침/접힘 활성 (chevron) |
+| `defaultCollapsedGroups` | `string[]` | `[]` | 초기 접힌 그룹 (uncontrolled) |
+| `collapsedGroups` | `string[]` | — | controlled 접힌 그룹 |
+| `onCollapsedChange` | `(groups: string[]) => void` | — | 접힘 변경 콜백 |
+
+## 디자인
+
+- 그룹 헤더 행은 `DataTable`의 `rowClassName` + `getCellSpan` 활용:
+  - **rowClassName**: `border-t border-zinc-300 bg-zinc-100/50` (그룹 시작 시각 분리)
+  - **getCellSpan**: 첫 컬럼이 `columns.length`만큼 colSpan으로 전체 행 차지
+- 헤더 라벨: `11.5px uppercase smallcaps zinc-500` + count `font-mono tabular-nums`
+- collapsible 시 `lucide ChevronRight` (펼침 시 `rotate-90`)
+
+## 등장 순서 보존
+
+`groupBy`가 같은 키로 묶인 행들의 등장 순서를 그대로 유지 (`Map` 기반). 정렬·필터된 순서로 그룹화하고 싶다면 부모에서 `data`를 미리 정렬.
+
+## 커스텀 헤더
+
+```tsx
+<GroupedTable
+  groupBy={(p) => p.category}
+  renderGroupHeader={(group, rows) => (
+    <>
+      {group}
+      <span className="ml-3 text-emerald-600">
+        ({rows.filter((r) => r.featured).length}개 featured)
+      </span>
+    </>
+  )}
+  ...
+/>
+```
+
+## Sectors와의 차이
+
+| 컴포넌트 | 용도 |
+|---|---|
+| [SectorsPattern](/anti-card/sectors-pattern) | Heritage 페이지 전체 패턴 (좌측 섹터명 + 우측 행) — page-level |
+| `<GroupedTable>` | 표 안에 그룹 헤더만 — component-level |
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체
+- [SectorsPattern](/anti-card/sectors-pattern) — page 단위 섹터 패턴
+- [TreeTable](/anti-card/tree-table) — 계층 (그룹과 다름 — nested)

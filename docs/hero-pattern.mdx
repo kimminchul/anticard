@@ -4,7 +4,7 @@ description: 페이지 첫 화면 hero 영역 통째로. Eyebrow + HeroHeading +
 group: components
 order: 20
 published: true
-updated: 2026-05-08
+updated: 2026-05-12
 ---
 
 `<HeroPattern>`은 **페이지 첫 화면을 한 번에 만드는 조합 컴포넌트**입니다. Eyebrow + HeroHeading + Lead + LinkRow를 안티 카드 표준 톤으로 자동 배치.
@@ -43,6 +43,7 @@ import { HeroPattern } from "@freeive/anti-card";
 | `size` | `"page" \| "hero"` | `"page"` | page=일반(30~48px) / hero=메인(40~64px, 1회) |
 | `align` | `"left" \| "center"` | `"left"` | 정렬 |
 | `padding` | `"default" \| "tight" \| "loose"` | `"default"` | 상하 패딩 |
+| `width` | `"default" \| "wide" \| "full"` | `"default"` | HeroHeading 너비. default 20ch / wide 32ch (긴 일·영문) / full 제한 없음 |
 
 ```ts
 type HeroPatternCTA = {

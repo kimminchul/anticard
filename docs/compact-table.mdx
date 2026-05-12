@@ -1,0 +1,76 @@
+---
+title: CompactTable
+description: 로그·데이터 뷰어용 압축 표. monospace + 12px + density tight. 안티 카드 헤어라인 톤 유지.
+group: components
+order: 57
+published: true
+updated: 2026-05-12
+---
+
+`<CompactTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **정보 밀도 우선** 톤을 강제한 wrapper입니다. 로그·JSON·시스템 데이터처럼 한 화면에 많은 행을 봐야 하는 표에 적합.
+
+```tsx
+import { CompactTable } from "@freeive/anti-card";
+
+interface LogEntry {
+  ts: string;
+  level: "INFO" | "WARN" | "ERROR";
+  msg: string;
+}
+
+<CompactTable<LogEntry>
+  data={logs}
+  columns={[
+    { key: "ts", header: "TIME", width: "w-[160px]" },
+    { key: "level", header: "LV", width: "w-[60px]" },
+    { key: "msg", header: "MESSAGE" },
+  ]}
+/>
+```
+
+## Props
+
+`<DataTable>`의 모든 prop을 그대로 받습니다 (`density`는 `tight`로 자동 강제).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `font` | `"mono" \| "sans"` | `"mono"` | `ui-monospace` (로그·JSON) 또는 sans-serif |
+| `hoverable` | `boolean` | `true` | 행 hover 강조 (정적 로그 뷰에선 `false` 권장) |
+
+## 디자인 강제
+
+`<DataTable>`과의 차이:
+
+| 항목 | DataTable | CompactTable |
+|---|---|---|
+| density | 자유 (`tight`/`default`/`loose`) | **`tight` 강제** |
+| 본문 폰트 크기 | `13.5px` | **`12px`** |
+| 헤더 폰트 크기 | `11.5px` | **`10.5px`** |
+| 컬럼 패딩 | `px-3` | **`px-2.5`** |
+| 폰트 패밀리 | sans-serif | **`ui-monospace`** (기본) |
+| 숫자 | 기본 | **`tabular-nums`** (자릿수 정렬 안정) |
+
+안티 카드 헤어라인 톤은 그대로 — `shadow X`, `border 1px`, zinc accent.
+
+## 언제 mono / sans?
+
+```tsx
+// 로그·JSON·디버깅 — 자릿수·코드 정렬 중요
+<CompactTable font="mono" ... />
+
+// 일반 데이터 (큰 셀 개수) — 정보 밀도만 높이고 싶을 때
+<CompactTable font="sans" hoverable={false} ... />
+```
+
+## 사용 시나리오
+
+- Admin 로그 뷰어 / 시스템 audit 로그
+- API 응답 / JSON 행 뷰
+- git history / commit 리스트
+- 큰 데이터 셋의 빠른 스캔 (preview 모드)
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체 (`density="tight"`로 일부 효과 가능)
+- [ListRow](/anti-card/list-row) — 단일 행 (표 아님)
+- [TypographyTokens](/anti-card/typography-tokens) — 폰트 토큰 참조

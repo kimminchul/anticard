@@ -1,0 +1,90 @@
+---
+title: EditableTable
+description: DataTable + 셀 클릭으로 inline input 편집. Enter/blur 저장, Esc 취소. Excel-like.
+group: components
+order: 54
+published: true
+updated: 2026-05-12
+---
+
+`<EditableTable>`은 [`<DataTable>`](/anti-card/data-table) 위에 **inline 셀 편집**을 얹은 wrapper입니다. 별도 폼이나 다이얼로그 없이 셀을 그 자리에서 고침 — admin 빠른 데이터 보정에 적합.
+
+```tsx
+import { EditableTable } from "@freeive/anti-card";
+
+interface Row {
+  id: number;
+  name: string;
+  price: number;
+}
+
+<EditableTable<Row>
+  data={rows}
+  rowKey={(r) => String(r.id)}
+  columns={[
+    { key: "name", header: "이름", editable: true, sortable: true },
+    {
+      key: "price",
+      header: "가격",
+      editable: true,
+      editorType: "number",
+      align: "right",
+      cell: (r) => `${r.price.toLocaleString()}원`,
+      toEditValue: (r) => String(r.price),
+    },
+  ]}
+  onCellSave={(row, colKey, newValue) =>
+    updateRow(row.id, {
+      [colKey]: colKey === "price" ? Number(newValue) : newValue,
+    })
+  }
+/>
+```
+
+## Props
+
+`<DataTable>`의 모든 prop을 그대로 받습니다 (단 `columns`는 `EditableTableColumn<T>` 타입).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `columns` | `EditableTableColumn<T>[]` | — | `DataTableColumn` + `editable?` / `editorType?` / `toEditValue?` |
+| `rowKey` | `(row, i) => string` | — | **필수** — 셀 편집 상태 추적 |
+| `onCellSave` | `(row, colKey, newValue: string) => void` | — | Enter/blur 시 호출. 부모가 데이터 업데이트 |
+
+### EditableTableColumn
+
+`DataTableColumn`의 확장 — 다음 3개 prop 추가:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `editable` | `boolean` | `false` | 이 컬럼 inline 편집 활성 |
+| `editorType` | `"text" \| "number"` | `"text"` | input type |
+| `toEditValue` | `(row) => string` | `String(row[key])` | 편집용 raw 값 (cell render와 분리) |
+
+## 디자인
+
+- 비편집 시: 셀 hover에 헤어라인 박스 + `bg-zinc-50` (편집 가능성 인지)
+- 편집 시: input `border-emerald-500` + `ring-2 emerald-500/15`, 우측에 `Check` / `X` 아이콘
+- Enter / blur: `onCellSave` 호출 + 편집 종료
+- Esc: 취소 (값 변경 없음)
+- 모바일 등 blur 어려운 환경: `Check` / `X` 아이콘이 `onMouseDown`으로 commit/cancel
+
+## cell render vs toEditValue 분리
+
+| 컬럼 | 표시 (cell) | 편집 (toEditValue) |
+|---|---|---|
+| 가격 | `"1,000원"` | `"1000"` |
+| 날짜 | `"2026-05-12"` | `"2026-05-12"` |
+| 상태 | `<Pill>발행</Pill>` | `"published"` |
+
+표시는 사람이 읽기 좋은 포맷, 편집은 input에 들어갈 raw 값.
+
+## DataTable 본체 prop은 손대지 않음
+
+EditableTable은 `selection` / `expansion`과 **직교**합니다 — DataTable 본체에 prop을 추가하지 않고 `columns.cell` augment 방식으로 구현. 세 wrapper를 모두 함께 쓰는 것도 (이론상) 가능.
+
+## 관련
+
+- [DataTable](/anti-card/data-table) — 본체
+- [SelectableTable](/anti-card/selectable-table) — 행 선택
+- [FormField](/anti-card/form-field) — 별도 폼 (대량 편집)
