@@ -210,7 +210,13 @@ export { FormField } from "./components/form-field";
 export type { FormFieldProps } from "./components/form-field";
 
 export { DataTable } from "./components/data-table";
-export type { DataTableProps, DataTableColumn } from "./components/data-table";
+export type {
+  DataTableProps,
+  DataTableColumn,
+  DataTableSelection,
+} from "./components/data-table";
+export { SelectableTable } from "./components/selectable-table";
+export type { SelectableTableProps } from "./components/selectable-table";
 
 export { TextList } from "./components/text-list";
 export type { TextListProps, TextListVariant } from "./components/text-list";

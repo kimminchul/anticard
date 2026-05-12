@@ -80,6 +80,7 @@ import {
   Carousel,
   FormField,
   DataTable,
+  SelectableTable,
   DatePicker,
   Combobox,
   TextList,
@@ -161,7 +162,7 @@ const NAV: NavGroup[] = [
     desc: "정렬·편집·계층 등 인터랙티브 표 모음. 행 + 1px 헤어라인 시그니처.",
     items: [
       { id: "data-table", ko: "기본 데이터 테이블 (정렬)", en: "DataTable", status: "ready" },
-      { id: "selectable-table", ko: "선택 가능 테이블 (체크박스 + 일괄 액션)", en: "SelectableTable", status: "planned" },
+      { id: "selectable-table", ko: "선택 가능 테이블 (체크박스 + 일괄 액션)", en: "SelectableTable", status: "ready" },
       { id: "expandable-table", ko: "펼침 가능 테이블 (행 클릭 → 상세)", en: "ExpandableTable", status: "planned" },
       { id: "editable-table", ko: "인라인 편집 테이블", en: "EditableTable", status: "planned" },
       { id: "grouped-table", ko: "그룹 헤더 테이블", en: "GroupedTable", status: "planned" },
@@ -399,8 +400,10 @@ const COMPONENT_VERSIONS: Record<string, { addedIn: string; updatedIn?: string }
   "talk-pattern": { addedIn: "0.3.0", updatedIn: "0.14.0" }, // acceptLabel/declineLabel/channelsLabel i18n
   header: { addedIn: "0.1.0", updatedIn: "0.12.0" }, // border-current/40 fix
 
-  // 0.14.0 — 다국어 / 분해 사용 봉합
+  // 0.14.0 — 다국어 / 분해 사용 봉합 + DataTable variants
   "hero-pattern": { addedIn: "0.3.0", updatedIn: "0.14.0" }, // width prop (HeroHeading.width 노출)
+  "data-table": { addedIn: "0.12.0", updatedIn: "0.14.0" }, // selection prop (선택 컬럼 + 일괄 액션)
+  "selectable-table": { addedIn: "0.14.0" }, // SelectableTable wrapper
 };
 
 const CHANGELOG_URL = "https://github.com/kimminchul/anticard/blob/main/CHANGELOG.md";
@@ -531,6 +534,7 @@ const READY_SECTIONS: Record<string, () => JSX.Element> = {
   // 폼·데이터 (0.11.0~)
   "form-field": () => <ComponentPage def={FORM_FIELD_DEF} />,
   "data-table": () => <ComponentPage def={DATA_TABLE_DEF} />,
+  "selectable-table": () => <ComponentPage def={SELECTABLE_TABLE_DEF} />,
   "date-picker": () => <ComponentPage def={DATE_PICKER_DEF} />,
   combobox: () => <ComponentPage def={COMBOBOX_DEF} />,
   // 리스트 / 텍스트
@@ -8094,6 +8098,129 @@ column.compare 커스텀 비교도 가능. row.onClick으로 인터랙티브 행
     { name: "empty", type: "ReactNode", default: '"데이터 없음"', desc: "빈 상태 메시지" },
     { name: "density", type: '"tight" | "default" | "loose"', default: '"default"', desc: "셀 패딩" },
     { name: "caption", type: "ReactNode", desc: "표 위 caption" },
+    {
+      name: "selection",
+      type: "DataTableSelection<T>",
+      desc: "{selectedKeys, onSelectionChange, selectKey?, bulkActions?, showCount?} — 지정 시 체크박스 컬럼 + 일괄 액션 영역 자동. SelectableTable wrapper 사용 권장.",
+    },
+  ],
+};
+
+interface SelectablePost {
+  id: number;
+  title: string;
+  status: "published" | "draft" | "scheduled";
+  views: number;
+}
+const SELECTABLE_POSTS: SelectablePost[] = [
+  { id: 1, title: "안티 카드 v0.13 — 카드 안에 카드를 쌓지 않는다", status: "published", views: 1024 },
+  { id: 2, title: "Heritage — 운영자의 깊이를 1인 랩으로", status: "published", views: 612 },
+  { id: 3, title: "MVP는 카드가 아니라 행이다", status: "draft", views: 0 },
+  { id: 4, title: "Talk 페이지를 다시 쓴 이유", status: "scheduled", views: 0 },
+  { id: 5, title: "Pretendard 폰트와 안티 카드 톤", status: "published", views: 348 },
+];
+function SelectableTableDemo() {
+  const [selected, setSelected] = useState<string[]>([]);
+  return (
+    <div className="space-y-3">
+      <SelectableTable<SelectablePost>
+        data={SELECTABLE_POSTS}
+        selectKey={(p) => String(p.id)}
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        columns={[
+          { key: "title", header: "제목", sortable: true },
+          { key: "status", header: "상태", sortable: true, width: "w-[100px]" },
+          { key: "views", header: "조회", sortable: true, align: "right", width: "w-[80px]" },
+        ]}
+        bulkActions={(keys) => (
+          <>
+            <button
+              type="button"
+              className="rounded-md border border-emerald-500/40 px-2.5 py-1 text-[11.5px] text-emerald-600 transition-colors hover:bg-emerald-500/10 dark:text-emerald-400"
+              onClick={() => alert(`발행: ${keys.join(", ")}`)}
+            >
+              일괄 발행
+            </button>
+            <button
+              type="button"
+              className="rounded-md border border-zinc-300 px-2.5 py-1 text-[11.5px] text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/[0.04]"
+              onClick={() => setSelected([])}
+            >
+              선택 해제
+            </button>
+          </>
+        )}
+      />
+      <p className="text-[12px] text-zinc-500">
+        선택된 키: {selected.length > 0 ? selected.join(", ") : "(없음)"}
+      </p>
+    </div>
+  );
+}
+
+const SELECTABLE_TABLE_DEF: ComponentDef = {
+  id: "selectable-table",
+  ko: "선택 가능 테이블",
+  en: "SelectableTable",
+  desc: "DataTable + 행 선택 (체크박스 + 일괄 액션 영역). admin 리스트의 일괄 처리에 적합.",
+  intro:
+    "여러 행을 한꺼번에 선택해 한 번의 액션으로 처리할 수 있게 해 주는 표입니다. 첫 컬럼에 체크박스가 자동으로 생기고, 행을 하나라도 고르면 표 위에 'N개 선택됨' 영역과 일괄 액션 버튼들이 나타납니다. admin의 글·미디어·사용자 일괄 처리에 가장 자연스러운 패턴입니다.",
+  useCases: [
+    "Admin 블로그 글 일괄 발행 / 휴지통 / 카테고리 변경",
+    "미디어 라이브러리에서 여러 파일 일괄 삭제",
+    "사용자 목록에서 일괄 권한 변경 / 일괄 비활성",
+    "데이터 행을 골라 export·이메일 발송",
+  ],
+  examples: [
+    {
+      index: "01",
+      badge: "interactive",
+      title: "체크박스 + 일괄 액션 영역",
+      description:
+        "row 선택 → 헤더 위 '일괄 발행 / 선택 해제' 등 액션 노출. 헤더 체크박스는 전체/일부/없음(mixed) 3-state.",
+      preview: <SelectableTableDemo />,
+      prompt: `SelectableTable — admin의 일괄 처리 표.
+
+- 첫 컬럼: 체크박스 (h-4 w-4, border-zinc-300, 선택 시 bg-emerald-500 + Check 아이콘)
+- 헤더 체크박스: 전체 선택. 일부만 선택된 상태는 mixed (Minus 아이콘)
+- 선택된 행: bg-emerald-50/40 (light) / bg-emerald-500/[0.04] (dark) — 헤어라인 톤 유지
+- 일괄 액션 영역: 헤더 위 border-b 헤어라인 박스, 'N개 선택됨' + 액션 버튼 슬롯
+- 행 onClick과 체크박스 onClick은 stopPropagation으로 분리
+
+uncontrolled (defaultSelectedKeys) / controlled (selectedKeys + onSelectionChange) 둘 다 지원.
+selectKey는 안정적 unique key (DB id 권장 — 정렬·필터 시 선택 일관성).`,
+      react: `const [keys, setKeys] = useState<string[]>([]);
+<SelectableTable<Post>
+  data={posts}
+  selectKey={(p) => String(p.id)}
+  selectedKeys={keys}
+  onSelectionChange={setKeys}
+  columns={[
+    { key: "title", header: "제목", sortable: true },
+    { key: "status", header: "상태", sortable: true },
+  ]}
+  bulkActions={(keys) => (
+    <>
+      <button onClick={() => publish(keys)}>일괄 발행</button>
+      <button onClick={() => trash(keys)}>휴지통</button>
+    </>
+  )}
+/>`,
+    },
+  ],
+  props: [
+    { name: "data / columns / rowKey / density / caption", type: "...", desc: "DataTable과 동일" },
+    { name: "selectKey", type: "(row, i) => string", desc: "행 선택 unique key (default: rowKey > index)" },
+    { name: "defaultSelectedKeys", type: "string[]", desc: "uncontrolled 초기 선택" },
+    { name: "selectedKeys", type: "string[]", desc: "controlled 선택 키 (onSelectionChange 필수)" },
+    { name: "onSelectionChange", type: "(keys: string[]) => void", desc: "선택 변경 콜백" },
+    {
+      name: "bulkActions",
+      type: "ReactNode | (keys) => ReactNode",
+      desc: "선택된 row 있을 때 헤더 위 액션 영역. 함수 형태면 현재 선택 키 받음.",
+    },
+    { name: "showCount", type: "boolean", default: "true", desc: "'N개 선택됨' 카운트 표시" },
   ],
 };
 

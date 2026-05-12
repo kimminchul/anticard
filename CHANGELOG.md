@@ -12,6 +12,13 @@
   - `channelsLabel` (default `"Channels"`)
   - 영문/일문 사이트에서 dogfood할 때 hardcoded 한국어를 외부 주입으로 교체할 수 있도록. freeive ko/en/ja 사이트에서 발견된 누락 봉합.
 - **HeroPattern** `width` prop — HeroHeading의 `width` 노출 (default/wide/full). 일본어·영문 긴 제목이 좁은 max-width(20ch)에 갇혀 줄바꿈하는 문제를 prop으로 해결. 이전엔 freeive가 HeroPattern을 분해해 직접 조립해서 우회.
+- **DataTable** `selection` prop — 행 선택 모드. 지정 시 첫 컬럼에 체크박스 자동 노출, 헤더 위에 일괄 액션 영역 노출. 헤더 체크박스는 전체/일부(mixed)/없음 3-state. 선택된 행은 emerald accent 톤. 행 onClick과 체크박스 onClick은 stopPropagation으로 분리.
+  - `selectedKeys` / `onSelectionChange` (controlled)
+  - `selectKey(row, i) => string` — DB id 등 안정적 unique key 권장
+  - `bulkActions` (`ReactNode` 또는 `(keys) => ReactNode`)
+  - `showCount` (default true) — 'N개 선택됨' 표시
+- **SelectableTable** (NEW) — DataTable + 행 선택 wrapper. uncontrolled (`defaultSelectedKeys`) / controlled 둘 다 지원. admin 리스트의 일괄 처리 패턴(일괄 발행 / 휴지통 / 카테고리 변경 등)에 적합. NAV "데이터 테이블" 그룹의 planned 6개 중 1번째 ready 전환.
+- Playground 검색에 **버전 필터** — `v0.14.0` / `version:0.14.0` / `latest` / `최신` 입력 시 해당 라운드의 addedIn 또는 updatedIn 컴포넌트만 노출. 결과 헤더에 'v{버전}에 변경된 컴포넌트 · N개' + 각 항목 옆 `updated`(emerald) / `added`(zinc) tag. 신규 release 직후 변경분 빠르게 보는 보조 도구.
 
 ## [0.13.1] - 2026-05-10
 

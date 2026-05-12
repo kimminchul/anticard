@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUpDown, Check, Minus } from "lucide-react";
 import { cn } from "../utils/cn";
 
 export interface DataTableColumn<T> {
@@ -22,6 +22,28 @@ export interface DataTableColumn<T> {
   align?: "left" | "right" | "center";
 }
 
+/**
+ * 행 선택 옵션. 지정 시 첫 열에 체크박스가 자동 노출되고,
+ * 선택된 row 있을 때 헤더 위에 일괄 액션 영역이 노출됨.
+ *
+ * SelectableTable wrapper에서 state를 내장해서 더 간단히 쓸 수 있음.
+ */
+export interface DataTableSelection<T> {
+  /** 선택된 row 키 (controlled) */
+  selectedKeys: string[];
+  /** 선택 변경 콜백 */
+  onSelectionChange: (selectedKeys: string[]) => void;
+  /**
+   * row → 선택용 unique key. 미지정 시 DataTable의 rowKey 사용.
+   * rowKey도 없으면 index 기반(권장하지 않음 — sort/filter 시 일관성 깨짐).
+   */
+  selectKey?: (row: T, i: number) => string;
+  /** 일괄 액션 영역 — N개 선택 시 노출. 함수 형태면 선택 키 배열 받음. */
+  bulkActions?: React.ReactNode | ((selectedKeys: string[]) => React.ReactNode);
+  /** 'N개 선택됨' 카운트 표시 (default true) */
+  showCount?: boolean;
+}
+
 export interface DataTableProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   data: T[];
@@ -36,6 +58,8 @@ export interface DataTableProps<T>
   density?: "tight" | "default" | "loose";
   /** 표 위 caption (smallcaps) */
   caption?: React.ReactNode;
+  /** 행 선택 — 지정 시 체크박스 컬럼 + 일괄 액션 영역 자동. */
+  selection?: DataTableSelection<T>;
 }
 
 /**
@@ -63,6 +87,7 @@ export function DataTable<T>({
   empty = "데이터 없음",
   density = "default",
   caption,
+  selection,
   className,
   ...props
 }: DataTableProps<T>) {
@@ -103,13 +128,84 @@ export function DataTable<T>({
   const cellPadding =
     density === "tight" ? "py-2" : density === "loose" ? "py-4" : "py-3";
 
+  // ── selection 관련 helpers ──────────────────────────────────
+  const selectionEnabled = !!selection;
+  // 선택 키 생성 — selection.selectKey > rowKey > index 순.
+  const getSelectKey = React.useCallback(
+    (row: T, i: number): string => {
+      if (selection?.selectKey) return selection.selectKey(row, i);
+      if (rowKey) return rowKey(row, i);
+      return String(i);
+    },
+    [selection, rowKey]
+  );
+  const selectedSet = React.useMemo(
+    () => new Set(selection?.selectedKeys ?? []),
+    [selection?.selectedKeys]
+  );
+  const allKeys = React.useMemo(
+    () => sorted.map((row, i) => getSelectKey(row, i)),
+    [sorted, getSelectKey]
+  );
+  const selectedCount = selectedSet.size;
+  const allSelected = selectedCount > 0 && allKeys.every((k) => selectedSet.has(k));
+  const someSelected = selectedCount > 0 && !allSelected;
+
+  const toggleAll = () => {
+    if (!selection) return;
+    if (allSelected) {
+      // 전체 해제 — 현재 화면 키만 빼서 다른 페이지 선택 보존
+      const remaining = (selection.selectedKeys ?? []).filter(
+        (k) => !allKeys.includes(k)
+      );
+      selection.onSelectionChange(remaining);
+    } else {
+      const next = new Set(selection.selectedKeys ?? []);
+      allKeys.forEach((k) => next.add(k));
+      selection.onSelectionChange(Array.from(next));
+    }
+  };
+  const toggleRow = (key: string) => {
+    if (!selection) return;
+    const next = new Set(selection.selectedKeys ?? []);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    selection.onSelectionChange(Array.from(next));
+  };
+
+  const totalCols = columns.length + (selectionEnabled ? 1 : 0);
+  const bulkActionsNode =
+    selection?.bulkActions && selectedCount > 0
+      ? typeof selection.bulkActions === "function"
+        ? selection.bulkActions(selection.selectedKeys)
+        : selection.bulkActions
+      : null;
+  const showCount = selection?.showCount !== false;
+
   return (
     <div
       data-anti-card="data-table"
       data-density={density}
+      data-selectable={selectionEnabled ? "true" : undefined}
       className={cn("w-full overflow-x-auto", className)}
       {...props}
     >
+      {/* 일괄 액션 영역 — selection mode + 선택된 row 있을 때만 노출.
+          헤어라인 톤 유지 (shadow X, border-b 1px). */}
+      {selectionEnabled && selectedCount > 0 && (
+        <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50/60 px-3 py-2 text-[12.5px] dark:border-white/[0.08] dark:bg-white/[0.02]">
+          {showCount ? (
+            <span className="font-mono tabular-nums text-zinc-600 dark:text-zinc-300">
+              {selectedCount}개 선택됨
+            </span>
+          ) : (
+            <span />
+          )}
+          {bulkActionsNode && (
+            <div className="flex items-center gap-2">{bulkActionsNode}</div>
+          )}
+        </div>
+      )}
       <table className="w-full text-[13.5px]">
         {caption && (
           <caption className="mb-2 text-left text-[11.5px] uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-500">
@@ -118,6 +214,31 @@ export function DataTable<T>({
         )}
         <thead>
           <tr className="border-b border-zinc-200 dark:border-white/[0.08]">
+            {selectionEnabled && (
+              <th
+                scope="col"
+                className={cn("w-[36px] px-3", cellPadding)}
+                aria-label="전체 선택"
+              >
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={
+                    allSelected ? "true" : someSelected ? "mixed" : "false"
+                  }
+                  onClick={toggleAll}
+                  className={cn(
+                    "inline-flex h-4 w-4 items-center justify-center rounded border transition-colors",
+                    allSelected || someSelected
+                      ? "border-emerald-500 bg-emerald-500 text-white dark:border-emerald-400 dark:bg-emerald-400 dark:text-zinc-950"
+                      : "border-zinc-300 hover:border-zinc-500 dark:border-white/20 dark:hover:border-white/40"
+                  )}
+                >
+                  {allSelected && <Check className="h-3 w-3" strokeWidth={2.5} />}
+                  {someSelected && <Minus className="h-3 w-3" strokeWidth={2.5} />}
+                </button>
+              </th>
+            )}
             {columns.map((c) => {
               const isSorted = sort?.key === c.key;
               const alignCls =
@@ -179,7 +300,7 @@ export function DataTable<T>({
           {sorted.length === 0 && (
             <tr>
               <td
-                colSpan={columns.length}
+                colSpan={totalCols}
                 className="py-10 text-center text-[13.5px] text-zinc-500 dark:text-zinc-500"
               >
                 {empty}
@@ -188,6 +309,8 @@ export function DataTable<T>({
           )}
           {sorted.map((row, i) => {
             const key = rowKey ? rowKey(row, i) : String(i);
+            const selKey = getSelectKey(row, i);
+            const isSelected = selectedSet.has(selKey);
             return (
               <tr
                 key={key}
@@ -195,9 +318,32 @@ export function DataTable<T>({
                 className={cn(
                   "border-b border-zinc-200/70 dark:border-white/[0.04]",
                   onRowClick &&
-                    "cursor-pointer transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.02]"
+                    "cursor-pointer transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.02]",
+                  isSelected && "bg-emerald-50/40 dark:bg-emerald-500/[0.04]"
                 )}
               >
+                {selectionEnabled && (
+                  <td
+                    className={cn("w-[36px] px-3", cellPadding)}
+                    onClick={(e) => e.stopPropagation() /* 행 onClick과 분리 */}
+                  >
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      aria-label={`${i + 1}번 행 선택`}
+                      onClick={() => toggleRow(selKey)}
+                      className={cn(
+                        "inline-flex h-4 w-4 items-center justify-center rounded border transition-colors",
+                        isSelected
+                          ? "border-emerald-500 bg-emerald-500 text-white dark:border-emerald-400 dark:bg-emerald-400 dark:text-zinc-950"
+                          : "border-zinc-300 hover:border-zinc-500 dark:border-white/20 dark:hover:border-white/40"
+                      )}
+                    >
+                      {isSelected && <Check className="h-3 w-3" strokeWidth={2.5} />}
+                    </button>
+                  </td>
+                )}
                 {columns.map((c) => {
                   const alignCls =
                     c.align === "right"
